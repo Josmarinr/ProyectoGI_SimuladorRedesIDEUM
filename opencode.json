@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "main",
+  "instructions": ["AGENTS.md"],
+  "agent": {
+    "architect": { "model": "opencode/deepseek-v4-flash-free" },
+    "programmer": { "model": "opencode/deepseek-v4-flash-free" },
+    "reviewer": { "model": "opencode/deepseek-v4-flash-free" },
+    "tester": { "model": "opencode/deepseek-v4-flash-free" }
+  }
+}

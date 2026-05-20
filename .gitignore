@@ -1,0 +1,44 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+
+# Visual Studio
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.unityproj
+*.pidb
+*.booproj
+*.svd
+
+# JetBrains Rider
+.idea/
+*.sln.DotSettings.user
+
+# macOS
+.DS_Store
+*~_
+
+# VS Code
+.vscode/
+
+# OS generated
+*.swp
+*.swo
+
+# Unity generated
+sysinfo.txt
+crashlytics-*
+
+# Android
+*.apk
+*.aab
+
+# iOS
+*.ipa
