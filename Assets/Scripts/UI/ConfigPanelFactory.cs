@@ -371,9 +371,7 @@ namespace SimRedes.UI
             vlanInput.text = "10";
             vlanInput.characterLimit = 4;
             vlanInput.contentType = InputField.ContentType.IntegerNumber;
-            vlanInput.textComponent.font = font;
-            vlanInput.textComponent.fontSize = 16;
-            vlanInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(vlanInput, font, 16, UIColors.textPrimary);
 
             Button createVlanBtn = UIComp.CreateMenuButton(panelObj.transform, "CreateVlanBtn", "CREAR", new Vector2(160, 135), new Vector2(80, 35), font, 14);
             createVlanBtn.onClick.AddListener(() => {
@@ -405,9 +403,7 @@ namespace SimRedes.UI
             vlanSelect.text = "10";
             vlanSelect.characterLimit = 4;
             vlanSelect.contentType = InputField.ContentType.IntegerNumber;
-            vlanSelect.textComponent.font = font;
-            vlanSelect.textComponent.fontSize = 16;
-            vlanSelect.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(vlanSelect, font, 16, UIColors.textPrimary);
 
             Button assignBtn = UIComp.CreateMenuButton(panelObj.transform, "AssignBtn", "ASIGNAR", new Vector2(150, 10), new Vector2(90, 35), font, 14);
             assignBtn.onClick.AddListener(() => {
@@ -437,6 +433,24 @@ namespace SimRedes.UI
                 var bg = GameObject.Find("VLANPanelBG");
                 if (bg != null) UnityEngine.Object.Destroy(bg);
             });
+        }
+
+        private static Text CreateInputFieldText(InputField field, Font font, int fontSize, Color color)
+        {
+            var textObj = new GameObject("Text");
+            textObj.transform.SetParent(field.transform, false);
+            var textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(8, 3);
+            textRect.offsetMax = new Vector2(-8, -3);
+            var textComp = textObj.AddComponent<Text>();
+            textComp.font = font;
+            textComp.fontSize = fontSize;
+            textComp.color = color;
+            textComp.alignment = TextAnchor.MiddleLeft;
+            field.textComponent = textComp;
+            return textComp;
         }
 
         private static void UpdateVLANListDisplay(Transform parent, TopologyManager topology, Font font)
@@ -508,9 +522,7 @@ namespace SimRedes.UI
             nameRect.sizeDelta = new Vector2(180, 30);
             var nameInput = nameObj.AddComponent<InputField>();
             nameInput.text = "MI_ACL";
-            nameInput.textComponent.font = font;
-            nameInput.textComponent.fontSize = 16;
-            nameInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(nameInput, font, 16, UIColors.textPrimary);
 
             UIComp.CreateInfoText(panelObj.transform, "ACCION:", new Vector2(-200, 150), font, 14, UIColors.textSecondary, false);
 
@@ -530,9 +542,7 @@ namespace SimRedes.UI
             srcRect.sizeDelta = new Vector2(150, 30);
             var srcInput = srcObj.AddComponent<InputField>();
             srcInput.text = "any";
-            srcInput.textComponent.font = font;
-            srcInput.textComponent.fontSize = 16;
-            srcInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(srcInput, font, 16, UIColors.textPrimary);
 
             UIComp.CreateInfoText(panelObj.transform, "IP DESTINO:", new Vector2(-200, 70), font, 14, UIColors.textSecondary, false);
 
@@ -545,9 +555,7 @@ namespace SimRedes.UI
             dstRect.sizeDelta = new Vector2(150, 30);
             var dstInput = dstObj.AddComponent<InputField>();
             dstInput.text = "any";
-            dstInput.textComponent.font = font;
-            dstInput.textComponent.fontSize = 16;
-            dstInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(dstInput, font, 16, UIColors.textPrimary);
 
             Button addRuleBtn = UIComp.CreateMenuButton(panelObj.transform, "AddRuleBtn", "AGREGAR REGLA", new Vector2(150, 30), new Vector2(130, 38), font, 14);
             addRuleBtn.onClick.AddListener(() => {
@@ -645,9 +653,7 @@ namespace SimRedes.UI
             pubIpRect.sizeDelta = new Vector2(160, 30);
             var pubIpInput = pubIpObj.AddComponent<InputField>();
             pubIpInput.text = topology.NAT.GetRouterIP();
-            pubIpInput.textComponent.font = font;
-            pubIpInput.textComponent.fontSize = 16;
-            pubIpInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(pubIpInput, font, 16, UIColors.textPrimary);
 
             Button setPubBtn = UIComp.CreateMenuButton(panelObj.transform, "SetPubBtn", "SET", new Vector2(180, 190), new Vector2(60, 30), font, 12);
             setPubBtn.onClick.AddListener(() => { topology.NAT.SetPublicIP(pubIpInput.text); });
@@ -670,9 +676,7 @@ namespace SimRedes.UI
             intIpRect.sizeDelta = new Vector2(160, 30);
             var intIpInput = intIpObj.AddComponent<InputField>();
             intIpInput.text = "192.168.1.10";
-            intIpInput.textComponent.font = font;
-            intIpInput.textComponent.fontSize = 16;
-            intIpInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(intIpInput, font, 16, UIColors.textPrimary);
 
             var extIpLabelObj = new GameObject("ExtIPLabel");
             extIpLabelObj.transform.SetParent(panelObj.transform, false);
@@ -696,9 +700,7 @@ namespace SimRedes.UI
             extIpRect.sizeDelta = new Vector2(160, 30);
             var extIpInput = extIpObj.AddComponent<InputField>();
             extIpInput.text = "200.100.50.10";
-            extIpInput.textComponent.font = font;
-            extIpInput.textComponent.fontSize = 16;
-            extIpInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(extIpInput, font, 16, UIColors.textPrimary);
 
             var portLabelObj = new GameObject("PortLabel");
             portLabelObj.transform.SetParent(panelObj.transform, false);
@@ -724,9 +726,7 @@ namespace SimRedes.UI
             portInput.text = "80";
             portInput.characterLimit = 5;
             portInput.contentType = InputField.ContentType.IntegerNumber;
-            portInput.textComponent.font = font;
-            portInput.textComponent.fontSize = 16;
-            portInput.textComponent.color = UIColors.textPrimary;
+            CreateInputFieldText(portInput, font, 16, UIColors.textPrimary);
 
             Button addNatBtn = UIComp.CreateMenuButton(panelObj.transform, "AddNatBtn", "AGREGAR NAT", new Vector2(150, -10), new Vector2(120, 38), font, 14);
             addNatBtn.onClick.AddListener(() => {

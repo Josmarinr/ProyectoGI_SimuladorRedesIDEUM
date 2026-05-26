@@ -4,9 +4,9 @@
 
 ---
 
-## Estado Actual: 209 tests pasando, todas las tareas A/B/C completadas
+## Estado Actual: 231 tests pasando, textos alineados con propuesta, anteproyecto de grado creado
 
-> SceneSetup ~480L, **209 tests pasando**. Discos 15-18 implementados (configuracion virtual desde DynamicRoutingActivity). Todos los bugs corregidos (#1-#4). UIPanelFactory refactorizado a 3 factories. Documentacion actualizada con mejores practicas. **Pendiente A2** (pruebas en mesa IDEUM real con discos fisicos).
+> SceneSetup ~480L, **231 tests pasando** (209 originales + 22 nuevos de UI factories). Textos de actividades alineados con propuesta academica. Anteproyecto de Trabajo de Grado generado. Bug corregido en ConfigPanelFactory (NRE en InputFields de VLAN/ACL/NAT). **Pendiente A2** (pruebas en mesa IDEUM real con discos fisicos).
 
 ---
 

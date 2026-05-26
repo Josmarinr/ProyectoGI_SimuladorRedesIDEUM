@@ -92,7 +92,7 @@ namespace SimRedes.Simulation
             {
                 case 0:
                     ActivityPanelFactory.CreateBuildTopologyInfoPanel(canvas.transform);
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Construir Topologia");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Construye la Topolog\u00eda");
                     break;
                 case 1:
                     if (gameManagerObj.GetComponent<FindFaultActivity>() == null)
@@ -104,25 +104,25 @@ namespace SimRedes.Simulation
                         },
                         onBack: () => GoBackToMainMenu()
                     );
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Encontrar Fallos");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Encuentra el Fallo");
                     break;
                 case 2:
                     if (gameManagerObj.GetComponent<RoutingTablesActivity>() == null)
                         gameManagerObj.AddComponent<RoutingTablesActivity>();
                     ActivityPanelFactory.CreateRoutingTablesPanel(canvas.transform, () => GoBackToMainMenu());
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Tablas de Enrutamiento");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Tabla de Enrutamiento Tangible");
                     break;
                 case 3:
                     if (gameManagerObj.GetComponent<BestRouteActivity>() == null)
                         gameManagerObj.AddComponent<BestRouteActivity>();
                     ActivityPanelFactory.CreateBestRoutePanel(canvas.transform, () => GoBackToMainMenu());
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Mejor Ruta");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Simulaci\u00f3n de Mejor Ruta");
                     break;
                 case 4:
                     if (gameManagerObj.GetComponent<StaticRoutingActivity>() == null)
                         gameManagerObj.AddComponent<StaticRoutingActivity>();
                     ActivityPanelFactory.CreateStaticRoutingPanel(canvas.transform, () => GoBackToMainMenu());
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Enrutamiento Estatico");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Enrutamiento Est\u00e1tico Tangible");
                     break;
                 case 5:
                     if (gameManagerObj.GetComponent<DynamicRoutingActivity>() == null)
@@ -166,7 +166,7 @@ namespace SimRedes.Simulation
                             if (act != null) act.SetBandwidth(bw);
                         }
                     );
-                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Enrutamiento Dinamico");
+                    UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Protocolo de Enrutamiento Din\u00e1mico Tangible");
                     break;
                 case 6:
                     CreateScenariosPanel(canvas.transform);

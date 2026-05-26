@@ -263,7 +263,7 @@ namespace SimRedes.Simulation
 
             if (statusText != null)
             {
-                statusText.text = "Modo: Encontrar Fallos";
+                statusText.text = "Modo: Encuentra el Fallo";
             }
 
             if (resultText != null)

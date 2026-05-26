@@ -322,21 +322,21 @@ namespace SimRedes.UI
             string centerText =
                 "ACTIVIDADES\n" +
                 "───────────\n" +
-                "0) Construir Topologia:\n" +
+                "0) Construye la Topolog\u00eda:\n" +
                 "  crea redes y descubre\n" +
                 "  el tipo de topologia.\n\n" +
-                "1) Encontrar Fallos:\n" +
+                "1) Encuentra el Fallo:\n" +
                 "  identifica y resuelve\n" +
                 "  problemas en la red.\n\n" +
-                "2) Tablas Enrutamiento:\n" +
+                "2) Tabla de Enrutamiento Tangible:\n" +
                 "  visualiza las tablas\n" +
-                "  de los routers.\n\n" +
-                "3) Mejor Ruta:\n" +
+                "  de enrutamiento.\n\n" +
+                "3) Simulaci\u00f3n de Mejor Ruta:\n" +
                 "  elige la ruta optima\n" +
                 "  hacia un destino.\n\n" +
-                "4) Enrutamiento Estatico:\n" +
+                "4) Enrutamiento Est\u00e1tico Tangible:\n" +
                 "  agrega rutas manuales.\n\n" +
-                "5) Enrutamiento Dinamico:\n" +
+                "5) Protocolo de Enrutamiento Din\u00e1mico Tangible:\n" +
                 "  simula RIP y OSPF.\n\n" +
                 "6) Escenarios:\n" +
                 "  desafia con casos\n" +
@@ -415,7 +415,7 @@ namespace SimRedes.UI
             float hintY = sec3Bottom - 70f;
             string hintText = "NOTA: Solo los discos 1-3 (Router/Switch/PC) son f\u00edsicos en la mesa IDEUM.\n" +
                 "Enlaces, fallos y configuraci\u00f3n de routing se manejan desde las actividades.\n" +
-                "En Actividad 4 (Enrutamiento Est\u00e1tico): presiona A\u00d1ADIR MANUAL para rutas personalizadas\n" +
+                "En Actividad 4 (Enrutamiento Est\u00e1tico Tangible): presiona A\u00d1ADIR MANUAL para rutas personalizadas\n" +
                 "o A\u00d1ADIR RUTA para rutas de ejemplo. Las rutas se escriben directamente en el Router.";
             var hintObj = new GameObject("UsageHint");
             hintObj.transform.SetParent(panelObj.transform, false);
@@ -684,7 +684,7 @@ namespace SimRedes.UI
             UIComp.CreateMenuTitle(panelObj.transform, "Selecciona una Actividad", 32, new Vector2(0, 260), font);
 
             float startY = 200;
-            string[] activities = { "Construir Topologia", "Encontrar Fallos", "Tablas de Enrutamiento", "Mejor Ruta", "Enrutamiento Estatico", "Enrutamiento Dinamico", "Escenarios" };
+            string[] activities = { "Construye la Topolog\u00eda", "Encuentra el Fallo", "Tabla de Enrutamiento Tangible", "Simulaci\u00f3n de Mejor Ruta", "Enrutamiento Est\u00e1tico Tangible", "Protocolo de Enrutamiento Din\u00e1mico Tangible", "Escenarios" };
 
             for (int i = 0; i < activities.Length; i++)
             {

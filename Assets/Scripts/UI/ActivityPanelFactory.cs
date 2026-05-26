@@ -24,12 +24,12 @@ namespace SimRedes.UI
             panelRect.pivot = new Vector2(0.5f, 0.5f);
             panelRect.anchoredPosition = Vector2.zero;
 
-            UIComp.CreateMenuTitle(panelObj.transform, "Construir Topologia", 22, new Vector2(0, 155), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Construye la Topolog\u00eda", 22, new Vector2(0, 155), font);
 
             float y = 110;
-            UIComp.CreateInfoText(panelObj.transform, "Coloca discos en la mesa para crear", new Vector2(0, y), font, 13, UIColors.textSecondary, false);
+            UIComp.CreateInfoText(panelObj.transform, "Construye la topolog\u00eda colocando", new Vector2(0, y), font, 13, UIColors.textSecondary, false);
             y -= 22;
-            UIComp.CreateInfoText(panelObj.transform, "una topologia de red.", new Vector2(0, y), font, 13, UIColors.textSecondary, false);
+            UIComp.CreateInfoText(panelObj.transform, "discos en la mesa de trabajo.", new Vector2(0, y), font, 13, UIColors.textSecondary, false);
             y -= 30;
             UIComp.CreateInfoText(panelObj.transform, "Teclas: 1=Router  2=Switch  3=PC", new Vector2(0, y), font, 12, UIColors.textAccent, false);
             y -= 22;
@@ -70,7 +70,7 @@ namespace SimRedes.UI
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(520, 600), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "BestRoutePanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Mejor Ruta", 24, new Vector2(0, 250), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Simulaci\u00f3n de Mejor Ruta", 24, new Vector2(0, 250), font);
 
             var destObj = new GameObject("DestIPText");
             destObj.transform.SetParent(panelObj.transform, false);
@@ -138,7 +138,7 @@ namespace SimRedes.UI
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(520, 540), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "FindFaultPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Encontrar Fallos", 26, new Vector2(0, 230), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Encuentra el Fallo", 26, new Vector2(0, 230), font);
 
             var descObj = new GameObject("FaultDescriptionText");
             descObj.transform.SetParent(panelObj.transform, false);
@@ -198,7 +198,7 @@ namespace SimRedes.UI
             statusRect.anchoredPosition = new Vector2(0, 30);
             statusRect.sizeDelta = new Vector2(440, 30);
             var statusTextComp = statusObj.AddComponent<Text>();
-            statusTextComp.text = "Modo: Encontrar Fallos";
+            statusTextComp.text = "Modo: Encuentra el Fallo";
             statusTextComp.color = UIColors.textSecondary;
             statusTextComp.fontSize = 13;
             statusTextComp.alignment = TextAnchor.MiddleCenter;
@@ -223,7 +223,7 @@ namespace SimRedes.UI
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(650, 500), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "RoutingTablesPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Tablas de Enrutamiento", 24, new Vector2(0, 200), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Tabla de Enrutamiento Tangible", 24, new Vector2(0, 200), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
@@ -233,9 +233,9 @@ namespace SimRedes.UI
             leftRect.anchoredPosition = new Vector2(-140, 20);
             leftRect.sizeDelta = new Vector2(280, 300);
             var leftText = leftPanel.AddComponent<Text>();
-            leftText.text = "TABLAS DE ENRUTAMIENTO\n\n" +
-                "Esta actividad muestra las\n" +
-                "tablas de enrutamiento.\n\n" +
+            leftText.text =                 "TABLA DE ENRUTAMIENTO TANGIBLE\n\n" +
+                "Visualiza la tabla de\n" +
+                "enrutamiento de cada router.\n\n" +
                 "ATENCION:\n  1 = Router\n  4 = Enlace\n  P = Ping\n\n" +
                 "Presiona ACTUALIZAR para\n" +
                 "refrescar las tablas.";
@@ -282,7 +282,7 @@ namespace SimRedes.UI
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(650, 500), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "StaticRoutingPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Enrutamiento Estatico", 24, new Vector2(0, 200), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Enrutamiento Est\u00e1tico Tangible", 24, new Vector2(0, 200), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
@@ -292,8 +292,8 @@ namespace SimRedes.UI
             leftRect.anchoredPosition = new Vector2(-140, 20);
             leftRect.sizeDelta = new Vector2(280, 300);
             var leftText = leftPanel.AddComponent<Text>();
-            leftText.text = "ENRUTAMIENTO ESTATICO\n\n" +
-                "Configura rutas manuales\nen los routers.\n\n" +
+            leftText.text = "ENRUTAMIENTO EST\u00c1TICO TANGIBLE\n\n" +
+                "Configura manualmente\nrutas en los routers.\n\n" +
                 "BOTONES:\n" +
                 "  AÑADIR MANUAL = Ruta propia\n" +
                 "  AÑADIR RUTA = Ruta ejemplo\n" +
@@ -369,7 +369,7 @@ namespace SimRedes.UI
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(750, 720), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "DynamicRoutingPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Enrutamiento Dinamico", 24, new Vector2(0, 260), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Protocolo de Enrutamiento Din\u00e1mico Tangible", 24, new Vector2(0, 260), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
@@ -379,7 +379,8 @@ namespace SimRedes.UI
             leftRect.anchoredPosition = new Vector2(-180, 10);
             leftRect.sizeDelta = new Vector2(320, 340);
             var leftText = leftPanel.AddComponent<Text>();
-            leftText.text = "PROTOCOLOS DISPONIBLES:\n\n" +
+            leftText.text =                 "PROTOCOLO DE ENRUTAMIENTO\n" +
+                "DIN\u00c1MICO TANGIBLE\n\n" +
                 "RIP (conteo de hops)\n" +
                 "OSPF (costo por enlace)\n\n" +
                 "BOTONES:\n  START = Iniciar envio\n  STOP = Detener\n  LIMPIAR = Borrar rutas\n  VER RUTAS = Mostrar\n\n" +

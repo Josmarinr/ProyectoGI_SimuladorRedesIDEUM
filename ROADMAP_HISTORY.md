@@ -101,3 +101,19 @@
 - 4 helpers cambiados de private a internal static.
 - Best-practices skill: nueva seccion "Arquitectura de Factories (3 capas)".
 - 209/209 tests pasando.
+
+### Sesion 21 — Textos alineados con propuesta + tests UI factories + anteproyecto de grado
+- Item 2: Textos de actividades alineados con propuesta academica en 4 archivos:
+  - UIPanelFactory.cs: menu actividades + panel instrucciones + legend hint
+  - ActivityPanelFactory.cs: titulos e info texts de las 6 actividades
+  - ActivityLoader.cs: 6 Debug.Log actualizados
+  - FindFaultActivity.cs: statusText actualizado
+- Item 3: 22 tests nuevos de UI factories (3 suites):
+  - TestUIPanelFactory.cs: 7 tests (menu, actividades, conectividad, instrucciones, legend, keypad)
+  - TestActivityPanelFactory.cs: 8 tests (todas las actividades 0-6 + scenarios)
+  - TestConfigPanelFactory.cs: 7 tests (IP, ARP, routing, VLAN, ACL, NAT)
+  - Bug corregido en ConfigPanelFactory: NRE en InputFields de VLAN/ACL/NAT
+  - Total: 231 tests pasando
+- Item 4: Anteproyecto de Trabajo de Grado creado en docs/anteproyecto-grado.md
+  - 12 secciones: problema, objetivos, marco teorico, metodologia, cronograma, etc.
+- Commit: pendiente (sesion activa)
