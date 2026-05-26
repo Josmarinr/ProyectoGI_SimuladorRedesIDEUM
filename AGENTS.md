@@ -63,3 +63,7 @@ Assets/
 
 Flujo: main -> architect -> programmer -> reviewer -> tester (tareas complejas).
 main tiene iniciativa propia: lee ROADMAP.md al iniciar, propone trabajo.
+
+### Contexto de Propuesta (bajo demanda)
+`docs/proposal-context.md` contiene el texto completo de la propuesta academica.
+NO se carga automaticamente. Leer solo cuando el usuario pregunte "que falta de la propuesta".
