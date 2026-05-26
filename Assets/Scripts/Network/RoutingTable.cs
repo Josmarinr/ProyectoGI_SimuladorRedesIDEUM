@@ -92,13 +92,21 @@ namespace SimRedes.Network
 
         private bool IsInNetwork(string ip, string network, string mask)
         {
-            var ipParts = ip.Split('.').Select(int.Parse).ToArray();
-            var netParts = network.Split('.').Select(int.Parse).ToArray();
-            var maskParts = mask.Split('.').Select(int.Parse).ToArray();
+            var ipParts = ip.Split('.');
+            var netParts = network.Split('.');
+            var maskParts = mask.Split('.');
+
+            if (ipParts.Length != 4 || netParts.Length != 4 || maskParts.Length != 4)
+                return false;
 
             for (int i = 0; i < 4; i++)
             {
-                if ((ipParts[i] & maskParts[i]) != (netParts[i] & maskParts[i]))
+                if (!int.TryParse(ipParts[i], out int ipByte) ||
+                    !int.TryParse(netParts[i], out int netByte) ||
+                    !int.TryParse(maskParts[i], out int maskByte))
+                    return false;
+
+                if ((ipByte & maskByte) != (netByte & maskByte))
                     return false;
             }
             return true;

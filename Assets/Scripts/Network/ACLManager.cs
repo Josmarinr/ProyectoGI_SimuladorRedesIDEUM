@@ -79,13 +79,14 @@ namespace SimRedes.Network
             var maskParts = mask.Split('.');
 
             if (ipParts.Length != 4 || ruleParts.Length != 4 || maskParts.Length != 4)
-                return true;
+                return false;
 
             for (int i = 0; i < 4; i++)
             {
-                int ipByte = int.Parse(ipParts[i]);
-                int ruleByte = int.Parse(ruleParts[i]);
-                int maskByte = int.Parse(maskParts[i]);
+                if (!int.TryParse(ipParts[i], out int ipByte) ||
+                    !int.TryParse(ruleParts[i], out int ruleByte) ||
+                    !int.TryParse(maskParts[i], out int maskByte))
+                    return false;
 
                 if ((ipByte & maskByte) != (ruleByte & maskByte))
                     return false;

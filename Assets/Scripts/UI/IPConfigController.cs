@@ -16,8 +16,8 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            visualizer = FindObjectOfType<NodeVisualizer>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
+            visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
         }
 
         public bool IsIPConfigPanelOpen()
@@ -35,7 +35,7 @@ namespace SimRedes.UI
             var existingPanel = GameObject.Find("IPConfigPanel");
             if (existingPanel != null) Destroy(existingPanel);
 
-            var canvasTransform = FindObjectOfType<Canvas>()?.transform;
+            var canvasTransform = Object.FindAnyObjectByType<Canvas>()?.transform;
             if (canvasTransform == null) return;
 
             CloseIPConfigPanelPublic();
@@ -61,7 +61,7 @@ namespace SimRedes.UI
 
             bool showAdvanced = node.Type == Network.DeviceType.Router;
 
-            UIPanelFactory.CreateIPConfigPanel(
+            ConfigPanelFactory.CreateIPConfigPanel(
                 canvasTransform,
                 node.Name,
                 node.IpAddress ?? "",
@@ -113,7 +113,7 @@ namespace SimRedes.UI
 
         private void UpdateNodeVisualIP(int discId, string ip)
         {
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var node = topology.GetNode(discId);
@@ -121,7 +121,7 @@ namespace SimRedes.UI
 
             bool isValid = string.IsNullOrEmpty(ip) || IPValidation.IsValidIP(ip);
 
-            if (visualizer == null) visualizer = FindObjectOfType<NodeVisualizer>();
+            if (visualizer == null) visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
             if (visualizer != null)
             {
                 string label;
@@ -146,10 +146,10 @@ namespace SimRedes.UI
             var existingPanel = GameObject.Find("ARPPanel");
             if (existingPanel != null) Destroy(existingPanel);
 
-            var t = FindObjectOfType<Canvas>()?.transform;
+            var t = Object.FindAnyObjectByType<Canvas>()?.transform;
             if (t == null) return;
 
-            UIPanelFactory.CreateARPPanel(t, node);
+            ConfigPanelFactory.CreateARPPanel(t, node);
         }
 
         private void ShowRoutingPanel(NetworkNode node)
@@ -157,11 +157,11 @@ namespace SimRedes.UI
             var existingPanel = GameObject.Find("RoutingPanel");
             if (existingPanel != null) Destroy(existingPanel);
 
-            var canvas = FindObjectOfType<Canvas>();
+            var canvas = Object.FindAnyObjectByType<Canvas>();
             var canvasTransform = canvas?.transform;
             if (canvasTransform == null) return;
 
-            UIPanelFactory.CreateRoutingPanel(
+            ConfigPanelFactory.CreateRoutingPanel(
                 canvasTransform, node,
                 onDeleteRoute: (idx) => DeleteRouteFromNode(node, idx),
                 onAddRoute: (idx) => ShowAddRoutePanel(node, idx),
@@ -192,11 +192,11 @@ namespace SimRedes.UI
             var existingPanel = GameObject.Find("AddRoutePanel");
             if (existingPanel != null) Destroy(existingPanel);
 
-            var canvas = FindObjectOfType<Canvas>();
+            var canvas = Object.FindAnyObjectByType<Canvas>();
             var canvasTransform = canvas?.transform;
             if (canvasTransform == null) return;
 
-            UIPanelFactory.CreateAddRoutePanel(
+            ConfigPanelFactory.CreateAddRoutePanel(
                 canvasTransform, node,
                 onAddRoute: (dest, mask, nextHop, iface) => {
                     if (IPValidation.IsValidIP(dest) && IPValidation.IsValidSubnetMask(mask) && IPValidation.IsValidIP(nextHop))

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
 
 namespace SimRedes.Simulation
@@ -14,129 +15,102 @@ namespace SimRedes.Simulation
         [SerializeField] public Text feedbackText;
 
         private TopologyManager topologyManager;
-        private RoutingSimulator routingSimulator;
         private RoutingProtocol currentProtocol = RoutingProtocol.RIP;
-        private List<NetworkNode> routers = new List<NetworkNode>();
-        private int simulationStep = 0;
+        private DynamicRoutingProtocol dynProtocol;
+
+        // Configuracion virtual de discos 15-18
+        [Header("Configuracion de Red Virtual (Discos 15-18)")]
+        public string neighborRouter = "";       // Vecino (15)
+        public string networkToAdvertise = "";   // AnunciarRed (16)
+        public int? linkCost = null;              // Costo (17) — null = no configurado, usar calculo por BW
+        public int bandwidth = 1000;             // BW (18) en Mbps
 
         private void Start()
         {
-            topologyManager = FindObjectOfType<TopologyManager>();
+            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null)
             {
                 var go = new GameObject("TopologyManager");
                 topologyManager = go.AddComponent<TopologyManager>();
             }
 
-            routingSimulator = new RoutingSimulator();
             UpdateUI();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                SetProtocol(RoutingProtocol.RIP);
-            }
-            else if (Input.GetKeyDown(KeyCode.O))
-            {
-                SetProtocol(RoutingProtocol.OSPF);
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                SimulateAdvertisement();
-            }
-            else if (Input.GetKeyDown(KeyCode.T))
-            {
-                SimulateConvergence();
-            }
         }
 
         public void SetProtocol(RoutingProtocol protocol)
         {
             currentProtocol = protocol;
-            routingSimulator.SetProtocol(protocol);
             ShowFeedback($"Protocolo cambiado a: {protocol}");
             UpdateProtocolDisplay();
             UnityEngine.Debug.Log($"[DynamicRouting] Protocolo: {protocol}");
         }
 
-        private void SimulateAdvertisement()
+        public void StartProtocol(GameObject panel)
         {
-            routers.Clear();
-            var allNodes = topologyManager.GetAllNodes();
+            if (topologyManager == null) return;
+            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+            if (routers.Count < 2) { ShowFeedback("Se necesitan al menos 2 routers"); return; }
 
-            foreach (var node in allNodes)
-            {
-                if (node.Type == SimRedes.Network.DeviceType.Router)
+            if (dynProtocol != null) { dynProtocol.StopProtocol(); Destroy(dynProtocol); }
+
+            dynProtocol = gameObject.AddComponent<DynamicRoutingProtocol>();
+            dynProtocol.protocol = currentProtocol == RoutingProtocol.RIP
+                ? DynamicRoutingProtocol.ProtocolType.RIP
+                : DynamicRoutingProtocol.ProtocolType.OSPF;
+
+            // Aplicar configuracion virtual de discos 15-18 antes de iniciar
+            ApplyDiscConfigToProtocol(dynProtocol);
+
+            dynProtocol.StartProtocol();
+            ShowFeedback($"Protocolo {currentProtocol} iniciado con {routers.Count} routers");
+
+            var rightText = panel.transform.Find("RightPanel")?.GetComponent<UnityEngine.UI.Text>();
+            dynProtocol.OnProtocolLog += (msg) => {
+                if (rightText != null) rightText.text = $"[{currentProtocol}] {msg}";
+                ShowFeedback(msg);
+            };
+            dynProtocol.OnConvergence += () => {
+                if (rightText != null)
                 {
-                    routers.Add(node);
-                    routingSimulator.InitializeRouterTable(node);
+                    rightText.text = $"[{currentProtocol}] CONVERGENCIA ALCANZADA\n\nTodas las rutas han sido intercambiadas.";
+                    rightText.color = new Color(0.2f, 0.8f, 0.2f);
                 }
-            }
-
-            if (routers.Count < 2)
-            {
-                ShowFeedback("Se necesitan al menos 2 routers para advertisements");
-                return;
-            }
-
-            simulationStep++;
-            string content = $"=== {currentProtocol} SIMULATION ===\n\n";
-            content += $"Paso {simulationStep}: Advertisement\n\n";
-
-            if (currentProtocol == RoutingProtocol.RIP)
-            {
-                foreach (var router in routers)
-                {
-                    var advertisements = new List<(string network, int hops)>();
-                    advertisements.Add(("192.168." + router.DiscId + ".0", 0));
-                    advertisements.Add(("10." + router.DiscId + ".0.0", 0));
-                    routingSimulator.SimulateRIPAdvertisement(router.DiscId, advertisements);
-                    content += $"Router {router.DiscId} envía:\n";
-                    content += $"  192.168.{router.DiscId}.0/24 (hops=1)\n";
-                    content += $"  10.{router.DiscId}.0.0/8 (hops=1)\n\n";
-                }
-            }
-            else if (currentProtocol == RoutingProtocol.OSPF)
-            {
-                foreach (var router in routers)
-                {
-                    var advertisements = new List<(string network, int cost)>();
-                    advertisements.Add(("192.168." + router.DiscId + ".0", 10));
-                    advertisements.Add(("10." + router.DiscId + ".0.0", 20));
-                    routingSimulator.SimulateOSPFAdvertisement(router.DiscId, advertisements);
-                    content += $"Router {router.DiscId} envía LSA:\n";
-                    content += $"  192.168.{router.DiscId}.0/24 (cost=10)\n";
-                    content += $"  10.{router.DiscId}.0.0/8 (cost=20)\n\n";
-                }
-            }
-
-            content += "Presiona T para ver convergencia";
-            tablesText.text = content;
+                ShowFeedback("Convergencia alcanzada");
+            };
         }
 
-        private void SimulateConvergence()
+        public void StopProtocol(GameObject panel)
         {
-            if (routers.Count == 0)
+            if (dynProtocol != null) dynProtocol.StopProtocol();
+            ShowFeedback("Protocolo detenido");
+        }
+
+        public void ClearAllRoutes(GameObject panel)
+        {
+            if (dynProtocol != null) dynProtocol.ClearAllRoutes();
+            if (topologyManager != null)
             {
-                ShowFeedback("Ejecuta advertisement primero (S)");
-                return;
+                foreach (var r in topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router))
+                    r.RoutingTable.Clear();
             }
+            ShowFeedback("Rutas limpiadas");
+        }
 
-            string content = $"=== CONVERGENCIA {currentProtocol} ===\n\n";
-            content += "Tablas después de convergencia:\n\n";
-
-            foreach (var router in routers)
+        public void ShowRoutes(GameObject panel)
+        {
+            var rightText = panel.transform.Find("RightPanel")?.GetComponent<UnityEngine.UI.Text>();
+            if (rightText == null) return;
+            var routers = topologyManager?.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router) ?? new System.Collections.Generic.List<NetworkNode>();
+            string info = "TABLAS DE RUTAS:\n\n";
+            foreach (var r in routers)
             {
-                content += $"--- Router {router.DiscId} ---\n";
-                content += routingSimulator.GetRoutingTableSummary(router.DiscId);
-                content += "\n";
+                var entries = r.RoutingTable.GetAllEntries();
+                info += $"{r.Name}:\n";
+                if (entries.Count == 0) info += "  Sin rutas aprendidas\n\n";
+                else { foreach (var e in entries) info += $"  {e.DestinationNetwork}/{e.GetPrefixLength()} via {e.NextHop} ({e.Protocol})\n"; info += "\n"; }
             }
-
-            content += "\nS = Nuevo advertisement | C = Limpiar | ESC = Menú";
-            tablesText.text = content;
-            ShowFeedback("Convergencia completada");
+            rightText.text = info;
+            rightText.fontSize = 11;
         }
 
         private void UpdateUI()
@@ -146,11 +120,11 @@ namespace SimRedes.Simulation
                 infoText.text = "ENRUTAMIENTO DINÁMICO\n\n" +
                     "Simula protocolos de enrutamiento\n" +
                     "dinámico: RIP y OSPF.\n\n" +
-                    "COMANDOS:\n" +
-                    "  R = Protocolo RIP\n" +
-                    "  O = Protocolo OSPF\n" +
-                    "  S = Simular advertisement\n" +
-                    "  T = Ver convergencia";
+                    "BOTONES:\n" +
+                    "  RIP / OSPF = Elegir protocolo\n" +
+                    "  START = Simular advertisement\n" +
+                    "  STOP = Detener simulacion\n" +
+                    "  VER RUTAS = Mostrar tablas";
             }
 
             UpdateProtocolDisplay();
@@ -168,6 +142,7 @@ namespace SimRedes.Simulation
         private void UpdateTablesDisplay()
         {
             if (tablesText == null) return;
+            if (topologyManager == null) return;
 
             string content = "=== ENRUTAMIENTO DINÁMICO ===\n\n";
             content += "Protocolo actual: " + currentProtocol + "\n\n";
@@ -176,17 +151,19 @@ namespace SimRedes.Simulation
             if (routers.Count < 2)
             {
                 content += "Necesitas al menos 2 routers.\n" +
-                           "Usa la tecla 1 para añadir routers\n" +
-                           "y 4 para conectar con enlaces.";
+                           "Usa tecla 1 o coloca discos\n" +
+                           "para añadir routers.\n\n" +
+                           "Luego conectalos con enlaces\n" +
+                           "(tecla 4 o modo CONEXION).";
             }
             else
             {
                 content += "Routers detectados: " + routers.Count + "\n\n";
-                content += "Presiona S para comenzar la\n";
-                content += "simulación de advertisements.\n\n";
+                content += "Presiona START para comenzar\n";
+                content += "la simulacion de advertisements.\n\n";
                 content += "Diferencias RIP vs OSPF:\n";
-                content += "- RIP: usa conteo de hops\n";
-                content += "- OSPF: usa costo de enlace\n";
+                content += "- RIP: conteo de hops\n";
+                content += "- OSPF: costo de enlace\n";
             }
 
             tablesText.text = content;
@@ -204,6 +181,81 @@ namespace SimRedes.Simulation
         public RoutingProtocol GetCurrentProtocol()
         {
             return currentProtocol;
+        }
+
+        // ============================================================
+        // Configuracion virtual de discos 15-18 (Vecino, AnunciarRed, Costo, BW)
+        // Estos valores se configuran desde la UI de la actividad
+        // y se aplican al protocolo de enrutamiento dinamico.
+        // ============================================================
+
+        public void SetNeighborRouter(string routerName)
+        {
+            neighborRouter = routerName;
+            ShowFeedback($"Vecino configurado: {routerName}");
+        }
+
+        public void SetNetworkToAdvertise(string network)
+        {
+            networkToAdvertise = network;
+            ShowFeedback($"Red a anunciar: {network}");
+        }
+
+        public void SetLinkCost(int cost)
+        {
+            linkCost = Mathf.Max(1, cost);
+            ShowFeedback($"Costo de enlace OSPF: {linkCost}");
+        }
+
+        public void SetBandwidth(int bw)
+        {
+            bandwidth = Mathf.Max(1, bw);
+            ShowFeedback($"Ancho de banda: {bandwidth} Mbps");
+        }
+
+        /// <summary>
+        /// Aplica la configuracion de discos 15-18 al protocolo antes de iniciar.
+        /// Si se configuro un vecino manual, filtra los routers conectados.
+        /// Si se configuro una red a anunciar, la agrega a las redes conocidas.
+        /// </summary>
+        public void ApplyDiscConfigToProtocol(DynamicRoutingProtocol protocol)
+        {
+            if (protocol == null) return;
+
+            // Si hay un vecino configurado manualmente, establecerlo
+            if (!string.IsNullOrEmpty(neighborRouter))
+            {
+                protocol.SetManualNeighbor(neighborRouter);
+                UnityEngine.Debug.Log($"[DynamicRouting] Vecino manual: {neighborRouter}");
+            }
+
+            // Si hay una red a anunciar, establecerla
+            if (!string.IsNullOrEmpty(networkToAdvertise))
+            {
+                protocol.SetManualNetwork(networkToAdvertise);
+                UnityEngine.Debug.Log($"[DynamicRouting] Red manual a anunciar: {networkToAdvertise}");
+            }
+
+            // Costo OSPF personalizado (solo si el usuario lo configuro explicitamente)
+            if (linkCost.HasValue)
+            {
+                protocol.SetCustomCost(linkCost.Value);
+                UnityEngine.Debug.Log($"[DynamicRouting] Costo OSPF manual: {linkCost.Value}");
+            }
+
+            // BW se registra para calculo OSPF basado en ancho de banda
+            protocol.SetCustomBandwidth(bandwidth);
+
+            string costStr = linkCost.HasValue ? linkCost.Value.ToString() : "(calculado por BW)";
+            ShowFeedback($"Configuracion aplicada: Vecino={neighborRouter}, Red={networkToAdvertise}, Costo={costStr}, BW={bandwidth}");
+        }
+
+        private void OnDestroy()
+        {
+            if (dynProtocol != null)
+            {
+                dynProtocol.StopProtocol();
+            }
         }
     }
 }

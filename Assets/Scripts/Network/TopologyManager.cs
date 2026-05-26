@@ -25,6 +25,8 @@ namespace SimRedes.Network
         public ACLManager ACL { get; private set; }
         public NATManager NAT { get; private set; }
 
+        private HashSet<string> aclNames = new HashSet<string>();
+
         private void Awake()
         {
             if (Instance == null)
@@ -193,7 +195,8 @@ namespace SimRedes.Network
             }
         }
 
-        public bool CheckConnectivity(int sourceDiscId, int destDiscId)
+        public bool CheckConnectivity(int sourceDiscId, int destDiscId,
+            int? srcPort = null, int? dstPort = null, string protocol = "icmp")
         {
             if (!nodes.ContainsKey(sourceDiscId) || !nodes.ContainsKey(destDiscId))
                 return false;
@@ -208,7 +211,7 @@ namespace SimRedes.Network
             if (!ValidateVLAN(sourceNode, destNode))
                 return false;
 
-            if (!ValidateACL(sourceNode, destNode))
+            if (!ValidateACL(sourceNode, destNode, srcPort, dstPort, protocol))
                 return false;
 
             if (sourceNode.Type == DeviceType.Switch && destNode.Type == DeviceType.Switch)
@@ -232,6 +235,33 @@ namespace SimRedes.Network
                 }
                 return true;
             }
+
+            // --- NAT Check: si hay traducción, permite comunicación cross-network ---
+            if (NAT != null)
+            {
+                bool sourceHasNAT = NAT.LookupInternal(sourceNode.IpAddress) != null;
+                bool destHasNAT = NAT.LookupExternal(destNode.IpAddress) != null;
+
+                if (sourceHasNAT || destHasNAT)
+                {
+                    // Solo aplicar NAT si source y dest están en redes diferentes
+                    bool sameNetwork = IPValidation.IsValidIP(sourceNode.IpAddress) &&
+                                       IPValidation.IsValidSubnetMask(sourceNode.SubnetMask) &&
+                                       IPValidation.IsInSameNetwork(sourceNode.IpAddress, sourceNode.SubnetMask, destNode.IpAddress);
+
+                    if (!sameNetwork)
+                    {
+                        // NAT maneja el ruteo entre redes diferentes
+                        if (!IPValidation.IsValidIP(sourceNode.IpAddress) ||
+                            !IPValidation.IsValidIP(destNode.IpAddress))
+                            return false;
+
+                        return true;
+                    }
+                    // Si están en la misma red, cae a las verificaciones normales (tráfico interno)
+                }
+            }
+            // --- Fin NAT Check ---
 
             bool sourceHasIP = IPValidation.IsValidIP(sourceNode.IpAddress);
             bool destHasIP = IPValidation.IsValidIP(destNode.IpAddress);
@@ -426,23 +456,45 @@ namespace SimRedes.Network
             return VLAN.CanCommunicate(source, dest);
         }
 
-        private bool ValidateACL(NetworkNode source, NetworkNode dest)
+        public void CreateACL(string name)
         {
-            if (ACL == null || ACL.Rules.Count == 0)
+            if (ACL == null) return;
+            ACL.CreateACL(name);
+            aclNames.Add(name);
+        }
+
+        public void AddACLRule(string aclName, ACLRule rule)
+        {
+            if (ACL == null) return;
+            aclNames.Add(aclName);
+            ACL.AddRule(aclName, rule);
+        }
+
+        public void DeleteACL(string name)
+        {
+            if (ACL != null)
+                ACL.DeleteACL(name);
+            aclNames.Remove(name);
+        }
+
+        private bool ValidateACL(NetworkNode source, NetworkNode dest,
+            int? srcPort = null, int? dstPort = null, string protocol = "icmp")
+        {
+            if (ACL == null || aclNames.Count == 0)
                 return true;
 
             string sourceIP = source.IpAddress;
             string destIP = dest.IpAddress;
 
-            foreach (var rule in ACL.Rules)
-            {
-                if (!rule.IsEnabled)
-                    continue;
+            // Sin IPs válidas no se puede evaluar ACL — permitir paso
+            if (string.IsNullOrEmpty(sourceIP) || string.IsNullOrEmpty(destIP))
+                return true;
 
-                if (rule.Matches(sourceIP, destIP))
-                {
-                    return rule.Action == ACLAction.Permit;
-                }
+            // Evaluar cada ACL por separado usando CheckPacket
+            foreach (var aclName in aclNames)
+            {
+                if (!ACL.CheckPacket(aclName, sourceIP, destIP, srcPort, dstPort, protocol))
+                    return false;
             }
 
             return true;

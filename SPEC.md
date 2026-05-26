@@ -34,7 +34,7 @@ El sistema permite a los estudiantes aprender networking colocando discos físic
 | 17 | - | Costo | Verde lima | Costo del enlace |
 | 18 | - | Ancho Banda | Azul cielo | Ancho de banda |
 
-Los discos 7-18 no crean nodos en la topología. Están diseñados para interactuar con routers en actividades futuras de configuración de enrutamiento.
+Los discos 7-18 no crean nodos en la topología. Al colocarlos sobre un router, configuran su tabla de enrutamiento real (`router.RoutingTable`). Las rutas configuradas son visibles en las actividades StaticRoutingActivity, RoutingTablesActivity y DynamicRoutingActivity.
 
 ## 3. Features Completados
 
@@ -286,6 +286,18 @@ El `EditorBuildSettings.asset` debe tener `Assets/Main.unity` como primera escen
 | 12 discos routing sin registro | DiscType.RedDestino..BW nunca agregados a DefaultConfiguration | Agregados IDs 7-18 con nombres, colores y descripciones |
 | Routing config discs creaban nodos | Discos 7-18 pasaban por AddNode como Unknown | `IsRoutingConfigDisc()` en DiscEventHandler evita creación de nodos |
 
+### COMPLETADO RECIENTEMENTE
+
+| Feature | Descripción |
+|---------|-------------|
+| **Integración discos 7-18 → actividades** | StaticRoutingActivity, RoutingTablesActivity, DynamicRoutingActivity ahora escriben/leen del router.RoutingTable real. Discos de routing configuran routers y las rutas aparecen en la UI de actividades. |
+| **Fix disco Destino (ID 12)** | Case agregado en HandleRoutingConfigDisc() — antes caía al default silencioso. |
+| **ShowConnectivityPanel unificado** | ActivityLoader delega en UIPanelFactory.CreateConnectivityPanel() con struct ConnectivityPanelRefs. ~125 líneas de código duplicado eliminadas. |
+| **CreateStatusPanel deprecado** | Código muerto marcado [Obsolete]. Sin callers. |
+| **Tests unitarios (47 EditMode)** | IPValidation (18), RoutingTable (14), RouteBuilderState (15). En Assets/Editor/Tests/. |
+| **Input System Both** | activeInputHandler cambiado de 0 (Old) a 2 (Both). El Input System Package 1.19.0 ahora está activo junto con el código legacy. |
+| **Dead code eliminado** | ActivityPanel.cs removido (sin callers). GameManager.cs limpiado (RoutingSimulator muerto removido). |
+
 ### CONOCIDOS ACTUALES
 
 1. **Errores de compilación**: Cerrar Unity, eliminar carpeta Library, abrir de nuevo
@@ -311,7 +323,6 @@ El `EditorBuildSettings.asset` debe tener `Assets/Main.unity` como primera escen
 
 ### Media Prioridad
 - Exportar/Importar topologías
-- Interacción discos 7-18 → modificar tablas de enrutamiento al colocarlos sobre un router
 
 ### Baja Prioridad
 - Métricas de desempeño detalladas

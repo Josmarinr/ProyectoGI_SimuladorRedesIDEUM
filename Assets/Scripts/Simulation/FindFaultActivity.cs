@@ -17,22 +17,27 @@ namespace SimRedes.Simulation
     public class FindFaultActivity : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] private Text faultDescriptionText;
-        [SerializeField] private Text hintText;
-        [SerializeField] private Text resultText;
-        [SerializeField] private Button solveButton;
-        [SerializeField] private Text statusText;
-
-        [Header("Settings")]
-        [SerializeField] private bool enableRandomFaults = true;
+        public Text faultDescriptionText;
+        public Text hintText;
+        public Text resultText;
+        public Button solveButton;
+        public Text statusText;
 
         private TopologyManager topologyManager;
         private FaultScenario currentFault;
         private List<FaultScenario> availableFaults;
+        private NetworkNode affectedNode;
+        private NetworkLink affectedLink;
 
         private void Start()
         {
-            topologyManager = FindObjectOfType<TopologyManager>();
+            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
+            if (topologyManager == null)
+            {
+                UnityEngine.Debug.LogError("[FindFault] No TopologyManager disponible");
+                return;
+            }
+
             InitializeFaults();
 
             if (solveButton != null)
@@ -94,8 +99,12 @@ namespace SimRedes.Simulation
 
         private void ApplyFault(string faultName)
         {
+            if (topologyManager == null) return;
             var nodes = topologyManager.GetAllNodes();
             if (nodes.Count < 2) return;
+
+            affectedNode = null;
+            affectedLink = null;
 
             switch (faultName)
             {
@@ -103,15 +112,16 @@ namespace SimRedes.Simulation
                     var links = topologyManager.GetAllLinks();
                     if (links.Count > 0)
                     {
-                        links[0].SetFault("cable_desconectado");
+                        affectedLink = links[0];
+                        affectedLink.SetFault("cable_desconectado");
                     }
                     break;
 
                 case "Interfaz Down":
                     if (nodes.Exists(n => n.Type == SimRedes.Network.DeviceType.Router))
                     {
-                        var router = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.Router);
-                        router.IsAdminDown = true;
+                        affectedNode = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.Router);
+                        affectedNode.IsAdminDown = true;
                     }
                     break;
 
@@ -119,17 +129,17 @@ namespace SimRedes.Simulation
                 case "Máscara de Subred Incorrecta":
                     if (nodes.Exists(n => n.Type == SimRedes.Network.DeviceType.Router))
                     {
-                        var router = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.Router);
-                        router.SetInterfaceIP("G0/0", "192.168.1.999", "255.255.255.0");
+                        affectedNode = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.Router);
+                        affectedNode.SetInterfaceIP("G0/0", "192.168.100.99", "255.255.255.0");
                     }
                     break;
 
                 case "Default Gateway Faltante":
                     if (nodes.Exists(n => n.Type == SimRedes.Network.DeviceType.PC))
                     {
-                        var pc = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.PC);
-                        pc.IpAddress = "";
-                        pc.SubnetMask = "";
+                        affectedNode = nodes.Find(n => n.Type == SimRedes.Network.DeviceType.PC);
+                        affectedNode.IpAddress = "";
+                        affectedNode.SubnetMask = "";
                     }
                     break;
             }
@@ -137,15 +147,18 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log($"[FindFault] Fallo aplicado: {faultName}");
         }
 
-        private void OnSolveClicked()
+        public void OnSolveClicked()
         {
             if (currentFault == null) return;
 
             if (ValidateSolution())
             {
                 currentFault.IsSolved = true;
-                resultText.text = "✅ ¡CORRECTO! El fallo ha sido resuelto";
-                resultText.color = Color.green;
+                if (resultText != null)
+                {
+                    resultText.text = "✅ ¡CORRECTO! El fallo ha sido resuelto";
+                    resultText.color = Color.green;
+                }
 
                 FixFault(currentFault.Name);
 
@@ -153,8 +166,11 @@ namespace SimRedes.Simulation
             }
             else
             {
-                resultText.text = "❌ Incorrecto. Intenta de nuevo.";
-                resultText.color = Color.red;
+                if (resultText != null)
+                {
+                    resultText.text = "❌ Incorrecto. Intenta de nuevo.";
+                    resultText.color = Color.red;
+                }
             }
 
             Invoke(nameof(GenerateNewFault), 3f);
@@ -162,45 +178,37 @@ namespace SimRedes.Simulation
 
         private void FixFault(string faultName)
         {
-            var nodes = topologyManager.GetAllNodes();
-            if (nodes.Count < 2) return;
+            if (topologyManager == null) return;
 
             switch (faultName)
             {
                 case "Cable Desconectado":
-                    var links = topologyManager.GetAllLinks();
-                    foreach (var l in links)
+                    if (affectedLink != null)
                     {
-                        l.SetFault("");
+                        affectedLink.SetFault("");
                     }
                     break;
 
                 case "Interfaz Down":
-                    foreach (var n in nodes)
+                    if (affectedNode != null)
                     {
-                        n.IsAdminDown = false;
+                        affectedNode.IsAdminDown = false;
                     }
                     break;
 
                 case "IP Incorrecta":
                 case "Máscara de Subred Incorrecta":
-                    foreach (var n in nodes)
+                    if (affectedNode != null && affectedNode.Type == SimRedes.Network.DeviceType.Router)
                     {
-                        if (n.Type == SimRedes.Network.DeviceType.Router)
-                        {
-                            n.SetInterfaceIP("G0/0", "192.168.1.1", "255.255.255.0");
-                        }
+                        affectedNode.SetInterfaceIP("G0/0", "192.168.1.1", "255.255.255.0");
                     }
                     break;
 
                 case "Default Gateway Faltante":
-                    foreach (var n in nodes)
+                    if (affectedNode != null && affectedNode.Type == SimRedes.Network.DeviceType.PC)
                     {
-                        if (n.Type == SimRedes.Network.DeviceType.PC)
-                        {
-                            n.IpAddress = "192.168.1.10";
-                            n.SubnetMask = "255.255.255.0";
-                        }
+                        affectedNode.IpAddress = "192.168.1.10";
+                        affectedNode.SubnetMask = "255.255.255.0";
                     }
                     break;
             }
@@ -210,27 +218,30 @@ namespace SimRedes.Simulation
 
         private bool ValidateSolution()
         {
-            var nodes = topologyManager.GetAllNodes();
-            var links = topologyManager.GetAllLinks();
+            if (topologyManager == null) return false;
 
-            if (currentFault.Name == "Cable Desconectado")
+            switch (currentFault.Name)
             {
-                return links.Count > 0 && links.All(l => l.IsFunctional());
-            }
+                case "Cable Desconectado":
+                    return affectedLink != null && affectedLink.IsFunctional();
 
-            if (currentFault.Name == "Interfaz Down")
-            {
-                return nodes.All(n => !n.IsAdminDown || n.Type != SimRedes.Network.DeviceType.Router);
-            }
+                case "Interfaz Down":
+                    return affectedNode == null || !affectedNode.IsAdminDown;
 
-            if (currentFault.Name == "Default Gateway Faltante")
-            {
-                return nodes.Exists(n => n.Type == SimRedes.Network.DeviceType.PC &&
-                    IPValidation.IsValidIP(n.IpAddress) &&
-                    IPValidation.IsValidSubnetMask(n.SubnetMask));
-            }
+                case "IP Incorrecta":
+                case "Máscara de Subred Incorrecta":
+                    return affectedNode != null &&
+                           IPValidation.IsValidIP(affectedNode.IpAddress) &&
+                           IPValidation.IsValidSubnetMask(affectedNode.SubnetMask);
 
-            return true;
+                case "Default Gateway Faltante":
+                    return affectedNode != null &&
+                           IPValidation.IsValidIP(affectedNode.IpAddress) &&
+                           IPValidation.IsValidSubnetMask(affectedNode.SubnetMask);
+
+                default:
+                    return true;
+            }
         }
 
         private void GenerateNewFault()

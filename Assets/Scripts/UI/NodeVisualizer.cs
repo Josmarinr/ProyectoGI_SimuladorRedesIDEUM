@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 using System.Collections.Generic;
 using SimRedes.Network;
 
@@ -18,8 +19,8 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            interactionController = FindObjectOfType<NodeInteractionController>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
+            interactionController = Object.FindAnyObjectByType<NodeInteractionController>();
 
             if (topology != null)
             {
@@ -146,7 +147,9 @@ namespace SimRedes.UI
             lineObj.transform.SetParent(linkContainer, false);
 
             Image lineImage = lineObj.AddComponent<Image>();
-            lineImage.color = isActive ? Color.green : Color.red;
+            Color lineColor = isActive ? Color.green : Color.red;
+            lineColor.a = 0f;  // empezar invisible
+            lineImage.color = lineColor;
 
             RectTransform rect = lineObj.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -159,6 +162,30 @@ namespace SimRedes.UI
             rect.sizeDelta = new Vector2(distance, 4);
             rect.anchoredPosition = from.anchoredPosition + direction / 2f;
             rect.localEulerAngles = new Vector3(0, 0, angle);
+
+            // Animación de fade-in
+            StartCoroutine(AnimateLinkFadeIn(lineImage));
+        }
+
+        private System.Collections.IEnumerator AnimateLinkFadeIn(Image lineImage)
+        {
+            float duration = 0.3f;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
+                Color c = lineImage.color;
+                c.a = alpha;
+                lineImage.color = c;
+                yield return null;
+            }
+
+            // Asegurar alpha=1 al final
+            Color final = lineImage.color;
+            final.a = 1f;
+            lineImage.color = final;
         }
 
         private void AddClickEvent(EventTrigger trigger, UnityEngine.Events.UnityAction action)

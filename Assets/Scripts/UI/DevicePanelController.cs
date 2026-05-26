@@ -18,9 +18,9 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            visualizer = FindObjectOfType<NodeVisualizer>();
-            canvas = FindObjectOfType<Canvas>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
+            visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
+            canvas = Object.FindAnyObjectByType<Canvas>();
         }
 
         private void Update()
@@ -56,7 +56,7 @@ namespace SimRedes.UI
 
         public void OnDeviceItemClicked(int index)
         {
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var nodes = topology.GetAllNodes();
@@ -70,7 +70,7 @@ namespace SimRedes.UI
                 return;
             }
 
-            var ipConfigCtrl = FindObjectOfType<IPConfigController>();
+            var ipConfigCtrl = Object.FindAnyObjectByType<IPConfigController>();
             if (ipConfigCtrl != null && ipConfigCtrl.IsIPConfigPanelOpen())
             {
                 ipConfigCtrl.CloseIPConfigPanelPublic();
@@ -79,16 +79,16 @@ namespace SimRedes.UI
             selectedNodeForRemoval = node.DiscId;
             UpdateDevicesList();
 
-            if (visualizer == null) visualizer = FindObjectOfType<NodeVisualizer>();
+            if (visualizer == null) visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
             if (visualizer != null)
             {
                 visualizer.SelectNodeByDiscId(node.DiscId);
             }
 
-            var linkCtrl = FindObjectOfType<LinkModeController>();
+            var linkCtrl = Object.FindAnyObjectByType<LinkModeController>();
             if (linkCtrl != null && linkCtrl.IsLinkModeActive())
             {
-                var pingCtrl = FindObjectOfType<PingModeController>();
+                var pingCtrl = Object.FindAnyObjectByType<PingModeController>();
                 if (pingCtrl != null && pingCtrl.IsPingModeActive())
                 {
                     pingCtrl.HandlePingNodeClick(node);
@@ -111,14 +111,14 @@ namespace SimRedes.UI
         {
             if (selectedNodeForRemoval == -1) return;
 
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology != null)
             {
                 topology.RemoveNode(selectedNodeForRemoval);
                 Debug.Log($"[DevicePanelController] Nodo eliminado: {selectedNodeForRemoval}");
             }
 
-            var ipConfigCtrl = FindObjectOfType<IPConfigController>();
+            var ipConfigCtrl = Object.FindAnyObjectByType<IPConfigController>();
             if (ipConfigCtrl != null && ipConfigCtrl.IsIPConfigPanelOpen())
             {
                 ipConfigCtrl.CloseIPConfigPanelPublic();
@@ -261,7 +261,7 @@ namespace SimRedes.UI
             if (devicesPanel == null) devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var nodes = topology.GetAllNodes();
@@ -318,7 +318,7 @@ namespace SimRedes.UI
             if (devicesPanel == null) devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var nodes = topology.GetAllNodes();

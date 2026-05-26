@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
+using SimRedes.UI;
 
 namespace SimRedes.Simulation
 {
@@ -13,68 +15,90 @@ namespace SimRedes.Simulation
         [SerializeField] public Text feedbackText;
 
         private TopologyManager topologyManager;
-        private RoutingSimulator routingSimulator;
         private NetworkNode selectedRouter;
-
-        private string pendingDestNetwork = "";
-        private string pendingMask = "";
-        private string pendingNextHop = "";
+        private Canvas canvasRef;
 
         private void Start()
         {
-            topologyManager = FindObjectOfType<TopologyManager>();
+            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null)
             {
                 var go = new GameObject("TopologyManager");
                 topologyManager = go.AddComponent<TopologyManager>();
             }
 
-            routingSimulator = new RoutingSimulator();
+            canvasRef = Object.FindAnyObjectByType<Canvas>();
             UpdateUI();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.aKey.wasPressedThisFrame)
             {
                 AddSampleRoute();
             }
-            else if (Input.GetKeyDown(KeyCode.T))
+            else if (keyboard != null && keyboard.tKey.wasPressedThisFrame)
             {
                 TestRouting();
             }
         }
 
-        public void AddRoute(string destNetwork, string mask, string nextHop)
+        public void AddRoute(string destNetwork, string mask, string nextHop, string outInterface = "G0/0")
         {
             if (selectedRouter == null)
             {
                 var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
                 if (routers.Count > 0)
-                {
                     selectedRouter = routers[0];
-                    routingSimulator.InitializeRouterTable(selectedRouter);
-                }
             }
 
             if (selectedRouter != null)
             {
-                routingSimulator.AddStaticRoute(selectedRouter.DiscId, destNetwork, mask, nextHop, "G0/0");
-                ShowFeedback($"Ruta añadida: {destNetwork}/{GetPrefixLength(mask)} -> {nextHop}");
+                selectedRouter.RoutingTable.AddStaticRoute(destNetwork, mask, nextHop, outInterface);
+                ShowFeedback($"Ruta añadida: {destNetwork}/{IPValidation.GetPrefixLength(mask)} -> {nextHop} via {outInterface}");
                 UpdateRoutesDisplay();
             }
         }
 
-        private void AddSampleRoute()
+        public void ShowAddRoutePanel()
+        {
+            if (canvasRef == null)
+                canvasRef = Object.FindAnyObjectByType<Canvas>();
+
+            if (canvasRef == null)
+            {
+                ShowFeedback("Error: No se encontró el Canvas");
+                return;
+            }
+
+            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+            if (routers.Count == 0)
+            {
+                ShowFeedback("Añade un router primero (tecla 1)");
+                return;
+            }
+
+            if (selectedRouter == null)
+                selectedRouter = routers[0];
+
+            ConfigPanelFactory.CreateAddRoutePanel(
+                canvasRef.transform,
+                selectedRouter,
+                (dest, mask, nextHop, iface) => AddRoute(dest, mask, nextHop, iface),
+                () => ShowFeedback("Operación cancelada")
+            );
+
+            ShowFeedback($"Configurando ruta para Router {selectedRouter.DiscId}");
+        }
+
+        public void AddSampleRoute()
         {
             if (selectedRouter == null)
             {
                 var routers2 = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
                 if (routers2.Count > 0)
-                {
                     selectedRouter = routers2[0];
-                    routingSimulator.InitializeRouterTable(selectedRouter);
-                }
             }
 
             if (selectedRouter != null)
@@ -82,7 +106,7 @@ namespace SimRedes.Simulation
                 string dest = $"10.{Random.Range(1, 255)}.0.0";
                 string mask = "255.0.0.0";
                 string nextHop = $"192.168.{selectedRouter.DiscId}.254";
-                routingSimulator.AddStaticRoute(selectedRouter.DiscId, dest, mask, nextHop, "G0/0");
+                selectedRouter.RoutingTable.AddStaticRoute(dest, mask, nextHop, "G0/0");
                 ShowFeedback($"Ruta estática añadida: {dest}/8 -> {nextHop}");
                 UpdateRoutesDisplay();
             }
@@ -92,7 +116,7 @@ namespace SimRedes.Simulation
             }
         }
 
-        private void TestRouting()
+        public void TestRouting()
         {
             if (selectedRouter == null)
             {
@@ -101,7 +125,7 @@ namespace SimRedes.Simulation
             }
 
             string testIP = $"10.{Random.Range(1, 255)}.{Random.Range(1, 255)}.1";
-            bool found = routingSimulator.SimulatePacketForwarding(selectedRouter.DiscId, testIP);
+            bool found = RoutingSimulator.SimulatePacketForwarding(selectedRouter, testIP);
 
             if (found)
             {
@@ -120,10 +144,12 @@ namespace SimRedes.Simulation
                 infoText.text = "ENRUTAMIENTO ESTÁTICO\n\n" +
                     "Configura rutas estáticas en los\n" +
                     "routers para dirigir el tráfico.\n\n" +
-                    "COMANDOS:\n" +
-                    "  A = Añadir ruta de ejemplo\n" +
-                    "  T = Test de enrutamiento\n" +
-                    "  R = Ver tabla de rutas";
+                    "BOTONES:\n" +
+                    "  AÑADIR RUTA = Ruta de ejemplo\n" +
+                    "  MANUAL = Ruta personalizada\n" +
+                    "  TEST = Probar enrutamiento\n\n" +
+                    "Las rutas se muestran a la derecha.\n" +
+                    "Presiona ESC para volver.";
             }
 
             UpdateRoutesDisplay();
@@ -147,16 +173,27 @@ namespace SimRedes.Simulation
                 {
                     if (selectedRouter == null) selectedRouter = router;
 
-                    content += $"Router {router.DiscId}:\n";
+                    content += $"Router {router.DiscId} ({router.Name}):\n";
                     content += "-----------------------------\n";
-                    content += "ip route 10.0.0.0 255.0.0.0 192.168." + router.DiscId + ".254\n";
-                    content += "ip route 172.16.0.0 255.240.0.0 172.16.0.1\n";
-                    content += "ip route 0.0.0.0 0.0.0.0 192.168.1.254\n";
+
+                    var entries = router.RoutingTable.GetAllEntries();
+                    if (entries.Count == 0)
+                    {
+                        content += "Sin rutas configuradas\n";
+                    }
+                    else
+                    {
+                        foreach (var entry in entries)
+                        {
+                            content += $"{entry.DestinationNetwork}/{entry.GetPrefixLength()} -> {entry.NextHop} via {entry.OutInterface} [Metrica: {entry.Metric}] ({entry.Protocol})\n";
+                        }
+                    }
+
                     content += "-----------------------------\n\n";
                 }
             }
 
-            content += "\nA = Añadir ruta | T = Test | C = Limpiar | ESC = Menú";
+            content += "\nAÑADIR RUTA / TEST = Botones | ESC = Menú";
 
             routesText.text = content;
         }
@@ -170,33 +207,5 @@ namespace SimRedes.Simulation
             }
         }
 
-        private string GetPrefixLength(string mask)
-        {
-            if (mask == "255.255.255.255") return "32";
-            if (mask == "255.255.255.252") return "30";
-            if (mask == "255.255.255.248") return "29";
-            if (mask == "255.255.255.240") return "28";
-            if (mask == "255.255.255.224") return "27";
-            if (mask == "255.255.255.192") return "26";
-            if (mask == "255.255.255.128") return "25";
-            if (mask == "255.255.255.0") return "24";
-            if (mask == "255.255.254.0") return "23";
-            if (mask == "255.255.252.0") return "22";
-            if (mask == "255.255.248.0") return "21";
-            if (mask == "255.255.240.0") return "20";
-            if (mask == "255.255.224.0") return "19";
-            if (mask == "255.255.192.0") return "18";
-            if (mask == "255.255.128.0") return "17";
-            if (mask == "255.255.0.0") return "16";
-            if (mask == "255.254.0.0") return "15";
-            if (mask == "255.252.0.0") return "14";
-            if (mask == "255.248.0.0") return "13";
-            if (mask == "255.240.0.0") return "12";
-            if (mask == "255.224.0.0") return "11";
-            if (mask == "255.192.0.0") return "10";
-            if (mask == "255.128.0.0") return "9";
-            if (mask == "255.0.0.0") return "8";
-            return "0";
-        }
     }
 }

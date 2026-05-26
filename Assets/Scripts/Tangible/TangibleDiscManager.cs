@@ -26,14 +26,21 @@ namespace SimRedes.Tangible
 
         public int SimulateDiscPlaced(int discType, Vector2 position)
         {
+            if (discType <= 0 || discType > 18)
+                UnityEngine.Debug.LogWarning($"[DiscManager] WARN: discType invalido={discType}");
+
             int uniqueId = BASE_DISC_ID + instanceCounter;
             instanceCounter++;
 
             activeDiscs[uniqueId] = position;
             discTypeToDiscId[uniqueId] = discType;
-            OnDiscPlaced?.Invoke(uniqueId, position);
 
-            UnityEngine.Debug.Log($"[DiscManager] Disco creado: tipo={discType}, uniqueId={uniqueId}");
+            int subscriberCount = OnDiscPlaced?.GetInvocationList()?.Length ?? 0;
+            if (subscriberCount == 0)
+                UnityEngine.Debug.LogWarning($"[DiscManager] WARN: OnDiscPlaced sin suscriptores al colocar disco {uniqueId}");
+
+            OnDiscPlaced?.Invoke(uniqueId, position);
+            UnityEngine.Debug.Log($"[DiscManager] Disco creado: tipo={discType}, uniqueId={uniqueId}, subs={subscriberCount}");
             return uniqueId;
         }
 
@@ -49,10 +56,20 @@ namespace SimRedes.Tangible
 
         public void SimulateDiscRemoved(int discId)
         {
+            if (!activeDiscs.ContainsKey(discId))
+            {
+                UnityEngine.Debug.LogWarning($"[DiscManager] WARN: Intento de remover disco {discId} que no existe");
+                return;
+            }
+
             if (activeDiscs.Remove(discId))
             {
                 discTypeToDiscId.Remove(discId);
+                int subs = OnDiscRemoved?.GetInvocationList()?.Length ?? 0;
+                if (subs == 0)
+                    UnityEngine.Debug.LogWarning($"[DiscManager] WARN: OnDiscRemoved sin suscriptores al remover {discId}");
                 OnDiscRemoved?.Invoke(discId);
+                UnityEngine.Debug.Log($"[DiscManager] Disco removido: {discId}");
             }
         }
 

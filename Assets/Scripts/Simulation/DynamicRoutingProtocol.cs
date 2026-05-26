@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
 using SimRedes.Network;
 using SimRedes.UI;
@@ -25,6 +25,12 @@ namespace SimRedes.Simulation
         private int advertisementCount = 0;
         private List<RouterAdvertState> routerStates = new List<RouterAdvertState>();
 
+        // Configuracion de discos virtuales 15-18
+        private string manualNeighbor = "";
+        private string manualNetwork = "";
+        private int? customCost = null; // null = calcular desde BW, valor = override manual
+        private int customBandwidth = 1000;
+
         public event Action<string> OnProtocolLog;
         public event Action OnConvergence;
 
@@ -35,11 +41,14 @@ namespace SimRedes.Simulation
             public int ConvergenceVersion = 0;
         }
 
+        private void Awake()
+        {
+            topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+            pingVis = UnityEngine.Object.FindAnyObjectByType<PingVisualizer>();
+        }
+
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            pingVis = FindObjectOfType<PingVisualizer>();
-
             if (autoStart)
             {
                 StartProtocol();
@@ -49,6 +58,14 @@ namespace SimRedes.Simulation
         public void StartProtocol()
         {
             if (isRunning) return;
+
+            // Null guard: topology puede ser null si no se encontro TopologyManager
+            // (ej: StartProtocol llamado antes de Awake, o TopologyManager no existe)
+            if (topology == null)
+            {
+                Log("Error: TopologyManager no encontrado. No se puede iniciar el protocolo.");
+                return;
+            }
 
             var allNodes = topology.GetAllNodes();
             var routers = new List<NetworkNode>();
@@ -72,8 +89,6 @@ namespace SimRedes.Simulation
 
             Log($"Iniciando protocolo {protocol}...");
             StartCoroutine(RunProtocolLoop(routers));
-
-            OnConvergence?.Invoke();
         }
 
         public void StopProtocol()
@@ -99,6 +114,14 @@ namespace SimRedes.Simulation
                     state.KnownNetworks.Add(network);
                     Log($"{router.Name} anuncia red: {network}");
                 }
+
+                // Disco 16 - AnunciarRed: Agregar red manual si esta configurada
+                if (!string.IsNullOrEmpty(manualNetwork) && !state.KnownNetworks.Contains(manualNetwork))
+                {
+                    state.KnownNetworks.Add(manualNetwork);
+                    Log($"{router.Name} anuncia red manual: {manualNetwork}");
+                }
+
                 routerStates.Add(state);
             }
         }
@@ -173,13 +196,23 @@ namespace SimRedes.Simulation
             {
                 if (!link.IsFunctional()) continue;
 
+                NetworkNode neighbor = null;
                 if (link.SourceNode == router && link.DestinationNode.Type == DeviceType.Router)
-                {
-                    connected.Add(link.DestinationNode);
-                }
+                    neighbor = link.DestinationNode;
                 else if (link.DestinationNode == router && link.SourceNode.Type == DeviceType.Router)
+                    neighbor = link.SourceNode;
+
+                if (neighbor == null) continue;
+
+                // Disco 15 - Vecino: Si hay un vecino manual configurado, solo conectar a ese
+                if (!string.IsNullOrEmpty(manualNeighbor))
                 {
-                    connected.Add(link.SourceNode);
+                    if (neighbor.Name == manualNeighbor || neighbor.DiscId.ToString() == manualNeighbor)
+                        connected.Add(neighbor);
+                }
+                else
+                {
+                    connected.Add(neighbor);
                 }
             }
 
@@ -222,39 +255,20 @@ namespace SimRedes.Simulation
 
         private int CalculateOSPFCost(NetworkNode from, NetworkNode to)
         {
-            return UnityEngine.Random.Range(10, 50);
-        }
+            // Disco 18 - BW: Calcular costo segun ancho de banda (formula OSPF estandar)
+            // cost = referenceBandwidth / interfaceBandwidth (reference=100 Mbps)
+            float referenceBW = 100000f; // 100 Mbps en Kbps
+            float interfaceBW = customBandwidth * 1000f; // Mbps a Kbps
+            int bwCost = Mathf.Max(1, Mathf.RoundToInt(referenceBW / interfaceBW));
 
-        public void AnimateAdvertisement(NetworkNode from, NetworkNode to, string network)
-        {
-            if (pingVis == null) pingVis = FindObjectOfType<PingVisualizer>();
-            if (pingVis == null) return;
-
-            int fromId = from.DiscId;
-            int toId = to.DiscId;
-
-            var path = topology.FindPath(fromId, toId);
-            if (path.Count >= 2)
+            // Disco 17 - Costo: Si el usuario configuro un costo manual, usarlo (nullable)
+            if (customCost.HasValue)
             {
-                StartCoroutine(AnimateAdvertCoroutine(path, network));
+                Log($"Usando costo personalizado {customCost.Value} (BW={customBandwidth} Mbps -> costo calculado={bwCost})");
+                return customCost.Value;
             }
-        }
 
-        private IEnumerator AnimateAdvertCoroutine(List<NetworkNode> path, string network)
-        {
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                var from = path[i];
-                var to = path[i + 1];
-
-                var nodeVis = FindObjectOfType<NodeVisualizer>();
-                if (nodeVis != null)
-                {
-                    nodeVis.SelectNodeByDiscId(from.DiscId);
-                }
-
-                yield return new WaitForSeconds(0.3f);
-            }
+            return bwCost;
         }
 
         public void SimulateConvergence(System.Action onComplete)
@@ -264,12 +278,15 @@ namespace SimRedes.Simulation
 
         private IEnumerator SimulateConvergenceCoroutine(System.Action onComplete)
         {
-            var allNodes = topology.GetAllNodes();
             var routers = new List<NetworkNode>();
-            foreach (var n in allNodes)
+            if (topology != null)
             {
-                if (n.Type == DeviceType.Router)
-                    routers.Add(n);
+                var allNodes = topology.GetAllNodes();
+                foreach (var n in allNodes)
+                {
+                    if (n.Type == DeviceType.Router)
+                        routers.Add(n);
+                }
             }
 
             yield return new WaitForSeconds(1f);
@@ -306,6 +323,7 @@ namespace SimRedes.Simulation
         public List<NetworkNode> GetRouters()
         {
             var routers = new List<NetworkNode>();
+            if (topology == null) return routers;
             var allNodes = topology.GetAllNodes();
             foreach (var n in allNodes)
             {
@@ -335,6 +353,47 @@ namespace SimRedes.Simulation
         {
             UnityEngine.Debug.Log($"[{protocol}] {message}");
             OnProtocolLog?.Invoke(message);
+        }
+
+        // ============================================================
+        // Configuracion virtual de discos 15-18
+        // Estos metodos son llamados desde DynamicRoutingActivity.ApplyDiscConfigToProtocol()
+        // ============================================================
+
+        /// <summary>
+        /// Disco 15 - Vecino: Establece un router vecino manual para filtrar conexiones.
+        /// </summary>
+        public void SetManualNeighbor(string routerName)
+        {
+            manualNeighbor = routerName;
+            Log($"Vecino manual configurado: {routerName}");
+        }
+
+        /// <summary>
+        /// Disco 16 - AnunciarRed: Establece una red especifica a anunciar.
+        /// </summary>
+        public void SetManualNetwork(string network)
+        {
+            manualNetwork = network;
+            Log($"Red manual a anunciar: {network}");
+        }
+
+        /// <summary>
+        /// Disco 17 - Costo: Establece el costo personalizado para OSPF.
+        /// </summary>
+        public void SetCustomCost(int cost)
+        {
+            customCost = cost;
+            Log($"Costo OSPF personalizado: {cost} (desde disco 17/UI)");
+        }
+
+        /// <summary>
+        /// Disco 18 - BW: Establece el ancho de banda personalizado.
+        /// </summary>
+        public void SetCustomBandwidth(int bw)
+        {
+            customBandwidth = Mathf.Max(1, bw);
+            Log($"Ancho de banda personalizado: {customBandwidth} Mbps");
         }
 
         public void ClearAllRoutes()

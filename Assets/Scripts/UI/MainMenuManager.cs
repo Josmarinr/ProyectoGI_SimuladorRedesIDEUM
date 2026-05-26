@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
 using SimRedes.Simulation;
 
@@ -30,7 +31,6 @@ namespace SimRedes.UI
         private int selectedIndex = 0;
         private Button[] currentMenuButtons;
         private bool menuActive = false;
-        private float buttonScaleNormal = 1f;
         private float buttonScaleSelected = 1.1f;
 
         private void Awake()
@@ -61,21 +61,24 @@ namespace SimRedes.UI
         {
             if (currentMenuButtons == null || currentMenuButtons.Length == 0) return;
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
             {
                 selectedIndex--;
                 if (selectedIndex < 0) selectedIndex = currentMenuButtons.Length - 1;
                 UpdateButtonSelection();
                 UnityEngine.Debug.Log("[Menu] Navegando arriba, index: " + selectedIndex);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
             {
                 selectedIndex++;
                 if (selectedIndex >= currentMenuButtons.Length) selectedIndex = 0;
                 UpdateButtonSelection();
                 UnityEngine.Debug.Log("[Menu] Navegando abajo, index: " + selectedIndex);
             }
-            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
+            else if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
             {
                 if (selectedIndex >= 0 && selectedIndex < currentMenuButtons.Length)
                 {
@@ -83,27 +86,27 @@ namespace SimRedes.UI
                     UnityEngine.Debug.Log("[Menu] Enter presionado, invocando boton: " + selectedIndex);
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+            else if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
             {
                 SelectButtonByIndex(0);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
             {
                 SelectButtonByIndex(1);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
             {
                 SelectButtonByIndex(2);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+            else if (keyboard.digit4Key.wasPressedThisFrame || keyboard.numpad4Key.wasPressedThisFrame)
             {
                 SelectButtonByIndex(3);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+            else if (keyboard.digit5Key.wasPressedThisFrame || keyboard.numpad5Key.wasPressedThisFrame)
             {
                 SelectButtonByIndex(4);
             }
-            else if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
+            else if (keyboard.escapeKey.wasPressedThisFrame || keyboard.backspaceKey.wasPressedThisFrame)
             {
                 GoBackToPreviousMenu();
             }
@@ -270,18 +273,17 @@ namespace SimRedes.UI
 
         private void StartSimulation()
         {
-            var gameManager = FindObjectOfType<GameManager>();
-            if (gameManager == null)
-            {
-                var gmObj = new GameObject("GameManager");
-                gameManager = gmObj.AddComponent<GameManager>();
-            }
-
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null)
             {
                 var tObj = new GameObject("TopologyManager");
                 topology = tObj.AddComponent<TopologyManager>();
+            }
+
+            // Asegurar que existe el contenedor GameManager (usado por ActivityLoader)
+            if (GameObject.Find("GameManager") == null)
+            {
+                new GameObject("GameManager");
             }
 
             UnityEngine.Debug.Log("[Menu] Simulacion iniciada");

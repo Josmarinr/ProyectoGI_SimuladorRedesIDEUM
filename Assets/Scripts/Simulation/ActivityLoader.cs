@@ -21,8 +21,8 @@ namespace SimRedes.Simulation
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            canvas = FindObjectOfType<Canvas>();
+            topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+            canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         }
 
         public void SetSelectedProtocol(string protocol)
@@ -32,7 +32,38 @@ namespace SimRedes.Simulation
 
         private void EnsureTopology()
         {
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+        }
+
+        private void EnsureManagersForConnectivity()
+        {
+            var gameManagerObj = GameObject.Find("GameManager");
+            if (gameManagerObj == null)
+            {
+                gameManagerObj = new GameObject("GameManager");
+                gameManagerObj.AddComponent<TopologyManager>();
+            }
+            else if (gameManagerObj.GetComponent<TopologyManager>() == null)
+            {
+                gameManagerObj.AddComponent<TopologyManager>();
+            }
+
+            if (UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>() == null)
+            {
+                var visObj = new GameObject("NodeVisualizer");
+                visObj.transform.SetParent(UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform, false);
+                var vis = visObj.AddComponent<NodeVisualizer>();
+                vis.nodeContainer = new GameObject("NodeContainer").transform;
+                vis.nodeContainer.SetParent(visObj.transform, false);
+                vis.linkContainer = new GameObject("LinkContainer").transform;
+                vis.linkContainer.SetParent(visObj.transform, false);
+            }
+
+            if (UnityEngine.Object.FindAnyObjectByType<PingVisualizer>() == null)
+                new GameObject("PingVisualizer").AddComponent<PingVisualizer>();
+
+            topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+            canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         }
 
         public void SelectActivity(int activityIndex)
@@ -52,7 +83,7 @@ namespace SimRedes.Simulation
             if (gameManagerObj.GetComponent<SimulationControls>() == null)
                 gameManagerObj.AddComponent<SimulationControls>();
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
             CreateSimulationHUDPanel(canvas.transform);
@@ -60,44 +91,80 @@ namespace SimRedes.Simulation
             switch (activityIndex)
             {
                 case 0:
-                    UIPanelFactory.CreateBuildTopologyInfoPanel(canvas.transform);
+                    ActivityPanelFactory.CreateBuildTopologyInfoPanel(canvas.transform);
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Construir Topologia");
                     break;
                 case 1:
                     if (gameManagerObj.GetComponent<FindFaultActivity>() == null)
                         gameManagerObj.AddComponent<FindFaultActivity>();
+                    ActivityPanelFactory.CreateFindFaultPanel(canvas.transform,
+                        onSolve: () => {
+                            var act = gameManagerObj.GetComponent<FindFaultActivity>();
+                            if (act != null) act.OnSolveClicked();
+                        },
+                        onBack: () => GoBackToMainMenu()
+                    );
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Encontrar Fallos");
                     break;
                 case 2:
                     if (gameManagerObj.GetComponent<RoutingTablesActivity>() == null)
                         gameManagerObj.AddComponent<RoutingTablesActivity>();
-                    UIPanelFactory.CreateRoutingTablesPanel(canvas.transform, () => GoBackToMainMenu());
+                    ActivityPanelFactory.CreateRoutingTablesPanel(canvas.transform, () => GoBackToMainMenu());
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Tablas de Enrutamiento");
                     break;
                 case 3:
                     if (gameManagerObj.GetComponent<BestRouteActivity>() == null)
                         gameManagerObj.AddComponent<BestRouteActivity>();
-                    UIPanelFactory.CreateBestRoutePanel(canvas.transform);
+                    ActivityPanelFactory.CreateBestRoutePanel(canvas.transform, () => GoBackToMainMenu());
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Mejor Ruta");
                     break;
                 case 4:
                     if (gameManagerObj.GetComponent<StaticRoutingActivity>() == null)
                         gameManagerObj.AddComponent<StaticRoutingActivity>();
-                    UIPanelFactory.CreateStaticRoutingPanel(canvas.transform, () => GoBackToMainMenu());
+                    ActivityPanelFactory.CreateStaticRoutingPanel(canvas.transform, () => GoBackToMainMenu());
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Enrutamiento Estatico");
                     break;
                 case 5:
                     if (gameManagerObj.GetComponent<DynamicRoutingActivity>() == null)
                         gameManagerObj.AddComponent<DynamicRoutingActivity>();
-                    UIPanelFactory.CreateDynamicRoutingPanel(
+                    ActivityPanelFactory.CreateDynamicRoutingPanel(
                         canvas.transform,
                         onSelectRIP: () => SetSelectedProtocol("RIP"),
                         onSelectOSPF: () => SetSelectedProtocol("OSPF"),
-                        onStart: (panel) => StartDynamicProtocol(panel),
-                        onStop: (panel) => StopDynamicProtocol(panel),
-                        onClearRoutes: (panel) => ClearDynamicRoutes(panel),
-                        onViewRoutes: (panel) => ShowAllRouterRoutes(panel),
-                        onBack: () => GoBackToMainMenu()
+                        onStart: (panel) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.StartProtocol(panel);
+                        },
+                        onStop: (panel) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.StopProtocol(panel);
+                        },
+                        onClearRoutes: (panel) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.ClearAllRoutes(panel);
+                        },
+                        onViewRoutes: (panel) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.ShowRoutes(panel);
+                        },
+                        onBack: () => GoBackToMainMenu(),
+                        // Discos virtuales 15-18: configuracion desde UI
+                        onSetNeighbor: (neighbor) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.SetNeighborRouter(neighbor);
+                        },
+                        onSetNetwork: (network) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.SetNetworkToAdvertise(network);
+                        },
+                        onSetCost: (cost) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.SetLinkCost(cost);
+                        },
+                        onSetBW: (bw) => {
+                            var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                            if (act != null) act.SetBandwidth(bw);
+                        }
                     );
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Enrutamiento Dinamico");
                     break;
@@ -113,10 +180,10 @@ namespace SimRedes.Simulation
 
         public void StartSimulation(Transform canvasTransform)
         {
-            var menuMgr = FindObjectOfType<MainMenuManager>();
+            var menuMgr = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
             if (menuMgr != null) Destroy(menuMgr.gameObject);
 
-            var menuNavigator = FindObjectOfType<MenuNavigator>();
+            var menuNavigator = UnityEngine.Object.FindAnyObjectByType<MenuNavigator>();
             if (menuNavigator != null) Destroy(menuNavigator.gameObject);
 
             var mainMenu = GameObject.Find("MainMenuPanel");
@@ -126,11 +193,11 @@ namespace SimRedes.Simulation
             if (gameManagerObj == null)
                 gameManagerObj = new GameObject("GameManager");
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
 
             CreateSimulationHUDPanel(canvasTransform);
 
-            var scoring = FindObjectOfType<ScoringSystem>();
+            var scoring = UnityEngine.Object.FindAnyObjectByType<ScoringSystem>();
             if (scoring == null)
             {
                 var scoringObj = new GameObject("ScoringSystem");
@@ -152,147 +219,24 @@ namespace SimRedes.Simulation
 
         public void ShowConnectivityPanel(Transform canvasTransform)
         {
-            var menuMgr = FindObjectOfType<MainMenuManager>();
+            EnsureManagersForConnectivity();
+
+            var menuMgr = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
             if (menuMgr != null) Destroy(menuMgr.gameObject);
 
             var mainMenu = GameObject.Find("MainMenuPanel");
             if (mainMenu != null) Destroy(mainMenu);
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
 
-            Font arialFont = UIComp.GetFont();
+            var refs = UIPanelFactory.CreateConnectivityPanel(canvasTransform, () => GoBackToMainMenu());
 
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvasTransform, new Vector2(550, 480), 25,
-                UIColors.surfacePanel, UIColors.borderAccent);
-            panelObj.name = "ConnectivityPanel";
+            var connectTestPanel = refs.panelObj.AddComponent<ConnectivityTestPanel>();
+            connectTestPanel.Initialize(refs.sourceText, refs.destText, refs.resultText, refs.resultIcon, refs.pingButton, refs.statusText);
 
-            UIComp.CreateMenuTitle(panelObj.transform, "Test de Conectividad", 28, new Vector2(0, 195), arialFont);
-
-            var sourceObj = new GameObject("SourceNode");
-            sourceObj.transform.SetParent(panelObj.transform, false);
-            var sourceRect = sourceObj.AddComponent<RectTransform>();
-            sourceRect.anchorMin = new Vector2(0.5f, 0.5f);
-            sourceRect.anchorMax = new Vector2(0.5f, 0.5f);
-            sourceRect.anchoredPosition = new Vector2(-120, 100);
-            sourceRect.sizeDelta = new Vector2(150, 40);
-            var sourceText = sourceObj.AddComponent<Text>();
-            sourceText.text = "Origen: -";
-            sourceText.color = UIColors.textPrimary;
-            sourceText.fontSize = 14;
-            sourceText.alignment = TextAnchor.MiddleLeft;
-            sourceText.font = arialFont;
-
-            var arrowObj = new GameObject("Arrow");
-            arrowObj.transform.SetParent(panelObj.transform, false);
-            var arrowRect = arrowObj.AddComponent<RectTransform>();
-            arrowRect.anchorMin = new Vector2(0.5f, 0.5f);
-            arrowRect.anchorMax = new Vector2(0.5f, 0.5f);
-            arrowRect.anchoredPosition = new Vector2(0, 100);
-            arrowRect.sizeDelta = new Vector2(60, 30);
-            var arrowText = arrowObj.AddComponent<Text>();
-            arrowText.text = "\u2192 \u2192 \u2192";
-            arrowText.color = UIColors.textAccent;
-            arrowText.fontSize = 20;
-            arrowText.alignment = TextAnchor.MiddleCenter;
-            arrowText.font = arialFont;
-
-            var destObj = new GameObject("DestNode");
-            destObj.transform.SetParent(panelObj.transform, false);
-            var destRect = destObj.AddComponent<RectTransform>();
-            destRect.anchorMin = new Vector2(0.5f, 0.5f);
-            destRect.anchorMax = new Vector2(0.5f, 0.5f);
-            destRect.anchoredPosition = new Vector2(120, 100);
-            destRect.sizeDelta = new Vector2(150, 40);
-            var destText = destObj.AddComponent<Text>();
-            destText.text = "Destino: -";
-            destText.color = UIColors.textPrimary;
-            destText.fontSize = 14;
-            destText.alignment = TextAnchor.MiddleRight;
-            destText.font = arialFont;
-
-            Button pingBtn = UIComp.CreateMenuButton(panelObj.transform, "PingButton", "HACER PING",
-                new Vector2(0, 40), new Vector2(180, 55), arialFont);
-
-            var resultIconObj = new GameObject("ResultDisplay");
-            resultIconObj.transform.SetParent(panelObj.transform, false);
-            var resultIconRect = resultIconObj.AddComponent<RectTransform>();
-            resultIconRect.anchorMin = new Vector2(0.5f, 0.5f);
-            resultIconRect.anchorMax = new Vector2(0.5f, 0.5f);
-            resultIconRect.anchoredPosition = new Vector2(0, -30);
-            resultIconRect.sizeDelta = new Vector2(60, 60);
-
-            var resultIconImg = resultIconObj.AddComponent<Image>();
-            Texture2D resultTex = UIComp.CreateRoundedRectTexture(60, 60, 15, new Color(0.5f, 0.5f, 0.5f, 0.3f), UIColors.borderAccent, 2f);
-            resultIconImg.sprite = Sprite.Create(resultTex, new Rect(0, 0, 60, 60), new Vector2(0.5f, 0.5f), 100);
-            resultIconImg.type = Image.Type.Sliced;
-
-            var resultIconInnerObj = new GameObject("ResultIcon");
-            resultIconInnerObj.transform.SetParent(resultIconObj.transform, false);
-            var resultIconInnerRect = resultIconInnerObj.AddComponent<RectTransform>();
-            resultIconInnerRect.anchorMin = Vector2.zero;
-            resultIconInnerRect.anchorMax = Vector2.one;
-            resultIconInnerRect.offsetMin = new Vector2(10, 10);
-            resultIconInnerRect.offsetMax = new Vector2(-10, -10);
-            var resultIconInner = resultIconInnerObj.AddComponent<Text>();
-            resultIconInner.text = "?";
-            resultIconInner.color = UIColors.textSecondary;
-            resultIconInner.fontSize = 28;
-            resultIconInner.fontStyle = FontStyle.Bold;
-            resultIconInner.alignment = TextAnchor.MiddleCenter;
-            resultIconInner.font = arialFont;
-
-            var resultTextObj = new GameObject("ResultText");
-            resultTextObj.transform.SetParent(panelObj.transform, false);
-            var resultTextRect = resultTextObj.AddComponent<RectTransform>();
-            resultTextRect.anchorMin = new Vector2(0.5f, 0.5f);
-            resultTextRect.anchorMax = new Vector2(0.5f, 0.5f);
-            resultTextRect.anchoredPosition = new Vector2(0, -95);
-            resultTextRect.sizeDelta = new Vector2(450, 40);
-            var resultText = resultTextObj.AddComponent<Text>();
-            resultText.text = "Presiona PING para probar conectividad";
-            resultText.color = UIColors.textSecondary;
-            resultText.fontSize = 16;
-            resultText.alignment = TextAnchor.MiddleCenter;
-            resultText.font = arialFont;
-
-            var statusObj = new GameObject("StatusText");
-            statusObj.transform.SetParent(panelObj.transform, false);
-            var statusRect = statusObj.AddComponent<RectTransform>();
-            statusRect.anchorMin = new Vector2(0.5f, 0.5f);
-            statusRect.anchorMax = new Vector2(0.5f, 0.5f);
-            statusRect.anchoredPosition = new Vector2(0, -140);
-            statusRect.sizeDelta = new Vector2(400, 30);
-            var statusText = statusObj.AddComponent<Text>();
-            statusText.text = "Pings: 0 | Exitosos: 0 | Fallidos: 0";
-            statusText.color = UIColors.textSecondary;
-            statusText.fontSize = 12;
-            statusText.alignment = TextAnchor.MiddleCenter;
-            statusText.font = arialFont;
-
-            var hintObj = new GameObject("HintText");
-            hintObj.transform.SetParent(panelObj.transform, false);
-            var hintRect = hintObj.AddComponent<RectTransform>();
-            hintRect.anchorMin = new Vector2(0.5f, 0.5f);
-            hintRect.anchorMax = new Vector2(0.5f, 0.5f);
-            hintRect.anchoredPosition = new Vector2(0, -175);
-            hintRect.sizeDelta = new Vector2(400, 25);
-            var hintText = hintObj.AddComponent<Text>();
-            hintText.text = "Tecla P = Ping | C = Limpiar";
-            hintText.color = UIColors.textSecondary;
-            hintText.fontSize = 11;
-            hintText.alignment = TextAnchor.MiddleCenter;
-            hintText.font = arialFont;
-
-            var connectTestPanel = panelObj.AddComponent<ConnectivityTestPanel>();
-            connectTestPanel.Initialize(sourceText, destText, resultText, resultIconInner, pingBtn, statusText);
-
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER",
-                new Vector2(0, -215), new Vector2(160, 45), arialFont);
-            backBtn.onClick.AddListener(() => GoBackToMainMenu());
-
-            var navigator = FindObjectOfType<MenuNavigator>();
+            var navigator = UnityEngine.Object.FindAnyObjectByType<MenuNavigator>();
             if (navigator != null)
-                navigator.SetupPanel(panelObj, () => GoBackToMainMenu());
+                navigator.SetupPanel(refs.panelObj, () => GoBackToMainMenu());
 
             UnityEngine.Debug.Log("[ActivityLoader] Panel de conectividad creado");
         }
@@ -365,16 +309,16 @@ namespace SimRedes.Simulation
             Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR",
                 new Vector2(-btnSpacing, btnY), new Vector2(105, 44), font, 16);
             clearBtn.onClick.AddListener(() => {
-                var cleanup = FindObjectOfType<SceneCleanupService>();
+                var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
                 if (cleanup != null)
-                    cleanup.ClearSimulation(FindObjectOfType<TopologyManager>(),
-                        FindObjectOfType<NodeVisualizer>(),
-                        FindObjectOfType<DebugDiscSimulator>());
+                    cleanup.ClearSimulation(UnityEngine.Object.FindAnyObjectByType<TopologyManager>(),
+                        UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>(),
+                        UnityEngine.Object.FindAnyObjectByType<DebugDiscSimulator>());
             });
 
             Button pingBtn = UIComp.CreateMenuButton(panelObj.transform, "PingBtn", "PING",
                 new Vector2(0, btnY), new Vector2(105, 44), font, 16);
-            var pingCtrl = FindObjectOfType<PingModeController>();
+            var pingCtrl = UnityEngine.Object.FindAnyObjectByType<PingModeController>();
             if (pingCtrl != null)
             {
                 pingCtrl.StorePingReferences(pingBtn, pingResultText);
@@ -390,7 +334,7 @@ namespace SimRedes.Simulation
 
             Button connectBtn = UIComp.CreateMenuButton(panelObj.transform, "ConnectBtn", "CONECTAR",
                 new Vector2(-linkBtnSpacing, linkBtnY), new Vector2(105, 44), font, 15);
-            var linkCtrl = FindObjectOfType<LinkModeController>();
+            var linkCtrl = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
             if (linkCtrl != null)
             {
                 connectBtn.onClick.AddListener(() => linkCtrl.ToggleLinkMode("connect"));
@@ -420,7 +364,7 @@ namespace SimRedes.Simulation
             natBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("NAT"));
 
             // Create DevicesPanel and ScorePanel via controllers
-            var devicePanelCtrl = FindObjectOfType<DevicePanelController>();
+            var devicePanelCtrl = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
             if (devicePanelCtrl != null) devicePanelCtrl.RefreshDevicesPanel();
 
             UIPanelFactory.CreateScorePanel(ct);
@@ -430,17 +374,17 @@ namespace SimRedes.Simulation
 
         private void CreateNetworkAdvancedPanel(string type)
         {
-            var topo = FindObjectOfType<TopologyManager>();
+            var topo = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
             if (topo == null) return;
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
             switch (type)
             {
-                case "VLAN": UIPanelFactory.CreateVLANPanel(canvas.transform, topo); break;
-                case "ACL": UIPanelFactory.CreateACLPanel(canvas.transform, topo); break;
-                case "NAT": UIPanelFactory.CreateNATPanel(canvas.transform, topo); break;
+                case "VLAN": ConfigPanelFactory.CreateVLANPanel(canvas.transform, topo); break;
+                case "ACL": ConfigPanelFactory.CreateACLPanel(canvas.transform, topo); break;
+                case "NAT": ConfigPanelFactory.CreateNATPanel(canvas.transform, topo); break;
             }
         }
 
@@ -490,7 +434,7 @@ namespace SimRedes.Simulation
                 });
             }
 
-            UIPanelFactory.CreateScenariosPanel(
+            ActivityPanelFactory.CreateScenariosPanel(
                 canvasTransform, scenarios,
                 onScenarioClick: (idx) => LoadScenario(idx),
                 onBack: () => GoBackToMainMenu()
@@ -512,14 +456,14 @@ namespace SimRedes.Simulation
             if (gameManagerObj.GetComponent<PredefinedScenarios>() == null)
                 gameManagerObj.AddComponent<PredefinedScenarios>();
 
-            var sceneSetup = FindObjectOfType<SceneSetup>();
+            var sceneSetup = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
             if (sceneSetup != null)
             {
                 sceneSetup.SetupManagers();
                 sceneSetup.SubscribeToTopologyEvents();
             }
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (canvas != null)
             {
                 if (sceneSetup != null) sceneSetup.CreateVisualizer(canvas.transform);
@@ -551,10 +495,10 @@ namespace SimRedes.Simulation
 
         private void ShowScenarioInfo(PredefinedScenarios.NetworkScenario scenario)
         {
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
-            UIPanelFactory.CreateScenarioInfoPanel(
+            ActivityPanelFactory.CreateScenarioInfoPanel(
                 canvas.transform, scenario,
                 onStart: () => BuildScenarioTopology(scenario),
                 onCancel: null
@@ -563,7 +507,7 @@ namespace SimRedes.Simulation
 
         private void BuildScenarioTopology(PredefinedScenarios.NetworkScenario scenario)
         {
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null)
                 topology = GameObject.Find("GameManager").AddComponent<TopologyManager>();
 
@@ -640,27 +584,27 @@ namespace SimRedes.Simulation
                 routers[2].RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "10.0.0.1", "G0/0");
             }
 
-            var devicePanelCtrl = FindObjectOfType<DevicePanelController>();
+            var devicePanelCtrl = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
             if (devicePanelCtrl != null) devicePanelCtrl.RefreshDevicesPanel();
         }
 
         private void GoBackToMainMenu()
         {
-            var cleanup = FindObjectOfType<SceneCleanupService>();
+            var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
             if (cleanup != null)
             {
-                var ct = canvas != null ? canvas.transform : FindObjectOfType<Canvas>()?.transform;
+                var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
                 cleanup.GoBackToMainMenu(ct, () => {
-                    var ss = FindObjectOfType<SceneSetup>();
+                    var ss = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
                     if (ss != null && ct != null) ss.CreateMainMenuPublic(ct);
                 });
             }
             else
             {
-                var ss = FindObjectOfType<SceneSetup>();
+                var ss = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
                 if (ss != null)
                 {
-                    var ct = canvas != null ? canvas.transform : FindObjectOfType<Canvas>()?.transform;
+                    var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
                     if (ct != null) ss.CreateMainMenuPublic(ct);
                 }
             }

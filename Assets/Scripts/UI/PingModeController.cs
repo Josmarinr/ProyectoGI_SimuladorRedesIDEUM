@@ -21,8 +21,8 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            canvas = FindObjectOfType<Canvas>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
+            canvas = Object.FindAnyObjectByType<Canvas>();
         }
 
         public void StorePingReferences(Button btn, Text resultText)
@@ -48,7 +48,7 @@ namespace SimRedes.UI
                 return;
             }
 
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var nodes = topology.GetAllNodes();
@@ -97,7 +97,7 @@ namespace SimRedes.UI
                 int destDiscId = node.DiscId;
                 string sourceName = node.Name;
 
-                if (topology == null) topology = FindObjectOfType<TopologyManager>();
+                if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
                 if (topology != null)
                 {
                     var sourceNode = topology.GetNode(sourceId);
@@ -110,7 +110,7 @@ namespace SimRedes.UI
                     pingResultText.color = UIColors.textAccent;
                 }
 
-                var pingVis = FindObjectOfType<PingVis>();
+                var pingVis = Object.FindAnyObjectByType<PingVis>();
                 if (pingVis != null)
                 {
                     pingVis.AnimatePing(sourceId, destDiscId, (success) => {
@@ -161,7 +161,7 @@ namespace SimRedes.UI
         {
             ClosePingSelectionPanel();
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
             Font arialFont = GetFont();
@@ -197,7 +197,7 @@ namespace SimRedes.UI
         {
             ClosePingSelectionPanel();
 
-            if (canvas == null) canvas = FindObjectOfType<Canvas>();
+            if (canvas == null) canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
             Font arialFont = GetFont();
@@ -285,7 +285,7 @@ namespace SimRedes.UI
                 pingResultText.color = UIColors.textAccent;
             }
 
-            var pingVis = FindObjectOfType<PingVis>();
+            var pingVis = Object.FindAnyObjectByType<PingVis>();
             if (pingVis != null)
             {
                 pingVis.AnimatePing(sourceId, destId, (success) => {

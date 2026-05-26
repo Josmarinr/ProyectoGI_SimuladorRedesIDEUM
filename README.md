@@ -1,5 +1,7 @@
 # Simulador de Redes - Proyecto IDEUM
 
+> 📚 **Documentación completa disponible en [`docs/README.md`](docs/README.md)** — 21 diagramas UML, 9 archivos de API, manuales de usuario y desarrollador.
+
 ## Descripción del Proyecto
 
 Simulador de redes académicas para mesas táctiles **IDEUM 55"** utilizando **Unity 6000.4.5f1 (Unity 6)** con **TangibleEngine**. El sistema permite emular dispositivos de red (routers, switches, PCs, servidores) mediante 6 discos físicos (PUCs) para educación en networking.
@@ -7,7 +9,7 @@ Simulador de redes académicas para mesas táctiles **IDEUM 55"** utilizando **U
 ## Especificaciones Técnicas
 
 - **Unity Version**: 6000.4.5f1 (Unity 6)
-- **Input System**: Input System Package (com.unity.inputsystem 1.19.0) — NO Input Manager (Old)
+- **Input System**: Input System Package (com.unity.inputsystem 1.19.0), activado en modo Both (`activeInputHandler=2`). El código legacy con `Input.GetKeyDown()` sigue funcionando junto al nuevo sistema.
 - **Target Platform**: Windows 10
 - **Display**: IDEUM 55" (1920x1080)
 - **Physical Devices**: 6 PUCs (Physical Discs)
@@ -131,6 +133,14 @@ Assets/
 │       ├── UIPanelFactory.cs       - Fábrica de paneles UI
 │       ├── IDEUMConfigurator.cs    - Configuración de pantalla IDEUM
 │       └── UIComponents.cs         - Sistema de colores profesional + helpers
+│
+├── Editor/                # Tests (EditMode)
+│   └── Tests/
+│       ├── Network/
+│       │   ├── TestIPValidation.cs   - 18 tests: IP, máscara, subred
+│       │   └── TestRoutingTable.cs   - 14 tests: rutas estáticas/dinámicas
+│       └── Tangible/
+│           └── TestRouteBuilderState.cs - 15 tests: estado transitorio de ruta
 │
 ├── TangibleEngine/        # SDK original de TangibleEngine
 │   └── Scripts/
@@ -477,10 +487,16 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 - Sin GUI de debug (OnGUI eliminado)
 - **Refactor completo de SceneSetup** (~4250L → ~379L): 5 UI controllers extraídos, ActivityLoader (~800L), SceneCleanupService (singleton), UIPanelFactory + UIComponents
 
+### Completado Recientemente (Mayo 2026 - continuación)
+- **Integración disco-actividades**: StaticRoutingActivity, RoutingTablesActivity y DynamicRoutingActivity ahora leen/escriben sobre el `router.RoutingTable` real (no solo el `RoutingSimulator` separado). Las rutas configuradas con discos 7-18 aparecen en la UI de las actividades.
+- **Fix disco Destino (ID 12)**: Ahora tiene case propio en `HandleRoutingConfigDisc()` — antes caía al default (no-op).
+- **ShowConnectivityPanel unificado**: ActivityLoader ahora usa `UIPanelFactory.CreateConnectivityPanel()` (struct `ConnectivityPanelRefs`), eliminando ~125 líneas de código duplicado de creación de UI.
+- **CreateStatusPanel deprecado**: Marcado `[Obsolete]` — era código muerto sin callers.
+- **Tests unitarios**: 47 tests EditMode para `IPValidation`, `RoutingTable` y `RouteBuilderState` en `Assets/Editor/Tests/`.
+
 ### Pendiente 🔄
-- Testing con discos físicos en IDEUM
+- Testing con discos f├¡sicos en IDEUM
 - Pruebas de usabilidad en IDEUM real
-- Interacción discos 7-18 con actividades (colocar sobre router → modificar tabla de enrutamiento)
 
 ## Cómo Buildear
 
@@ -513,21 +529,35 @@ Si solo está `Assets/Scenes/GetStarted_Scene.unity`, el componente `SceneSetup`
 6. Click en nodo para configurar IP y ver tablas ARP/Routing
 7. Usar botones VLAN/ACL/NAT en panel de topología para configurar这些功能
 
-## Skills (Guías de Referencia)
+## Skills (opencode)
 
-El proyecto incluye **17 skills** organizados en:
+El proyecto incluye **18 skills** en formato opencode (`.opencode/skills/`).  
+Los agentes cargan automáticamente el skill relevante con el tool `skill` según la tarea.
 
 ```
-skills/
-├── UI/                    # Scene setup, botones, navegación, performance
-├── Network/               # Tablas, topología, routing, conceptos teóricos
-├── Integration/           # IDEUM, touch input
-├── Scoring/              # Sistema de puntajes
-├── Scenarios/             # Escenarios preconfigurados
-└── Core/                 # Buenas prácticas, debugging
+.opencode/skills/
+├── best-practices/          # Arquitectura, patrones, checklist
+├── build-and-deploy/        # Build IDEUM/PC, pantalla negra fix
+├── debugging/               # Logging, profiling, errores comunes
+├── dynamic-routing/         # RIP/OSPF
+├── ideum-integration/       # TangibleEngine, discos, bridge
+├── manual-links/            # CONECTAR/DESCONECTAR
+├── menu-navigation/         # MenuNavigator, ESC, flechas
+├── network-tables/          # IP, routing, ARP, ping
+├── predefined-scenarios/    # 5 escenarios académicos
+├── scoring-system/          # Puntajes, notas, evaluación
+├── topology-detection/      # Detección automática de topología
+├── ui-performance/          # Canvas, borrosidad, optimización
+├── unity-scene-setup/       # Paneles, textos, FindUITexts
+├── unity-ui-buttons/        # Botones, colores, textos
+├── vlan-acl-nat/            # Redes virtuales, acceso, traducción
+├── unity-code-style/        # Naming, Unity lifecycle, convenciones
+├── testing-guide/           # Cómo escribir y ejecutar tests
+└── agent-workflow/          # Comunicación y flujo entre agentes
 ```
 
 Cada skill contiene código listo para copiar y explicaciones de la arquitectura.
+Los agentes los usan automáticamente como referencia durante implementación, revisión y testing.
 
 ## Notas para Desarrolladores
 
@@ -560,6 +590,9 @@ Cada skill contiene código listo para copiar y explicaciones de la arquitectura
   - `NodeInteractionController` — fachada que orquesta clicks en nodos según modo activo
 - **ActivityLoader** centraliza la lógica de carga de 7 actividades + 5 escenarios (~800L)
 - **SceneCleanupService** es un singleton que maneja la destrucción ordenada al salir
+- **Input System**: Activo en modo Both (`activeInputHandler = 2`). El código legacy con `Input.GetKeyDown()` funciona junto con el nuevo Input System Package. Para código nuevo, usar `UnityEngine.InputSystem`.
+- **Tests**: 47 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.
+- **Código eliminado**: `ActivityPanel.cs` (sin callers), `GameManager.routingSimulator` y `GetRoutingSimulator()` (sin callers).
 
 ---
 

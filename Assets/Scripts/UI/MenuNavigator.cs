@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace SimRedes.UI
 {
@@ -19,7 +20,6 @@ namespace SimRedes.UI
         [SerializeField] private Color selectedColor = UIComponents.Colors.buttonSelected;
         [SerializeField] private Color hoverColor = UIComponents.Colors.buttonHover;
         [SerializeField] private float selectScale = 1.15f;
-        [SerializeField] private float hoverScale = 1.08f;
         [SerializeField] private float animSpeed = 8f;
         [SerializeField] private float normalWidth = 260f;
         [SerializeField] private float normalHeight = 50f;
@@ -51,10 +51,13 @@ namespace SimRedes.UI
         {
             if (!isInitialized || currentButtons == null || currentButtons.Length == 0) return;
 
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
             UpdateHoverState();
             UpdateAnimations();
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
             {
                 selectedIndex--;
                 if (selectedIndex < 0) selectedIndex = currentButtons.Length - 1;
@@ -62,7 +65,7 @@ namespace SimRedes.UI
                 PlayClickSound();
                 UnityEngine.Debug.Log("[Navigator] Arriba, index: " + selectedIndex);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
             {
                 selectedIndex++;
                 if (selectedIndex >= currentButtons.Length) selectedIndex = 0;
@@ -70,11 +73,11 @@ namespace SimRedes.UI
                 PlayClickSound();
                 UnityEngine.Debug.Log("[Navigator] Abajo, index: " + selectedIndex);
             }
-            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
+            else if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
             {
                 InvokeSelectedButton();
             }
-            else if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
+            else if (keyboard.escapeKey.wasPressedThisFrame || keyboard.backspaceKey.wasPressedThisFrame)
             {
                 if (onEscape != null)
                 {
@@ -82,27 +85,27 @@ namespace SimRedes.UI
                     onEscape.Invoke();
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+            else if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(0);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(1);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(2);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+            else if (keyboard.digit4Key.wasPressedThisFrame || keyboard.numpad4Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(3);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+            else if (keyboard.digit5Key.wasPressedThisFrame || keyboard.numpad5Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(4);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
+            else if (keyboard.digit6Key.wasPressedThisFrame || keyboard.numpad6Key.wasPressedThisFrame)
             {
                 SelectAndInvoke(5);
             }

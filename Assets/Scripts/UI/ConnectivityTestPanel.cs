@@ -61,7 +61,7 @@ namespace SimRedes.UI
 
         private void FindNodes()
         {
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             var nodes = topology.GetAllNodes();
@@ -112,7 +112,7 @@ namespace SimRedes.UI
 
         private void ExecutePing()
         {
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null)
             {
                 ShowResult(false, "No hay topología");
@@ -133,7 +133,7 @@ namespace SimRedes.UI
             ShowResultWaiting();
             yield return new WaitForSeconds(0.5f);
 
-            var pingVis = FindObjectOfType<PingVisualizer>();
+            var pingVis = Object.FindAnyObjectByType<PingVisualizer>();
             if (pingVis != null)
             {
                 bool done = false;
@@ -160,7 +160,7 @@ namespace SimRedes.UI
             }
             else
             {
-                var topology = FindObjectOfType<TopologyManager>();
+                var topology = Object.FindAnyObjectByType<TopologyManager>();
                 bool connected = topology.CheckConnectivity(sourceNode.DiscId, destNode.DiscId);
                 lastResult = connected;
                 pingCount++;

@@ -26,7 +26,7 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            canvas = FindObjectOfType<Canvas>();
+            canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas != null)
             {
                 canvasRect = canvas.GetComponent<RectTransform>();
@@ -97,7 +97,7 @@ namespace SimRedes.UI
                 return;
             }
 
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null)
             {
                 UnityEngine.Debug.LogError("[PingVisual] TopologyManager no encontrado");
@@ -153,7 +153,7 @@ namespace SimRedes.UI
                 yield break;
             }
 
-            var topology = FindObjectOfType<TopologyManager>();
+            var topology = Object.FindAnyObjectByType<TopologyManager>();
             bool connected = false;
             string reason = "";
             List<Transform> pathTransforms = new List<Transform>();
@@ -279,7 +279,7 @@ namespace SimRedes.UI
 
         private Transform FindNodeVisual(int discId)
         {
-            var visualizer = FindObjectOfType<NodeVisualizer>();
+            var visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
             if (visualizer == null)
             {
                 UnityEngine.Debug.LogError("[PingVisual] NodeVisualizer no encontrado");

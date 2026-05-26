@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.UI;
 using SimRedes.Network;
 using SimRedes.Tangible;
@@ -16,16 +17,17 @@ namespace SimRedes.Simulation
 
         private void Start()
         {
-            sceneSetup = FindObjectOfType<SceneSetup>();
-            topology = FindObjectOfType<TopologyManager>();
-            discSim = FindObjectOfType<DebugDiscSimulator>();
-            ipConfig = FindObjectOfType<IPConfigController>();
-            devicePanel = FindObjectOfType<DevicePanelController>();
+            sceneSetup = Object.FindAnyObjectByType<SceneSetup>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
+            discSim = Object.FindAnyObjectByType<DebugDiscSimulator>();
+            ipConfig = Object.FindAnyObjectByType<IPConfigController>();
+            devicePanel = Object.FindAnyObjectByType<DevicePanelController>();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 var infoPanel = GameObject.Find("ScenarioInfoPanel");
                 if (infoPanel != null)
@@ -42,11 +44,11 @@ namespace SimRedes.Simulation
 
                 GoBackToMainMenu();
             }
-            else if (Input.GetKeyDown(KeyCode.P))
+            else if (keyboard != null && keyboard.pKey.wasPressedThisFrame)
             {
                 ExecutePing();
             }
-            else if (Input.GetKeyDown(KeyCode.R))
+            else if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
             {
                 RemoveSelectedNode();
             }
@@ -74,7 +76,7 @@ namespace SimRedes.Simulation
             int sourceDiscId = nodes[0].DiscId;
             int destDiscId = nodes[1].DiscId;
 
-            var pingVis = FindObjectOfType<PingVisualizer>();
+            var pingVis = Object.FindAnyObjectByType<PingVisualizer>();
             if (pingVis != null)
             {
                 pingVis.AnimatePing(sourceDiscId, destDiscId, (success) => {
@@ -90,10 +92,10 @@ namespace SimRedes.Simulation
 
         public void GoBackToMainMenu()
         {
-            var cleanup = FindObjectOfType<SceneCleanupService>();
+            var cleanup = Object.FindAnyObjectByType<SceneCleanupService>();
             if (cleanup != null)
             {
-                var canvas = FindObjectOfType<Canvas>();
+                var canvas = Object.FindAnyObjectByType<Canvas>();
                 if (canvas != null)
                 {
                     cleanup.GoBackToMainMenu(canvas.transform, () => {
@@ -105,7 +107,7 @@ namespace SimRedes.Simulation
             {
                 if (discSim != null) discSim.enabled = false;
 
-                var visualizer = FindObjectOfType<NodeVisualizer>();
+                var visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
                 if (visualizer != null) Destroy(visualizer.gameObject);
 
                 var topologyPanel = GameObject.Find("TopologyInfoPanel");
@@ -123,7 +125,7 @@ namespace SimRedes.Simulation
                 var statusPanel = GameObject.Find("StatusPanel");
                 if (statusPanel != null) Destroy(statusPanel);
 
-                var canvas = FindObjectOfType<Canvas>();
+                var canvas = Object.FindAnyObjectByType<Canvas>();
                 if (canvas != null && sceneSetup != null)
                     sceneSetup.CreateMainMenuPublic(canvas.transform);
             }

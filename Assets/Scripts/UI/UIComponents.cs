@@ -621,5 +621,59 @@ namespace SimRedes.UI
             colText.font = font;
             return colObj;
         }
+
+        public static InputField CreateInputField(Transform parent, string name, Vector2 position, Vector2 size,
+            string defaultValue, string placeholder, Font font, int fontSize)
+        {
+            var inputObj = new GameObject(name);
+            inputObj.transform.SetParent(parent, false);
+            var inputRect = inputObj.AddComponent<RectTransform>();
+            inputRect.anchorMin = new Vector2(0.5f, 0.5f);
+            inputRect.anchorMax = new Vector2(0.5f, 0.5f);
+            inputRect.anchoredPosition = position;
+            inputRect.sizeDelta = size;
+
+            // Background
+            var bgImage = inputObj.AddComponent<Image>();
+            bgImage.color = new Color(0.15f, 0.17f, 0.20f, 1f);
+            bgImage.type = Image.Type.Sliced;
+
+            // Text component
+            var textObj = new GameObject("Text");
+            textObj.transform.SetParent(inputObj.transform, false);
+            var textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(4, 2);
+            textRect.offsetMax = new Vector2(-4, -2);
+            var inputText = textObj.AddComponent<Text>();
+            inputText.text = defaultValue;
+            inputText.color = Colors.textPrimary;
+            inputText.fontSize = fontSize;
+            inputText.font = font;
+            inputText.alignment = TextAnchor.MiddleLeft;
+
+            // Placeholder
+            var placeholderObj = new GameObject("Placeholder");
+            placeholderObj.transform.SetParent(inputObj.transform, false);
+            var phRect = placeholderObj.AddComponent<RectTransform>();
+            phRect.anchorMin = Vector2.zero;
+            phRect.anchorMax = Vector2.one;
+            phRect.offsetMin = new Vector2(4, 2);
+            phRect.offsetMax = new Vector2(-4, -2);
+            var phText = placeholderObj.AddComponent<Text>();
+            phText.text = placeholder;
+            phText.color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            phText.fontSize = fontSize;
+            phText.font = font;
+            phText.alignment = TextAnchor.MiddleLeft;
+
+            var inputField = inputObj.AddComponent<InputField>();
+            inputField.textComponent = inputText;
+            inputField.placeholder = phText;
+            inputField.text = defaultValue;
+
+            return inputField;
+        }
     }
 }

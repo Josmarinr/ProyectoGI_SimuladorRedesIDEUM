@@ -12,10 +12,10 @@ namespace SimRedes.UI
 
         private void Awake()
         {
-            linkMode = FindObjectOfType<LinkModeController>();
-            pingMode = FindObjectOfType<PingModeController>();
-            ipConfig = FindObjectOfType<IPConfigController>();
-            topology = FindObjectOfType<TopologyManager>();
+            linkMode = Object.FindAnyObjectByType<LinkModeController>();
+            pingMode = Object.FindAnyObjectByType<PingModeController>();
+            ipConfig = Object.FindAnyObjectByType<IPConfigController>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
         }
 
         public bool IsLinkModeActive() => linkMode != null && linkMode.IsLinkModeActive();

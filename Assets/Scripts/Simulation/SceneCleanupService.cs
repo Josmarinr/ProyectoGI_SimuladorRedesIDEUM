@@ -37,7 +37,7 @@ namespace SimRedes.Simulation
 
         public void GoBackToMainMenu(Transform canvasTransform, System.Action createMainMenuCallback)
         {
-            var managers = Object.FindObjectsOfType<MonoBehaviour>();
+            var managers = Object.FindObjectsByType<MonoBehaviour>();
             foreach (var m in managers)
             {
                 if (m is TopologyManager || m is TangibleDiscManager ||
@@ -46,13 +46,13 @@ namespace SimRedes.Simulation
                     m is DebugDiscSimulator || m is ScoringSystem ||
                     m is BuildTopologyActivity || m is FindFaultActivity ||
                     m is RoutingTablesActivity || m is StaticRoutingActivity ||
-                    m is DynamicRoutingActivity || m is BestRouteActivity)
+                    m is DynamicRoutingActivity || m is DynamicRoutingProtocol || m is BestRouteActivity)
                     Object.Destroy(m.gameObject);
             }
 
             string[] panelNames = { "TopologyInfoPanel", "DevicesPanel", "ScorePanel", "ScenarioInfoPanel",
                 "IPConfigPanel",                 "IPConfigBackground", "StatusPanel", "NetworkAdvancedPanel",
-                "ConnectivityPanel", "BuildTopologyInfoPanel", "ScenariosPanel",
+                "ConnectivityPanel", "BuildTopologyInfoPanel", "DiscLegendPanel", "FindFaultPanel", "ScenariosPanel",
                 "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel",
                 "DynamicRoutingPanel", "ActivitiesPanel", "MainMenuPanel", "InstructionsPanel",
                 "ClickOutsideBG" };
@@ -62,7 +62,7 @@ namespace SimRedes.Simulation
                 if (obj != null) Object.Destroy(obj);
             }
 
-            var canvas = GameObject.FindObjectOfType<Canvas>();
+            var canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas != null)
             {
                 var scaler = canvas.GetComponent<UnityEngine.UI.CanvasScaler>();

@@ -1,11 +1,44 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "main",
-  "instructions": ["AGENTS.md"],
+  "instructions": ["AGENTS.md", "ROADMAP.md"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "compaction": {
+    "auto": true,
+    "tail_turns": 10
+  },
   "agent": {
-    "architect": { "model": "opencode/deepseek-v4-flash-free" },
-    "programmer": { "model": "opencode/deepseek-v4-flash-free" },
-    "reviewer": { "model": "opencode/deepseek-v4-flash-free" },
-    "tester": { "model": "opencode/deepseek-v4-flash-free" }
+    "architect": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Diseña soluciones para SimuladorRedes IDEUM. Analiza archivos, lee skills relevantes, produce planes detallados de implementación. Solo lectura.",
+      "mode": "subagent",
+      "permission": { "edit": "deny", "bash": "ask" }
+    },
+    "programmer": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Implementa código en SimuladorRedes IDEUM. Ejecuta planes del arquitecto o instrucciones directas. Edita archivos, respeta convenciones, verifica compilación.",
+      "mode": "subagent",
+      "permission": { "edit": "allow", "bash": "allow" }
+    },
+    "reviewer": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Revisa código de SimuladorRedes IDEUM buscando bugs, estilo, y violaciones de convenciones. Solo lectura.",
+      "mode": "subagent",
+      "permission": { "edit": "deny", "bash": "ask" }
+    },
+    "tester": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Ejecuta tests de Unity para SimuladorRedes IDEUM. Corre EditMode tests, reporta resultados detallados.",
+      "mode": "subagent",
+      "permission": { "edit": "deny", "bash": "allow" }
+    },
+    "builder": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Construye y despliega SimuladorRedes IDEUM. Genera builds para IDEUM (Windows) y PC normal. Verifica compilación.",
+      "mode": "subagent",
+      "permission": { "edit": "allow", "bash": "allow" }
+    }
   }
 }

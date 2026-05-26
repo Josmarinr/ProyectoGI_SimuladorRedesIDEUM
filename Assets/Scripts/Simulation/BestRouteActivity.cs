@@ -146,6 +146,7 @@ namespace SimRedes.Simulation
             if (panelObj == null) return;
 
             RectTransform panelRect = panelObj.GetComponent<RectTransform>();
+            if (panelRect == null) return;
             float panelHeight = panelRect.sizeDelta.y;
             float startY = 60;
             float yStep = 55;
@@ -191,7 +192,7 @@ namespace SimRedes.Simulation
                 Text label = textObj.AddComponent<Text>();
                 label.text = string.Format("{0}/{1}  via  {2}  ({3}, metrica {4})",
                     route.DestinationNetwork,
-                    GetPrefixLength(route.SubnetMask),
+                    SimRedes.Network.IPValidation.GetPrefixLength(route.SubnetMask).ToString(),
                     route.NextHop,
                     route.Protocol,
                     route.Metric);
@@ -230,7 +231,7 @@ namespace SimRedes.Simulation
                     resultText.text = string.Format(
                         "INCORRECTO. La mejor ruta era: {0}/{1} via {2} ({3}, metrica {4}). {5}",
                         correctOption.DestinationNetwork,
-                        GetPrefixLength(correctOption.SubnetMask),
+                        SimRedes.Network.IPValidation.GetPrefixLength(correctOption.SubnetMask).ToString(),
                         correctOption.NextHop,
                         correctOption.Protocol,
                         correctOption.Metric,
@@ -293,34 +294,5 @@ namespace SimRedes.Simulation
             return panelObj;
         }
 
-        private string GetPrefixLength(string mask)
-        {
-            if (mask == "255.255.255.255") return "32";
-            if (mask == "255.255.255.254") return "31";
-            if (mask == "255.255.255.252") return "30";
-            if (mask == "255.255.255.248") return "29";
-            if (mask == "255.255.255.240") return "28";
-            if (mask == "255.255.255.224") return "27";
-            if (mask == "255.255.255.192") return "26";
-            if (mask == "255.255.255.128") return "25";
-            if (mask == "255.255.255.0") return "24";
-            if (mask == "255.255.254.0") return "23";
-            if (mask == "255.255.252.0") return "22";
-            if (mask == "255.255.248.0") return "21";
-            if (mask == "255.255.240.0") return "20";
-            if (mask == "255.255.224.0") return "19";
-            if (mask == "255.255.192.0") return "18";
-            if (mask == "255.255.128.0") return "17";
-            if (mask == "255.255.0.0") return "16";
-            if (mask == "255.254.0.0") return "15";
-            if (mask == "255.252.0.0") return "14";
-            if (mask == "255.248.0.0") return "13";
-            if (mask == "255.240.0.0") return "12";
-            if (mask == "255.224.0.0") return "11";
-            if (mask == "255.192.0.0") return "10";
-            if (mask == "255.128.0.0") return "9";
-            if (mask == "255.0.0.0") return "8";
-            return "0";
-        }
     }
 }

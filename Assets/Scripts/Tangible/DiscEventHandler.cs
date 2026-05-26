@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SimRedes.Network;
+using SimRedes.Simulation;
 
 namespace SimRedes.Tangible
 {
@@ -15,7 +16,7 @@ namespace SimRedes.Tangible
 
         private void Start()
         {
-            var tangibleManager = FindObjectOfType<TangibleDiscManager>();
+            var tangibleManager = Object.FindAnyObjectByType<TangibleDiscManager>();
             if (tangibleManager != null)
             {
                 tangibleManager.OnDiscPlaced += HandleDiscPlaced;
@@ -26,21 +27,27 @@ namespace SimRedes.Tangible
 
         private void HandleDiscPlaced(int discId, Vector2 position)
         {
-            var discManager = FindObjectOfType<TangibleDiscManager>();
+            var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
+            if (topologyManager == null) return;
+
+            var discManager = Object.FindAnyObjectByType<TangibleDiscManager>();
             int discType = discManager != null ? discManager.GetDiscType(discId) : 1;
 
             var config = DiscConfiguration.GetConfiguration(discType);
-            SimRedes.Network.DeviceType deviceType = ConvertToDeviceType(config.Type);
 
-            var topologyManager = FindObjectOfType<TopologyManager>();
-            if (topologyManager == null) return;
-
-            if (IsRoutingConfigDisc(config.Type))
+            // Solo discos fisicos 1-3 (Router/Switch/PC) crean nodos.
+            // Enlaces, fallos y configuracion de routing se manejan
+            // desde las actividades (LinkModeController, FindFaultActivity,
+            // StaticRoutingActivity, etc.)
+            if (config.Type != DiscType.Router &&
+                config.Type != DiscType.Switch &&
+                config.Type != DiscType.PC)
             {
-                HandleRoutingConfigDisc(discId, position, config, topologyManager);
+                UnityEngine.Debug.Log($"[DiscEvent] Disco '{config.Label}' (ID {discType}) ignorado — solo Router/Switch/PC son discos fisicos. El resto se maneja desde las actividades.");
                 return;
             }
 
+            SimRedes.Network.DeviceType deviceType = ConvertToDeviceType(config.Type);
             topologyManager.AddNode(discId, deviceType, position);
             if (autoConnectLinks)
                 CheckAndCreateLinks(discId, position);
@@ -106,12 +113,77 @@ namespace SimRedes.Tangible
                     }
                     break;
 
-                case DiscType.Vecino:
-                case DiscType.AnunciarRed:
-                case DiscType.Costo:
-                case DiscType.BW:
-                    UnityEngine.Debug.Log($"[DiscEvent] Disco '{config.Label}' requiere protocolo dinamico (RIP/OSPF). Soporte proximamente.");
+                case DiscType.Destino:
+                    if (!routeBuilders.ContainsKey(router.DiscId))
+                        routeBuilders[router.DiscId] = new RouteBuilderState { RouterDiscId = router.DiscId, OutInterface = "G0/0" };
+                    routeBuilders[router.DiscId].DestinationNetwork = "192.168.1.0";
+                    TryAddRoute(router, routeBuilders[router.DiscId], topology);
                     break;
+
+                case DiscType.Vecino:
+                {
+                    // Disco 15 - Vecino: Configurar router vecino para enrutamiento dinamico
+                    var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                    if (dynAct != null)
+                    {
+                        string neighborName = $"Router{router.DiscId + 1}";
+                        dynAct.SetNeighborRouter(neighborName);
+                        UnityEngine.Debug.Log($"[DiscEvent] Vecino configurado virtualmente: {neighborName}");
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log($"[DiscEvent] Disco Vecino (15) requiere DynamicRoutingActivity activa");
+                    }
+                    break;
+                }
+                case DiscType.AnunciarRed:
+                {
+                    // Disco 16 - AnunciarRed: Configurar red a anunciar en rutas dinamicas
+                    var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                    if (dynAct != null)
+                    {
+                        string network = "10.0.0.0/8";
+                        dynAct.SetNetworkToAdvertise(network);
+                        UnityEngine.Debug.Log($"[DiscEvent] Red a anunciar configurada virtualmente: {network}");
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log($"[DiscEvent] Disco AnunciarRed (16) requiere DynamicRoutingActivity activa");
+                    }
+                    break;
+                }
+                case DiscType.Costo:
+                {
+                    // Disco 17 - Costo: Configurar costo OSPF personalizado
+                    var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                    if (dynAct != null)
+                    {
+                        int cost = 15;
+                        dynAct.SetLinkCost(cost);
+                        UnityEngine.Debug.Log($"[DiscEvent] Costo OSPF configurado virtualmente: {cost}");
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log($"[DiscEvent] Disco Costo (17) requiere DynamicRoutingActivity activa");
+                    }
+                    break;
+                }
+                case DiscType.BW:
+                {
+                    // Disco 18 - BW: Configurar ancho de banda para calculo OSPF
+                    var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                    if (dynAct != null)
+                    {
+                        int bw = 100;
+                        dynAct.SetBandwidth(bw);
+                        UnityEngine.Debug.Log($"[DiscEvent] Ancho de banda configurado virtualmente: {bw} Mbps");
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log($"[DiscEvent] Disco BW (18) requiere DynamicRoutingActivity activa");
+                    }
+                    break;
+                }
             }
         }
 
@@ -176,7 +248,7 @@ namespace SimRedes.Tangible
 
         private void HandleDiscMoved(int discId, Vector2 position)
         {
-            var topologyManager = FindObjectOfType<TopologyManager>();
+            var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager != null)
             {
                 topologyManager.UpdateNodePosition(discId, position);
@@ -190,7 +262,7 @@ namespace SimRedes.Tangible
 
         private void HandleDiscRemoved(int discId)
         {
-            var topologyManager = FindObjectOfType<TopologyManager>();
+            var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager != null)
             {
                 topologyManager.RemoveNode(discId);
@@ -216,10 +288,10 @@ namespace SimRedes.Tangible
 
         private void CheckAndCreateLinks(int discId, Vector2 position)
         {
-            var topologyManager = FindObjectOfType<TopologyManager>();
+            var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null) return;
 
-            var activeDiscs = FindObjectOfType<TangibleDiscManager>().GetActiveDiscs();
+            var activeDiscs = Object.FindAnyObjectByType<TangibleDiscManager>().GetActiveDiscs();
 
             foreach (var kvp in activeDiscs)
             {
@@ -237,7 +309,7 @@ namespace SimRedes.Tangible
 
         private void OnDestroy()
         {
-            var tangibleManager = FindObjectOfType<TangibleDiscManager>();
+            var tangibleManager = Object.FindAnyObjectByType<TangibleDiscManager>();
             if (tangibleManager != null)
             {
                 tangibleManager.OnDiscPlaced -= HandleDiscPlaced;

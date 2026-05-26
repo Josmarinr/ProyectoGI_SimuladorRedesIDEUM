@@ -38,6 +38,7 @@ namespace SimRedes
 
         private void Awake()
         {
+            Debug.Log("[SceneSetup] Awake() iniciando...");
             if (!autoSetup) return;
             SetupResolution();
             SetupCamera();
@@ -50,12 +51,34 @@ namespace SimRedes
                 CreateMainMenu(canvasTransform);
             else
                 StartSimulation();
+            Debug.Log("[SceneSetup] Awake() completado");
         }
 
         private void Start()
         {
+            Debug.Log("[SceneSetup] Start() - re-aplicando configuracion de camara por seguridad");
+            // Re-aplicar configuracion de camara en Start() por si URP la sobrescribio
+            EnsureCameraSetup();
             CacheReferences();
             SubscribeToTopologyEvents();
+            Debug.Log("[SceneSetup] Start() completado");
+        }
+
+        private void EnsureCameraSetup()
+        {
+            Camera cam = Camera.main;
+            if (cam != null)
+            {
+                cam.orthographic = true;
+                cam.orthographicSize = 540;
+                cam.backgroundColor = new Color(0.05f, 0.067f, 0.09f);
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                Debug.Log($"[SceneSetup] Camara re-configurada: clearFlags={cam.clearFlags}, bg={cam.backgroundColor}");
+            }
+            else
+            {
+                Debug.LogError("[SceneSetup] Camera.main es NULL en Start()");
+            }
         }
 
         private void Update()
@@ -97,7 +120,7 @@ namespace SimRedes
 
         private Canvas SetupCanvas()
         {
-            Canvas existingCanvas = FindObjectOfType<Canvas>();
+            Canvas existingCanvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (existingCanvas != null)
             {
                 var scaler = existingCanvas.GetComponent<CanvasScaler>();
@@ -144,7 +167,7 @@ namespace SimRedes
                 gameManagerObj.AddComponent<TouchScriptDisabler>();
             if (gameManagerObj.GetComponent<PingVisualizer>() == null)
                 gameManagerObj.AddComponent<PingVisualizer>();
-            if (FindObjectOfType<SceneCleanupService>() == null)
+            if (UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>() == null)
             {
                 var cleanupObj = new GameObject("SceneCleanupService");
                 var cleanup = cleanupObj.AddComponent<SceneCleanupService>();
@@ -163,18 +186,25 @@ namespace SimRedes
             if (gameManagerObj.GetComponent<ActivityLoader>() == null)
                 gameManagerObj.AddComponent<ActivityLoader>();
 
-            if (FindObjectOfType<TE.TangibleEngine>() == null)
+            if (UnityEngine.Object.FindAnyObjectByType<TE.TangibleEngine>() == null)
             {
                 var teObj = new GameObject("TE.TangibleEngine");
                 teObj.AddComponent<TE.TangibleEngine>();
             }
+
+            // Log del modo TangibleEngine
+#if UNITY_EDITOR
+            UnityEngine.Debug.Log("[SceneSetup] TangibleEngine modo: EDITOR (Simulator - sin conexion TCP)");
+#else
+            UnityEngine.Debug.Log("[SceneSetup] TangibleEngine modo: RUNTIME (Service - TCP localhost:4949)");
+#endif
 
             Debug.Log("[SceneSetup] Managers configurados");
         }
 
         public void CreateVisualizer(Transform ct)
         {
-            if (FindObjectOfType<NodeVisualizer>() == null)
+            if (UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>() == null)
             {
                 var visObj = new GameObject("NodeVisualizer");
                 visObj.transform.SetParent(ct, false);
@@ -187,7 +217,7 @@ namespace SimRedes
             }
             else
             {
-                visualizer = FindObjectOfType<NodeVisualizer>();
+                visualizer = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
             }
         }
 
@@ -203,13 +233,13 @@ namespace SimRedes
 
         private void CacheReferences()
         {
-            topology = FindObjectOfType<TopologyManager>();
-            visualizer = FindObjectOfType<NodeVisualizer>();
-            canvas = FindObjectOfType<Canvas>();
+            topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+            visualizer = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
+            canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             if (canvas != null) canvasTransform = canvas.transform;
-            nodeInteraction = FindObjectOfType<NodeInteractionController>();
-            devicePanel = FindObjectOfType<DevicePanelController>();
-            activityLoader = FindObjectOfType<ActivityLoader>();
+            nodeInteraction = UnityEngine.Object.FindAnyObjectByType<NodeInteractionController>();
+            devicePanel = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
+            activityLoader = UnityEngine.Object.FindAnyObjectByType<ActivityLoader>();
         }
 
         public void SubscribeToTopologyEvents()
@@ -218,8 +248,8 @@ namespace SimRedes
             {
                 topology.OnTopologyChanged -= OnTopologyChangedCallback;
             }
-            topology = FindObjectOfType<TopologyManager>();
-            visualizer = FindObjectOfType<NodeVisualizer>();
+            topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
+            visualizer = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
             if (topology != null)
             {
                 topology.OnTopologyChanged += OnTopologyChangedCallback;
@@ -241,14 +271,70 @@ namespace SimRedes
 
         // ==================== UI ====================
 
+        /// <summary>
+        /// Elimina solo el menu principal al hacer clic en una opcion (INICIAR, ACTIVIDADES, etc.),
+        /// conservando el MenuNavigator para que los sub-paneles tengan animaciones.
+        /// </summary>
+        private void DestroyMainMenu()
+        {
+            GameObject panel = GameObject.Find("MainMenuPanel");
+            if (panel != null) GameObject.Destroy(panel);
+
+            GameObject hudPanel = GameObject.Find("TopologyInfoPanel");
+            if (hudPanel != null) GameObject.Destroy(hudPanel);
+
+            // Usar DestroyImmediate para evitar conflictos de singleton con destruccion diferida
+            // al recrear el menu en el mismo frame (ej: desde el panel de Instrucciones)
+            var mm = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
+            if (mm != null) GameObject.DestroyImmediate(mm.gameObject);
+
+            // NO destruir MenuNavigator — se reutiliza para dar animaciones a los sub-paneles
+            Debug.Log("[SceneSetup] Menu principal destruido (navigator conservado)");
+        }
+
         private void CreateMainMenu(Transform ct)
         {
+            // Limpiar cualquier panel que haya quedado abierto antes de crear el menu
+            DestroyPreviousPanels();
             UIPanelFactory.CreateMainMenu(ct,
                 () => StartSimulation(),
                 () => ShowActivities(ct),
                 () => ShowConnectivity(ct),
                 () => ShowInstructions(ct),
+                () => ShowDiscLegend(ct),
                 () => ExitApplication());
+        }
+
+        /// <summary>
+        /// Elimina cualquier panel de actividades, instrucciones o conectividad
+        /// que haya quedado abierto al volver al menu principal.
+        /// Conserva MenuNavigator para que el nuevo menu tenga animaciones.
+        /// </summary>
+        private void DestroyPreviousPanels()
+        {
+            string[] panelNames = { "ActivitiesPanel", "InstructionsPanel", "ConnectivityPanel", "MainMenuPanel",
+                "TopologyInfoPanel", "BuildTopologyInfoPanel", "DiscLegendPanel", "FindFaultPanel", "ScenariosPanel",
+                "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel", "DynamicRoutingPanel" };
+            foreach (string name in panelNames)
+            {
+                GameObject panel = GameObject.Find(name);
+                if (panel != null)
+                {
+                    GameObject.Destroy(panel);
+                    Debug.Log($"[SceneSetup] Panel '{name}' destruido");
+                }
+            }
+
+            // Destruir MainMenuManager viejo (DestroyImmediate para evitar conflictos
+            // de singleton cuando se recrea el menu en el mismo frame)
+            var mm = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
+            if (mm != null) GameObject.DestroyImmediate(mm.gameObject);
+
+            // Limpiar MenuNavigator si existe para evitar referencias colgadas
+            if (MenuNavigator.Instance != null)
+                MenuNavigator.Instance.ClearPanel();
+
+            // NO destruir MenuNavigator — se reutiliza para animaciones del nuevo menu
         }
 
         public void CreateMainMenuPublic(Transform ct)
@@ -258,6 +344,7 @@ namespace SimRedes
 
         private void StartSimulation()
         {
+            DestroyMainMenu();
             SetupManagers();
             CreateVisualizer(canvasTransform);
             SubscribeToTopologyEvents();
@@ -267,6 +354,7 @@ namespace SimRedes
 
         private void ShowActivities(Transform ct)
         {
+            DestroyMainMenu();
             UIPanelFactory.CreateActivitiesPanel(ct,
                 (index) => {
                     SetupManagers();
@@ -281,6 +369,7 @@ namespace SimRedes
 
         private void ShowConnectivity(Transform ct)
         {
+            DestroyMainMenu();
             SetupManagers();
             CreateVisualizer(canvasTransform);
             SubscribeToTopologyEvents();
@@ -290,8 +379,16 @@ namespace SimRedes
 
         private void ShowInstructions(Transform ct)
         {
+            DestroyMainMenu();
             UIPanelFactory.CreateInstructionsPanel(ct,
                 () => { CreateMainMenu(ct); });
+        }
+
+        private void ShowDiscLegend(Transform ct)
+        {
+            DestroyMainMenu();
+            UIPanelFactory.CreateDiscLegendPanel(ct,
+                () => { DestroyPreviousPanels(); CreateMainMenu(ct); });
         }
 
         public void ExitApplication()
@@ -314,37 +411,37 @@ namespace SimRedes
         // LinkMode
         public void ToggleLinkMode(string mode)
         {
-            var lm = FindObjectOfType<LinkModeController>();
+            var lm = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
             if (lm != null) lm.ToggleLinkMode(mode);
         }
 
         public bool IsLinkModeActive()
         {
-            var lm = FindObjectOfType<LinkModeController>();
+            var lm = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
             return lm != null && lm.IsLinkModeActive();
         }
 
         public bool IsPingModeActive()
         {
-            var pm = FindObjectOfType<PingModeController>();
+            var pm = UnityEngine.Object.FindAnyObjectByType<PingModeController>();
             return pm != null && pm.IsPingModeActive();
         }
 
         public bool IsIPConfigPanelOpen()
         {
-            var ip = FindObjectOfType<IPConfigController>();
+            var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             return ip != null && ip.IsIPConfigPanelOpen();
         }
 
         public int GetCurrentIPConfigNodeDiscId()
         {
-            var ip = FindObjectOfType<IPConfigController>();
+            var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             return ip != null ? ip.GetCurrentIPConfigNodeDiscId() : -1;
         }
 
         public void CloseIPConfigPanelPublic()
         {
-            var ip = FindObjectOfType<IPConfigController>();
+            var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             if (ip != null) ip.CloseIPConfigPanelPublic();
         }
 

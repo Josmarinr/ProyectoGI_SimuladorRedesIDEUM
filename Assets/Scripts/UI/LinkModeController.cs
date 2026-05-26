@@ -17,7 +17,7 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            topology = FindObjectOfType<TopologyManager>();
+            topology = Object.FindAnyObjectByType<TopologyManager>();
         }
 
         public void StoreLinkButtons(Button connect, Button disconnect)
@@ -28,7 +28,7 @@ namespace SimRedes.UI
 
         public void ToggleLinkMode(string mode)
         {
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             if (currentLinkMode == mode)
@@ -61,7 +61,7 @@ namespace SimRedes.UI
 
         public void HandleNodeLinkClick(int discId)
         {
-            if (topology == null) topology = FindObjectOfType<TopologyManager>();
+            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
             if (topology == null) return;
 
             if (currentLinkMode == "connect")

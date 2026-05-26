@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
 using SimRedes.UI;
 
@@ -8,16 +9,15 @@ namespace SimRedes.Tangible
     {
         [Header("Simulation Settings")]
         [SerializeField] private bool enableSimulation = false;
-        [SerializeField] private KeyCode addRouterKey = KeyCode.Alpha1;
-        [SerializeField] private KeyCode addSwitchKey = KeyCode.Alpha2;
-        [SerializeField] private KeyCode addPCKey = KeyCode.Alpha3;
-        [SerializeField] private KeyCode addEnlaceKey = KeyCode.Alpha4;
-        [SerializeField] private KeyCode addFalloKey = KeyCode.Alpha5;
-        [SerializeField] private KeyCode addProtocoloKey = KeyCode.Alpha6;
-        [SerializeField] private KeyCode clearKey = KeyCode.C;
-        [SerializeField] private KeyCode pingTestKey = KeyCode.P;
+        [SerializeField] private Key addRouterKey = Key.Digit1;
+        [SerializeField] private Key addSwitchKey = Key.Digit2;
+        [SerializeField] private Key addPCKey = Key.Digit3;
+        [SerializeField] private Key addEnlaceKey = Key.Digit4;
+        [SerializeField] private Key addFalloKey = Key.Digit5;
+        [SerializeField] private Key addProtocoloKey = Key.Digit6;
+        [SerializeField] private Key clearKey = Key.C;
+        [SerializeField] private Key pingTestKey = Key.P;
 
-        private int uniqueIdCounter = 1;
         private const int BASE_DISC_ID = 100;
 
         private Vector2[] spawnPositions = new Vector2[]
@@ -38,34 +38,37 @@ namespace SimRedes.Tangible
         {
             if (!enableSimulation) return;
 
-            if (Input.GetKeyDown(addRouterKey))
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard[addRouterKey].wasPressedThisFrame)
                 SimulateDiscAt(1, GetNextPosition());
 
-            else if (Input.GetKeyDown(addSwitchKey))
+            else if (keyboard[addSwitchKey].wasPressedThisFrame)
                 SimulateDiscAt(2, GetNextPosition());
 
-            else if (Input.GetKeyDown(addPCKey))
+            else if (keyboard[addPCKey].wasPressedThisFrame)
                 SimulateDiscAt(3, GetNextPosition());
 
-            else if (Input.GetKeyDown(addEnlaceKey))
+            else if (keyboard[addEnlaceKey].wasPressedThisFrame)
             {
-                var linkMode = FindObjectOfType<LinkModeController>();
+                var linkMode = Object.FindAnyObjectByType<LinkModeController>();
                 if (linkMode != null)
                     linkMode.ToggleLinkMode("connect");
                 else
                     UnityEngine.Debug.Log("[DebugSim] LinkModeController no encontrado, no se puede activar modo conexion");
             }
 
-            else if (Input.GetKeyDown(addFalloKey))
+            else if (keyboard[addFalloKey].wasPressedThisFrame)
                 SimulateDiscAt(5, GetNextPosition());
 
-            else if (Input.GetKeyDown(addProtocoloKey))
+            else if (keyboard[addProtocoloKey].wasPressedThisFrame)
                 SimulateDiscAt(6, GetNextPosition());
 
-            else if (Input.GetKeyDown(clearKey))
+            else if (keyboard[clearKey].wasPressedThisFrame)
                 ClearAllDiscs();
 
-            else if (Input.GetKeyDown(pingTestKey))
+            else if (keyboard[pingTestKey].wasPressedThisFrame)
                 TestConnectivity();
         }
 
@@ -78,7 +81,7 @@ namespace SimRedes.Tangible
 
         private void SimulateDiscAt(int discId, Vector2 position)
         {
-            var manager = FindObjectOfType<TangibleDiscManager>();
+            var manager = Object.FindAnyObjectByType<TangibleDiscManager>();
             if (manager != null)
             {
                 manager.SimulateDiscPlaced(discId, position);
@@ -90,10 +93,10 @@ namespace SimRedes.Tangible
         private void UpdateStatusText(int discId)
         {
             var config = DiscConfiguration.GetConfiguration(discId);
-            var topology = FindObjectOfType<Network.TopologyManager>();
+            var topology = Object.FindAnyObjectByType<Network.TopologyManager>();
             if (topology != null)
             {
-                var statusTexts = FindObjectsOfType<UnityEngine.UI.Text>();
+                var statusTexts = FindObjectsByType<UnityEngine.UI.Text>();
                 foreach (var text in statusTexts)
                 {
                     if (text.name == "StatusText")
@@ -106,19 +109,19 @@ namespace SimRedes.Tangible
 
         private void ClearAllDiscs()
         {
-            var manager = FindObjectOfType<TangibleDiscManager>();
+            var manager = Object.FindAnyObjectByType<TangibleDiscManager>();
             if (manager != null)
             {
                 manager.ClearAllDiscs();
             }
 
-            var topology = FindObjectOfType<Network.TopologyManager>();
+            var topology = Object.FindAnyObjectByType<Network.TopologyManager>();
             if (topology != null)
             {
                 topology.ClearTopology();
             }
 
-            var visualizer = FindObjectOfType<NodeVisualizer>();
+            var visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
             if (visualizer != null)
             {
                 var nodeContainer = visualizer.nodeContainer;
@@ -151,7 +154,7 @@ namespace SimRedes.Tangible
 
         private void TestConnectivity()
         {
-            var topology = FindObjectOfType<Network.TopologyManager>();
+            var topology = Object.FindAnyObjectByType<Network.TopologyManager>();
             if (topology != null)
             {
                 var nodes = topology.GetAllNodes();

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
 
 namespace SimRedes.Simulation
@@ -14,25 +15,24 @@ namespace SimRedes.Simulation
         [SerializeField] public Text tableText;
 
         private TopologyManager topologyManager;
-        private RoutingSimulator routingSimulator;
         private List<NetworkNode> routers = new List<NetworkNode>();
 
         private void Start()
         {
-            topologyManager = FindObjectOfType<TopologyManager>();
+            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null)
             {
                 var go = new GameObject("TopologyManager");
                 topologyManager = go.AddComponent<TopologyManager>();
             }
 
-            routingSimulator = new RoutingSimulator();
             UpdateUI();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
             {
                 RefreshRoutingTables();
             }
@@ -41,7 +41,6 @@ namespace SimRedes.Simulation
         public void RefreshRoutingTables()
         {
             routers.Clear();
-            routingSimulator.ClearAllTables();
 
             var allNodes = topologyManager.GetAllNodes();
             foreach (var node in allNodes)
@@ -49,7 +48,6 @@ namespace SimRedes.Simulation
                 if (node.Type == SimRedes.Network.DeviceType.Router)
                 {
                     routers.Add(node);
-                    routingSimulator.InitializeRouterTable(node);
                     GenerateSampleRoutes(node);
                 }
             }
@@ -60,10 +58,10 @@ namespace SimRedes.Simulation
 
         private void GenerateSampleRoutes(NetworkNode router)
         {
-            string routerIP = $"192.168.{router.DiscId}.1";
-            routingSimulator.AddStaticRoute(router.DiscId, "0.0.0.0", "0.0.0.0", "192.168.1.254", "G0/0");
-            routingSimulator.AddStaticRoute(router.DiscId, "10.0.0.0", "255.0.0.0", "10.1.1.1", "G0/1");
-            routingSimulator.AddStaticRoute(router.DiscId, "172.16.0.0", "255.240.0.0", "172.16.0.1", "G0/2");
+            router.RoutingTable.Clear();
+            router.RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "192.168.1.254", "G0/0");
+            router.RoutingTable.AddStaticRoute("10.0.0.0", "255.0.0.0", "10.1.1.1", "G0/1");
+            router.RoutingTable.AddStaticRoute("172.16.0.0", "255.240.0.0", "172.16.0.1", "G0/2");
         }
 
         private void UpdateUI()
@@ -73,11 +71,11 @@ namespace SimRedes.Simulation
                 infoText.text = "TABLAS DE ENRUTAMIENTO\n\n" +
                     "Esta actividad muestra las tablas de\n" +
                     "enrutamiento de los routers en la\n" +
-                    "topología actual.\n\n" +
-                    "PRESIONA 'R' para actualizar las\n" +
-                    "tablas de todos los routers.\n\n" +
-                    "Coloca routers con la tecla 1 para\n" +
-                    "ver sus tablas de enrutamiento.";
+                    "topolog\u00eda actual.\n\n" +
+                    "Presiona ACTUALIZAR para refrescar\n" +
+                    "las tablas de todos los routers.\n\n" +
+                    "Coloca routers (tecla 1 o discos)\n" +
+                    "para ver sus tablas de enrutamiento.";
             }
 
             UpdateTableDisplay();
@@ -98,18 +96,27 @@ namespace SimRedes.Simulation
             foreach (var router in routers)
             {
                 content += $"Router {router.DiscId} ({router.Name}):\n";
-                content += "----------------------------------------\n";
-                content += "Red Destino    | Máscara       | Siguiente Salto\n";
-                content += "----------------------------------------\n";
+                content += "------------------------------------------------------------\n";
+                content += "Red Destino/Mascara | Siguiente Salto | Interfaz | Métrica | Protocolo\n";
+                content += "------------------------------------------------------------\n";
 
-                content += "0.0.0.0        | 0.0.0.0       | 192.168.1.254  (Default)\n";
-                content += "10.0.0.0       | 255.0.0.0     | 10.1.1.1       (Static)\n";
-                content += "172.16.0.0     | 255.240.0.0   | 172.16.0.1     (Static)\n";
-                content += "192.168." + router.DiscId + ".0   | 255.255.255.0 | Directa         (Connected)\n";
-                content += "----------------------------------------\n\n";
+                var entries = router.RoutingTable.GetAllEntries();
+                if (entries.Count == 0)
+                {
+                    content += "Sin rutas configuradas\n";
+                }
+                else
+                {
+                    foreach (var entry in entries)
+                    {
+                        content += $"{entry.DestinationNetwork}/{entry.GetPrefixLength(),-8} | {entry.NextHop,-14} | {entry.OutInterface,-7} | {entry.Metric,-7} | {entry.Protocol}\n";
+                    }
+                }
+
+                content += "------------------------------------------------------------\n\n";
             }
 
-            content += "\nC = Limpiar | R = Actualizar | ESC = Menú";
+            content += "\nACTUALIZAR = Refrescar tablas | ESC = Menú";
 
             tableText.text = content;
         }
@@ -121,7 +128,8 @@ namespace SimRedes.Simulation
 
         public string GetRouterTableSummary(int routerDiscId)
         {
-            return routingSimulator.GetRoutingTableSummary(routerDiscId);
+            var router = topologyManager?.GetNode(routerDiscId);
+            return RoutingSimulator.GetRoutingTableSummary(router);
         }
     }
 }

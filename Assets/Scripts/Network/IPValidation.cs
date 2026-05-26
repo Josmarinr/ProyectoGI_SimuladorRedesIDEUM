@@ -127,10 +127,38 @@ namespace SimRedes.Network
             return string.Join(".", ipParts.Select((p, i) => (p & maskParts[i]) | (~maskParts[i] & 255)).ToArray());
         }
 
-        public static string GetGatewayFromIP(string ip)
+        public static string GetGatewayFromIP(string ip, string mask = null)
         {
             if (!IsValidIP(ip)) return null;
 
+            if (!string.IsNullOrEmpty(mask) && IsValidSubnetMask(mask))
+            {
+                var ipParts = ip.Split('.').Select(int.Parse).ToArray();
+                var maskParts = mask.Split('.').Select(int.Parse).ToArray();
+
+                // Calcular direccion de red
+                var networkParts = ipParts.Select((p, i) => p & maskParts[i]).ToArray();
+
+                // Gateway = direccion de red + 1 (primera usable)
+                var gatewayParts = new int[4];
+                for (int i = 3; i >= 0; i--)
+                {
+                    if (i == 3)
+                    {
+                        gatewayParts[i] = networkParts[i] + 1;
+                        if (gatewayParts[i] <= 255) break;
+                        gatewayParts[i] = 0; // overflow
+                    }
+                    else
+                    {
+                        gatewayParts[i] = networkParts[i];
+                    }
+                }
+
+                return string.Join(".", gatewayParts);
+            }
+
+            // Fallback: asumir /24 y usar .1
             var parts = ip.Split('.').Select(int.Parse).ToArray();
             parts[3] = 1;
             return string.Join(".", parts);
