@@ -53,7 +53,7 @@ stateDiagram-v2
 ## Ejemplo de Sesión
 
 ```
-StartSession("Mejor Ruta")
+StartSession("Simulación de Mejor Ruta")
   → AddTaskCompleted() → 100 pts + bono tiempo
   → AddPingSuccess()   → +10 pts
   → AddPingSuccess()   → +10 pts

@@ -1,0 +1,934 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="108" result="Passed" total="108" passed="108" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.1039564">
+  <test-suite type="TestSuite" id="1000" name="SimuladorRedes" fullname="SimuladorRedes" runstate="Runnable" testcasecount="108" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.103956" total="108" passed="108" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1120" name="Assembly-CSharp-Editor.dll" fullname="/Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="108" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.100894" total="108" passed="108" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="24327" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1121" name="SimRedes" fullname="SimRedes" runstate="Runnable" testcasecount="35" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.070332" total="35" passed="35" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1122" name="Simulation" fullname="SimRedes.Simulation" runstate="Runnable" testcasecount="35" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.070212" total="35" passed="35" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="TestBestRouteActivity" fullname="SimRedes.Simulation.TestBestRouteActivity" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.054497" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1013" name="EachScenario_CorrectIndexWithinRange" fullname="SimRedes.Simulation.TestBestRouteActivity.EachScenario_CorrectIndexWithinRange" methodname="EachScenario_CorrectIndexWithinRange" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="18894635" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.005870" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="EachScenario_HasAtLeastTwoOptions" fullname="SimRedes.Simulation.TestBestRouteActivity.EachScenario_HasAtLeastTwoOptions" methodname="EachScenario_HasAtLeastTwoOptions" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="374982901" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000198" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1010" name="GetPrefixLength_AllMasks_ReturnsCorrectLength" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.003439" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.0.0.0&quot;,8)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.0.0.0&quot;,8)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="642234854" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001753" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.0.0&quot;,16)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.0.0&quot;,16)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="1018088864" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000105" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1004" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.0&quot;,24)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.0&quot;,24)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="1257686634" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000091" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1005" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.255&quot;,32)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.255&quot;,32)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="1336282642" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000074" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1006" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.252&quot;,30)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.252&quot;,30)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="403929975" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000065" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1007" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.128&quot;,25)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.128&quot;,25)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="651517511" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000064" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1008" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.192&quot;,26)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;255.255.255.192&quot;,26)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="453634364" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1009" name="GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;0.0.0.0&quot;,0)" fullname="SimRedes.Simulation.TestBestRouteActivity.GetPrefixLength_AllMasks_ReturnsCorrectLength(&quot;0.0.0.0&quot;,0)" methodname="GetPrefixLength_AllMasks_ReturnsCorrectLength" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="232193444" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000059" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1012" name="NextScenario_CyclesThroughScenarios" fullname="SimRedes.Simulation.TestBestRouteActivity.NextScenario_CyclesThroughScenarios" methodname="NextScenario_CyclesThroughScenarios" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="2004491500" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.039950" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="Scenarios_InitializedWithCorrectCount" fullname="SimRedes.Simulation.TestBestRouteActivity.Scenarios_InitializedWithCorrectCount" methodname="Scenarios_InitializedWithCorrectCount" classname="SimRedes.Simulation.TestBestRouteActivity" runstate="Runnable" seed="1658721323" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000178" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1015" name="TestSceneCleanupService" fullname="SimRedes.Simulation.TestSceneCleanupService" classname="SimRedes.Simulation.TestSceneCleanupService" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.004197" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1017" name="ClearSimulation_NullParameters_DoesNotThrow" fullname="SimRedes.Simulation.TestSceneCleanupService.ClearSimulation_NullParameters_DoesNotThrow" methodname="ClearSimulation_NullParameters_DoesNotThrow" classname="SimRedes.Simulation.TestSceneCleanupService" runstate="Runnable" seed="620479538" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000792" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="ClearSimulation_PartialNull_DoesNotThrow" fullname="SimRedes.Simulation.TestSceneCleanupService.ClearSimulation_PartialNull_DoesNotThrow" methodname="ClearSimulation_PartialNull_DoesNotThrow" classname="SimRedes.Simulation.TestSceneCleanupService" runstate="Runnable" seed="1477513198" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.002069" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Topology] Topología limpiada
+[Topology] Topología limpiada
+[DebugSim] Todo limpiado
+[DebugSim] Todo limpiado
+]]></output>
+            </test-case>
+            <test-case id="1019" name="ExitApplication_DoesNotThrow" fullname="SimRedes.Simulation.TestSceneCleanupService.ExitApplication_DoesNotThrow" methodname="ExitApplication_DoesNotThrow" classname="SimRedes.Simulation.TestSceneCleanupService" runstate="Runnable" seed="705005021" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000144" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1016" name="Singleton_InstanceSetAfterAwake" fullname="SimRedes.Simulation.TestSceneCleanupService.Singleton_InstanceSetAfterAwake" methodname="Singleton_InstanceSetAfterAwake" classname="SimRedes.Simulation.TestSceneCleanupService" runstate="Runnable" seed="1175257942" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000166" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1020" name="TestScoringSystem" fullname="SimRedes.Simulation.TestScoringSystem" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.011114" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1023" name="AddFaultFound_IncrementsFaultsAndScore" fullname="SimRedes.Simulation.TestScoringSystem.AddFaultFound_IncrementsFaultsAndScore" methodname="AddFaultFound_IncrementsFaultsAndScore" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="625164111" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000937" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 120 pts: Fallo encontrado: Broken link
+[Scoring] 120 pts: Fallo encontrado: Broken link
+]]></output>
+            </test-case>
+            <test-case id="1026" name="AddPenalty_ReducesScore" fullname="SimRedes.Simulation.TestScoringSystem.AddPenalty_ReducesScore" methodname="AddPenalty_ReducesScore" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="2032529565" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000818" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 150 pts: Tarea completada: earn points
+[Scoring] 150 pts: Tarea completada: earn points
+[Scoring] -50 pts: Penalizacion: Wrong route
+[Scoring] -50 pts: Penalizacion: Wrong route
+]]></output>
+            </test-case>
+            <test-case id="1025" name="AddPingSuccess_IncrementsPingsAndScore" fullname="SimRedes.Simulation.TestScoringSystem.AddPingSuccess_IncrementsPingsAndScore" methodname="AddPingSuccess_IncrementsPingsAndScore" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="385702775" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000484" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 10 pts: Ping exitoso: PC1 -> PC2
+[Scoring] 10 pts: Ping exitoso: PC1 -> PC2
+]]></output>
+            </test-case>
+            <test-case id="1024" name="AddRouteConfigured_IncrementsRoutesAndScore" fullname="SimRedes.Simulation.TestScoringSystem.AddRouteConfigured_IncrementsRoutesAndScore" methodname="AddRouteConfigured_IncrementsRoutesAndScore" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="333515693" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000472" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 15 pts: Ruta configurada: 10.0.0.0/24 via 192.168.1.1
+[Scoring] 15 pts: Ruta configurada: 10.0.0.0/24 via 192.168.1.1
+]]></output>
+            </test-case>
+            <test-case id="1022" name="AddTaskCompleted_IncrementsCountAndScore" fullname="SimRedes.Simulation.TestScoringSystem.AddTaskCompleted_IncrementsCountAndScore" methodname="AddTaskCompleted_IncrementsCountAndScore" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="686054970" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000458" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 150 pts: Tarea completada: Build topology
+[Scoring] 150 pts: Tarea completada: Build topology
+]]></output>
+            </test-case>
+            <test-case id="1039" name="GetEvents_ReturnsCopy" fullname="SimRedes.Simulation.TestScoringSystem.GetEvents_ReturnsCopy" methodname="GetEvents_ReturnsCopy" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1469750502" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000532" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 150 pts: Tarea completada: test
+[Scoring] 150 pts: Tarea completada: test
+]]></output>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1038" name="GetGrade_ReturnsCorrectGrade" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.003182" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1028" name="GetGrade_ReturnsCorrectGrade(500,5)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(500,5)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="463814283" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000350" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1029" name="GetGrade_ReturnsCorrectGrade(600,5)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(600,5)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1800670011" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000237" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1030" name="GetGrade_ReturnsCorrectGrade(499,4)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(499,4)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="648180989" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000244" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1031" name="GetGrade_ReturnsCorrectGrade(400,4)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(400,4)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1769812504" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000236" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1032" name="GetGrade_ReturnsCorrectGrade(399,3)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(399,3)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1539306749" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000233" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1033" name="GetGrade_ReturnsCorrectGrade(300,3)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(300,3)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1570079274" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000233" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1034" name="GetGrade_ReturnsCorrectGrade(299,2)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(299,2)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="674896741" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000233" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1035" name="GetGrade_ReturnsCorrectGrade(200,2)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(200,2)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="569318483" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000231" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1036" name="GetGrade_ReturnsCorrectGrade(199,1)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(199,1)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="2051880955" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000238" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+              <test-case id="1037" name="GetGrade_ReturnsCorrectGrade(0,1)" fullname="SimRedes.Simulation.TestScoringSystem.GetGrade_ReturnsCorrectGrade(0,1)" methodname="GetGrade_ReturnsCorrectGrade" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="550621547" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000261" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-case id="1040" name="GetSessionSummary_ContainsRelevantInfo" fullname="SimRedes.Simulation.TestScoringSystem.GetSessionSummary_ContainsRelevantInfo" methodname="GetSessionSummary_ContainsRelevantInfo" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1547544021" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001499" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 150 pts: Tarea completada: Build topology
+[Scoring] 150 pts: Tarea completada: Build topology
+[Scoring] 120 pts: Fallo encontrado: Broken link
+[Scoring] 120 pts: Fallo encontrado: Broken link
+[Scoring] 15 pts: Ruta configurada: 10.0.0.0/24
+[Scoring] 15 pts: Ruta configurada: 10.0.0.0/24
+[Scoring] 10 pts: Ping exitoso: PC1 -> PC2
+[Scoring] 10 pts: Ping exitoso: PC1 -> PC2
+]]></output>
+            </test-case>
+            <test-case id="1027" name="Score_NeverGoesBelowZero" fullname="SimRedes.Simulation.TestScoringSystem.Score_NeverGoesBelowZero" methodname="Score_NeverGoesBelowZero" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="726639110" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000487" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] -9999 pts: Penalizacion: Massive penalty
+[Scoring] -9999 pts: Penalizacion: Massive penalty
+]]></output>
+            </test-case>
+            <test-case id="1021" name="StartSession_ResetsAllCounters" fullname="SimRedes.Simulation.TestScoringSystem.StartSession_ResetsAllCounters" methodname="StartSession_ResetsAllCounters" classname="SimRedes.Simulation.TestScoringSystem" runstate="Runnable" seed="1298708785" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001291" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[Scoring] Sesion iniciada: TestActivity
+[Scoring] Sesion iniciada: TestActivity
+[Scoring] 150 pts: Tarea completada: test
+[Scoring] 150 pts: Tarea completada: test
+[Scoring] 120 pts: Fallo encontrado: test
+[Scoring] 120 pts: Fallo encontrado: test
+[Scoring] 15 pts: Ruta configurada: test
+[Scoring] 15 pts: Ruta configurada: test
+[Scoring] 10 pts: Ping exitoso: A -> B
+[Scoring] 10 pts: Ping exitoso: A -> B
+[Scoring] Sesion iniciada: NewActivity
+[Scoring] Sesion iniciada: NewActivity
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestSuite" id="1123" name="Tests" fullname="Tests" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.030341" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1124" name="EditMode" fullname="Tests.EditMode" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.030071" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1127" name="Network" fullname="Tests.EditMode.Network" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.014083" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1071" name="TestDiscToRouteIntegration" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.007065" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1073" name="CompleteDiscSequence_AddsRouteToRoutingTable" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.CompleteDiscSequence_AddsRouteToRoutingTable" methodname="CompleteDiscSequence_AddsRouteToRoutingTable" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="806191236" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001649" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1074" name="CompleteDiscSequence_MultipleRounds_MultipleRoutes" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.CompleteDiscSequence_MultipleRounds_MultipleRoutes" methodname="CompleteDiscSequence_MultipleRounds_MultipleRoutes" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="122188175" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000552" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1078" name="DiscRoute_AppearsInRoutingSimulatorSummary" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.DiscRoute_AppearsInRoutingSimulatorSummary" methodname="DiscRoute_AppearsInRoutingSimulatorSummary" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="186242486" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000759" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1080" name="DiscRoute_CanBeFoundByBestRoute" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.DiscRoute_CanBeFoundByBestRoute" methodname="DiscRoute_CanBeFoundByBestRoute" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="1933205657" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000974" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1081" name="DiscRoute_LongestPrefixMatch_Works" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.DiscRoute_LongestPrefixMatch_Works" methodname="DiscRoute_LongestPrefixMatch_Works" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="2030198385" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000599" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.1.0.0/255.255.0.0 -> 10.1.0.1 via G0/1 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.1.0.0/255.255.0.0 -> 10.1.0.1 via G0/1 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1079" name="DiscRoute_SummarizesAllRounds" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.DiscRoute_SummarizesAllRounds" methodname="DiscRoute_SummarizesAllRounds" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="1959268995" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000541" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1076" name="DiscSequence_WithProtocolOverride_RouteHasCorrectProtocol" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.DiscSequence_WithProtocolOverride_RouteHasCorrectProtocol" methodname="DiscSequence_WithProtocolOverride_RouteHasCorrectProtocol" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="1784929077" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000320" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (OSPF)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (OSPF)
+]]></output>
+              </test-case>
+              <test-case id="1075" name="IpRouteDisc_AddsDefaultRoute" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.IpRouteDisc_AddsDefaultRoute" methodname="IpRouteDisc_AddsDefaultRoute" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="133802812" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000123" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1077" name="MultipleRouters_DiscRoutes_AreIndependent" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.MultipleRouters_DiscRoutes_AreIndependent" methodname="MultipleRouters_DiscRoutes_AreIndependent" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="1934574030" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000707" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_2: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (RIP)
+[RouteBuilder] Ruta agregada a Router_2: 172.16.0.0/255.255.0.0 -> 172.16.0.1 via G0/1 (RIP)
+]]></output>
+              </test-case>
+              <test-case id="1072" name="RedDestinoDisc_Only_DoesNotAddRoute" fullname="Tests.EditMode.Network.TestDiscToRouteIntegration.RedDestinoDisc_Only_DoesNotAddRoute" methodname="RedDestinoDisc_Only_DoesNotAddRoute" classname="Tests.EditMode.Network.TestDiscToRouteIntegration" runstate="Runnable" seed="1625837170" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000116" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1082" name="TestIPValidation" fullname="Tests.EditMode.Network.TestIPValidation" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.002988" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1098" name="GetBroadcastAddress_ReturnsCorrect" fullname="Tests.EditMode.Network.TestIPValidation.GetBroadcastAddress_ReturnsCorrect" methodname="GetBroadcastAddress_ReturnsCorrect" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="158634488" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000969" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1100" name="GetGatewayFromIP_InvalidIP_ReturnsNull" fullname="Tests.EditMode.Network.TestIPValidation.GetGatewayFromIP_InvalidIP_ReturnsNull" methodname="GetGatewayFromIP_InvalidIP_ReturnsNull" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="213128272" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000155" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1099" name="GetGatewayFromIP_ReturnsFirstUsable" fullname="Tests.EditMode.Network.TestIPValidation.GetGatewayFromIP_ReturnsFirstUsable" methodname="GetGatewayFromIP_ReturnsFirstUsable" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="794292472" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000045" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1097" name="GetNetworkAddress_InvalidArgs_ReturnsNull" fullname="Tests.EditMode.Network.TestIPValidation.GetNetworkAddress_InvalidArgs_ReturnsNull" methodname="GetNetworkAddress_InvalidArgs_ReturnsNull" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="2070661248" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000086" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1096" name="GetNetworkAddress_ReturnsCorrect" fullname="Tests.EditMode.Network.TestIPValidation.GetNetworkAddress_ReturnsCorrect" methodname="GetNetworkAddress_ReturnsCorrect" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="254633082" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1088" name="GetPrefixLength_InvalidMask_ReturnsZero" fullname="Tests.EditMode.Network.TestIPValidation.GetPrefixLength_InvalidMask_ReturnsZero" methodname="GetPrefixLength_InvalidMask_ReturnsZero" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1183778059" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000041" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1087" name="GetPrefixLength_KnownMasks_ReturnsCorrect" fullname="Tests.EditMode.Network.TestIPValidation.GetPrefixLength_KnownMasks_ReturnsCorrect" methodname="GetPrefixLength_KnownMasks_ReturnsCorrect" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="96462981" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000065" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1094" name="IsInSameNetwork_DifferentNetwork_ReturnsFalse" fullname="Tests.EditMode.Network.TestIPValidation.IsInSameNetwork_DifferentNetwork_ReturnsFalse" methodname="IsInSameNetwork_DifferentNetwork_ReturnsFalse" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="902849214" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000095" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1095" name="IsInSameNetwork_InvalidArgs_ReturnsFalse" fullname="Tests.EditMode.Network.TestIPValidation.IsInSameNetwork_InvalidArgs_ReturnsFalse" methodname="IsInSameNetwork_InvalidArgs_ReturnsFalse" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1260381955" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000036" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1093" name="IsInSameNetwork_SameNetwork_ReturnsTrue" fullname="Tests.EditMode.Network.TestIPValidation.IsInSameNetwork_SameNetwork_ReturnsTrue" methodname="IsInSameNetwork_SameNetwork_ReturnsTrue" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1392028199" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000037" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1084" name="IsValidIP_InvalidFormat_ReturnsFalse" fullname="Tests.EditMode.Network.TestIPValidation.IsValidIP_InvalidFormat_ReturnsFalse" methodname="IsValidIP_InvalidFormat_ReturnsFalse" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1130402141" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000055" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1083" name="IsValidIP_ValidIPv4_ReturnsTrue" fullname="Tests.EditMode.Network.TestIPValidation.IsValidIP_ValidIPv4_ReturnsTrue" methodname="IsValidIP_ValidIPv4_ReturnsTrue" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1867106034" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000041" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1086" name="IsValidSubnetMask_InvalidMasks_ReturnsFalse" fullname="Tests.EditMode.Network.TestIPValidation.IsValidSubnetMask_InvalidMasks_ReturnsFalse" methodname="IsValidSubnetMask_InvalidMasks_ReturnsFalse" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="700377105" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000033" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1085" name="IsValidSubnetMask_ValidMasks_ReturnsTrue" fullname="Tests.EditMode.Network.TestIPValidation.IsValidSubnetMask_ValidMasks_ReturnsTrue" methodname="IsValidSubnetMask_ValidMasks_ReturnsTrue" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="670658825" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000054" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1090" name="ValidateIPField_InvalidIP_ReturnsError" fullname="Tests.EditMode.Network.TestIPValidation.ValidateIPField_InvalidIP_ReturnsError" methodname="ValidateIPField_InvalidIP_ReturnsError" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="374414685" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000058" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1089" name="ValidateIPField_ValidIP_ReturnsNull" fullname="Tests.EditMode.Network.TestIPValidation.ValidateIPField_ValidIP_ReturnsNull" methodname="ValidateIPField_ValidIP_ReturnsNull" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="308671531" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000027" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1092" name="ValidateMaskField_InvalidMask_ReturnsError" fullname="Tests.EditMode.Network.TestIPValidation.ValidateMaskField_InvalidMask_ReturnsError" methodname="ValidateMaskField_InvalidMask_ReturnsError" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="850012123" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000053" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1091" name="ValidateMaskField_ValidMask_ReturnsNull" fullname="Tests.EditMode.Network.TestIPValidation.ValidateMaskField_ValidMask_ReturnsNull" methodname="ValidateMaskField_ValidMask_ReturnsNull" classname="Tests.EditMode.Network.TestIPValidation" runstate="Runnable" seed="1056301657" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000027" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1101" name="TestRoutePersistence" fullname="Tests.EditMode.Network.TestRoutePersistence" classname="Tests.EditMode.Network.TestRoutePersistence" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001871" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1104" name="ActivityLoad_DoesNotCallClearTopology" fullname="Tests.EditMode.Network.TestRoutePersistence.ActivityLoad_DoesNotCallClearTopology" methodname="ActivityLoad_DoesNotCallClearTopology" classname="Tests.EditMode.Network.TestRoutePersistence" runstate="Runnable" seed="72180567" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000339" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1102" name="RouteConfiguredByDisc_PersistsAfterActivityRefresh" fullname="Tests.EditMode.Network.TestRoutePersistence.RouteConfiguredByDisc_PersistsAfterActivityRefresh" methodname="RouteConfiguredByDisc_PersistsAfterActivityRefresh" classname="Tests.EditMode.Network.TestRoutePersistence" runstate="Runnable" seed="465400596" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000538" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 192.168.1.0/255.255.255.0 -> 192.168.1.254 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1103" name="RoutePersistence_AfterMultipleDiscRounds_AllRoutesIntact" fullname="Tests.EditMode.Network.TestRoutePersistence.RoutePersistence_AfterMultipleDiscRounds_AllRoutesIntact" methodname="RoutePersistence_AfterMultipleDiscRounds_AllRoutesIntact" classname="Tests.EditMode.Network.TestRoutePersistence" runstate="Runnable" seed="269072470" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000648" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.254 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.254 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.254 via G0/1 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 172.16.0.0/255.255.0.0 -> 172.16.0.254 via G0/1 (Static)
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1105" name="TestRoutingTable" fullname="Tests.EditMode.Network.TestRoutingTable" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.001831" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1110" name="AddOspfRoute_SetsCorrectDefaults" fullname="Tests.EditMode.Network.TestRoutingTable.AddOspfRoute_SetsCorrectDefaults" methodname="AddOspfRoute_SetsCorrectDefaults" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="982094567" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000137" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1109" name="AddRipRoute_SetsCorrectDefaults" fullname="Tests.EditMode.Network.TestRoutingTable.AddRipRoute_SetsCorrectDefaults" methodname="AddRipRoute_SetsCorrectDefaults" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="945449530" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000095" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1107" name="AddStaticRoute_AddsEntryWithCorrectFields" fullname="Tests.EditMode.Network.TestRoutingTable.AddStaticRoute_AddsEntryWithCorrectFields" methodname="AddStaticRoute_AddsEntryWithCorrectFields" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1940264497" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000085" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1108" name="AddStaticRoute_MultipleRoutes_AllStored" fullname="Tests.EditMode.Network.TestRoutingTable.AddStaticRoute_MultipleRoutes_AllStored" methodname="AddStaticRoute_MultipleRoutes_AllStored" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1722789096" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000052" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1118" name="Clear_RemovesAllEntries" fullname="Tests.EditMode.Network.TestRoutingTable.Clear_RemovesAllEntries" methodname="Clear_RemovesAllEntries" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1987991580" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000069" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1106" name="Constructor_EmptyTable_HasNoEntries" fullname="Tests.EditMode.Network.TestRoutingTable.Constructor_EmptyTable_HasNoEntries" methodname="Constructor_EmptyTable_HasNoEntries" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1110130674" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000042" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1112" name="FindBestRoute_DefaultRoute_AsFallback" fullname="Tests.EditMode.Network.TestRoutingTable.FindBestRoute_DefaultRoute_AsFallback" methodname="FindBestRoute_DefaultRoute_AsFallback" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="4813561" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000066" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1111" name="FindBestRoute_ExactMatch_ReturnsCorrectEntry" fullname="Tests.EditMode.Network.TestRoutingTable.FindBestRoute_ExactMatch_ReturnsCorrectEntry" methodname="FindBestRoute_ExactMatch_ReturnsCorrectEntry" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1433153606" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000061" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1114" name="FindBestRoute_NoMatch_ReturnsNull" fullname="Tests.EditMode.Network.TestRoutingTable.FindBestRoute_NoMatch_ReturnsNull" methodname="FindBestRoute_NoMatch_ReturnsNull" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="161110656" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000039" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1113" name="FindBestRoute_UsesLowestMetric_WhenSamePrefixLength" fullname="Tests.EditMode.Network.TestRoutingTable.FindBestRoute_UsesLowestMetric_WhenSamePrefixLength" methodname="FindBestRoute_UsesLowestMetric_WhenSamePrefixLength" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1501567266" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000077" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1117" name="GetAllEntries_ReturnsCopy_NotReference" fullname="Tests.EditMode.Network.TestRoutingTable.GetAllEntries_ReturnsCopy_NotReference" methodname="GetAllEntries_ReturnsCopy_NotReference" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1431884933" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000060" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1115" name="GetPrefixLength_KnownMasks_ReturnsCorrect" fullname="Tests.EditMode.Network.TestRoutingTable.GetPrefixLength_KnownMasks_ReturnsCorrect" methodname="GetPrefixLength_KnownMasks_ReturnsCorrect" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="237340618" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000086" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1116" name="GetPrefixLength_UnknownMask_ReturnsZero" fullname="Tests.EditMode.Network.TestRoutingTable.GetPrefixLength_UnknownMask_ReturnsZero" methodname="GetPrefixLength_UnknownMask_ReturnsZero" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1588323828" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000033" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1119" name="GetTableSummary_ReturnsSummary" fullname="Tests.EditMode.Network.TestRoutingTable.GetTableSummary_ReturnsSummary" methodname="GetTableSummary_ReturnsSummary" classname="Tests.EditMode.Network.TestRoutingTable" runstate="Runnable" seed="1320578578" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000065" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+          <test-suite type="TestSuite" id="1126" name="Simulation" fullname="Tests.EditMode.Simulation" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.011916" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1057" name="TestPredefinedScenarios" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.011757" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1065" name="AllScenarios_HaveAtLeastTwoDevices" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_HaveAtLeastTwoDevices" methodname="AllScenarios_HaveAtLeastTwoDevices" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="321336844" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.004438" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1064" name="AllScenarios_HaveNameAndDescription" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_HaveNameAndDescription" methodname="AllScenarios_HaveNameAndDescription" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1603479382" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000590" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1069" name="AllScenarios_HaveObjectivesAndHints" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_HaveObjectivesAndHints" methodname="AllScenarios_HaveObjectivesAndHints" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="340598630" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000606" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1068" name="AllScenarios_IPAddressesAreValid" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_IPAddressesAreValid" methodname="AllScenarios_IPAddressesAreValid" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="748654710" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000647" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1067" name="AllScenarios_IPConfigsReferenceValidDevices" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_IPConfigsReferenceValidDevices" methodname="AllScenarios_IPConfigsReferenceValidDevices" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="198386075" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000662" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1066" name="AllScenarios_LinksReferenceValidDevices" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.AllScenarios_LinksReferenceValidDevices" methodname="AllScenarios_LinksReferenceValidDevices" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1922996039" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000703" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1060" name="GetScenario_InvalidIndex_ReturnsNull" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenario_InvalidIndex_ReturnsNull" methodname="GetScenario_InvalidIndex_ReturnsNull" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1520496764" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000770" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Indice -1 fuera de rango (0-4)
+[PredefinedScenarios] Indice -1 fuera de rango (0-4)
+[PredefinedScenarios] Indice 99 fuera de rango (0-4)
+[PredefinedScenarios] Indice 99 fuera de rango (0-4)
+]]></output>
+              </test-case>
+              <test-case id="1059" name="GetScenario_ValidIndex_ReturnsCorrectScenario" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenario_ValidIndex_ReturnsCorrectScenario" methodname="GetScenario_ValidIndex_ReturnsCorrectScenario" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1292927069" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000507" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Obteniendo escenario 0: Estrella Simple
+[PredefinedScenarios] Obteniendo escenario 0: Estrella Simple
+]]></output>
+              </test-case>
+              <test-case id="1058" name="GetScenarioCount_ReturnsFive" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenarioCount_ReturnsFive" methodname="GetScenarioCount_ReturnsFive" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1261488567" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000284" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+]]></output>
+              </test-case>
+              <test-case id="1070" name="GetScenarios_ReturnsCopy" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenarios_ReturnsCopy" methodname="GetScenarios_ReturnsCopy" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1973398538" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000787" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+[PredefinedScenarios] GetScenarios: 5 escenarios
+]]></output>
+              </test-case>
+              <test-case id="1063" name="GetScenariosByDifficulty_Avanzado_ReturnsCorrectCount" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenariosByDifficulty_Avanzado_ReturnsCorrectCount" methodname="GetScenariosByDifficulty_Avanzado_ReturnsCorrectCount" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1795340609" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000364" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+]]></output>
+              </test-case>
+              <test-case id="1061" name="GetScenariosByDifficulty_Basico_ReturnsCorrectCount" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenariosByDifficulty_Basico_ReturnsCorrectCount" methodname="GetScenariosByDifficulty_Basico_ReturnsCorrectCount" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1924273587" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000283" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+]]></output>
+              </test-case>
+              <test-case id="1062" name="GetScenariosByDifficulty_Intermedio_ReturnsCorrectCount" fullname="Tests.EditMode.Simulation.TestPredefinedScenarios.GetScenariosByDifficulty_Intermedio_ReturnsCorrectCount" methodname="GetScenariosByDifficulty_Intermedio_ReturnsCorrectCount" classname="Tests.EditMode.Simulation.TestPredefinedScenarios" runstate="Runnable" seed="1626843263" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000279" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[PredefinedScenarios] Iniciando inicializacion de escenarios
+[PredefinedScenarios] Iniciando inicializacion de escenarios
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+          <test-suite type="TestSuite" id="1125" name="Tangible" fullname="Tests.EditMode.Tangible" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.003921" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1041" name="TestRouteBuilderState" fullname="Tests.EditMode.Tangible.TestRouteBuilderState" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.003558" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1056" name="ApplyToRouter_CanBeCalledMultipleTimes" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_CanBeCalledMultipleTimes" methodname="ApplyToRouter_CanBeCalledMultipleTimes" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="318296162" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000803" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1053" name="ApplyToRouter_NonExistentRouter_DoesNothing" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_NonExistentRouter_DoesNothing" methodname="ApplyToRouter_NonExistentRouter_DoesNothing" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1585731271" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000113" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1049" name="ApplyToRouter_WhenComplete_AddsStaticRoute" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_WhenComplete_AddsStaticRoute" methodname="ApplyToRouter_WhenComplete_AddsStaticRoute" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="653548859" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000409" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (Static)
+]]></output>
+              </test-case>
+              <test-case id="1052" name="ApplyToRouter_WhenIncomplete_DoesNothing" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_WhenIncomplete_DoesNothing" methodname="ApplyToRouter_WhenIncomplete_DoesNothing" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="195505575" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000102" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1051" name="ApplyToRouter_WithOSPFProtocol_SetsProtocol" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_WithOSPFProtocol_SetsProtocol" methodname="ApplyToRouter_WithOSPFProtocol_SetsProtocol" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1679879577" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000421" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (OSPF)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (OSPF)
+]]></output>
+              </test-case>
+              <test-case id="1050" name="ApplyToRouter_WithProtocolOverride_SetsProtocol" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.ApplyToRouter_WithProtocolOverride_SetsProtocol" methodname="ApplyToRouter_WithProtocolOverride_SetsProtocol" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="743006356" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000395" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (RIP)
+[RouteBuilder] Ruta agregada a Router_1: 10.0.0.0/255.0.0.0 -> 10.0.0.1 via G0/0 (RIP)
+]]></output>
+              </test-case>
+              <test-case id="1042" name="IsComplete_AllFieldsSet_ReturnsTrue" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_AllFieldsSet_ReturnsTrue" methodname="IsComplete_AllFieldsSet_ReturnsTrue" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="2058465647" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000052" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1047" name="IsComplete_EmptyStrings_ReturnsFalse" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_EmptyStrings_ReturnsFalse" methodname="IsComplete_EmptyStrings_ReturnsFalse" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="323031965" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000045" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1043" name="IsComplete_MissingDestination_ReturnsFalse" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_MissingDestination_ReturnsFalse" methodname="IsComplete_MissingDestination_ReturnsFalse" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1028508956" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000047" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1046" name="IsComplete_MissingInterface_ReturnsFalse" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_MissingInterface_ReturnsFalse" methodname="IsComplete_MissingInterface_ReturnsFalse" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="384089646" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000040" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1045" name="IsComplete_MissingNextHop_ReturnsFalse" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_MissingNextHop_ReturnsFalse" methodname="IsComplete_MissingNextHop_ReturnsFalse" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1918824111" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000039" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1044" name="IsComplete_MissingSubnetMask_ReturnsFalse" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_MissingSubnetMask_ReturnsFalse" methodname="IsComplete_MissingSubnetMask_ReturnsFalse" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="438398102" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000038" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1048" name="IsComplete_ProtocolNotRequired_ReturnsTrue" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.IsComplete_ProtocolNotRequired_ReturnsTrue" methodname="IsComplete_ProtocolNotRequired_ReturnsTrue" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1394676774" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000045" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1054" name="Reset_ClearsAllRouteFields" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.Reset_ClearsAllRouteFields" methodname="Reset_ClearsAllRouteFields" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="1873796327" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000076" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1055" name="Reset_DoesNotClearProtocol" fullname="Tests.EditMode.Tangible.TestRouteBuilderState.Reset_DoesNotClearProtocol" methodname="Reset_DoesNotClearProtocol" classname="Tests.EditMode.Tangible.TestRouteBuilderState" runstate="Runnable" seed="227762963" result="Passed" start-time="2026-05-26 03:16:55Z" end-time="2026-05-26 03:16:55Z" duration="0.000047" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: /Users/sebastianmarin/Library/Application Support/DefaultCompany/SimuladorRedes/TestResults.xml
+Saving results to: /Users/sebastianmarin/Library/Application Support/DefaultCompany/SimuladorRedes/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

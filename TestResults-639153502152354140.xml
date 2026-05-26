@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="22" result="Failed(Child)" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.5579112">
+  <test-suite type="TestSuite" id="1000" name="SimuladorRedes" fullname="SimuladorRedes" runstate="Runnable" testcasecount="231" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.557911" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1252" name="Assembly-CSharp-Editor.dll" fullname="/Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="231" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.547883" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="42567" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1255" name="Tests" fullname="Tests" runstate="Runnable" testcasecount="196" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.538414" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1256" name="EditMode" fullname="Tests.EditMode" runstate="Runnable" testcasecount="196" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.537274" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1257" name="UI" fullname="Tests.EditMode.UI" runstate="Runnable" testcasecount="22" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.535962" total="22" passed="19" failed="3" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1041" name="TestActivityPanelFactory" fullname="Tests.EditMode.UI.TestActivityPanelFactory" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.258296" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1044" name="CreateBestRoutePanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateBestRoutePanel_WithCallbacks_ReturnsPanel" methodname="CreateBestRoutePanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="257162482" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.120478" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1042" name="CreateBuildTopologyInfoPanel_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateBuildTopologyInfoPanel_ReturnsPanel" methodname="CreateBuildTopologyInfoPanel_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="1773254320" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.008259" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1047" name="CreateDynamicRoutingPanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateDynamicRoutingPanel_WithCallbacks_ReturnsPanel" methodname="CreateDynamicRoutingPanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="1090607442" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.031305" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1043" name="CreateFindFaultPanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateFindFaultPanel_WithCallbacks_ReturnsPanel" methodname="CreateFindFaultPanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="743202922" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.014406" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1045" name="CreateRoutingTablesPanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateRoutingTablesPanel_WithCallbacks_ReturnsPanel" methodname="CreateRoutingTablesPanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="2139703451" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.015644" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1049" name="CreateScenarioInfoPanel_WithDummyData_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateScenarioInfoPanel_WithDummyData_ReturnsPanel" methodname="CreateScenarioInfoPanel_WithDummyData_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="1538425719" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.013602" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1048" name="CreateScenariosPanel_WithDummyData_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateScenariosPanel_WithDummyData_ReturnsPanel" methodname="CreateScenariosPanel_WithDummyData_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="1371560316" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.032348" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1046" name="CreateStaticRoutingPanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestActivityPanelFactory.CreateStaticRoutingPanel_WithCallbacks_ReturnsPanel" methodname="CreateStaticRoutingPanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestActivityPanelFactory" runstate="Runnable" seed="1911023142" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.016884" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1050" name="TestConfigPanelFactory" fullname="Tests.EditMode.UI.TestConfigPanelFactory" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" testcasecount="7" result="Failed" site="Child" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.124996" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1056" name="CreateACLPanel_WithTopology_DoesNotThrow" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateACLPanel_WithTopology_DoesNotThrow" methodname="CreateACLPanel_WithTopology_DoesNotThrow" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="1968218024" result="Failed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.022660" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: No Exception to be thrown
+  But was:  <System.NullReferenceException: Object reference not set to an instance of an object
+  at SimRedes.UI.ConfigPanelFactory.CreateACLPanel (UnityEngine.Transform canvas, SimRedes.Network.TopologyManager topology) [0x001e0] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Scripts/UI/ConfigPanelFactory.cs:511 
+  at Tests.EditMode.UI.TestConfigPanelFactory.<CreateACLPanel_WithTopology_DoesNotThrow>b__12_0 () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:147 
+  at NUnit.Framework.Constraints.ThrowsConstraint+VoidInvocationDescriptor.Invoke () [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0 
+  at NUnit.Framework.Constraints.ThrowsConstraint+ExceptionInterceptor.Intercept (System.Object invocation) [0x00041] in <f577cd9686154d6ab10efd7e65e64366>:0 >
+]]></message>
+                  <stack-trace><![CDATA[at Tests.EditMode.UI.TestConfigPanelFactory.CreateACLPanel_WithTopology_DoesNotThrow () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:145
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1054" name="CreateAddRoutePanel_WithNode_ReturnsPanel" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateAddRoutePanel_WithNode_ReturnsPanel" methodname="CreateAddRoutePanel_WithNode_ReturnsPanel" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="117589302" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.013693" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1052" name="CreateARPPanel_WithNode_ReturnsPanel" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateARPPanel_WithNode_ReturnsPanel" methodname="CreateARPPanel_WithNode_ReturnsPanel" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="2064366687" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:54Z" duration="0.013702" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1051" name="CreateIPConfigPanel_WithData_ReturnsValidationText" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateIPConfigPanel_WithData_ReturnsValidationText" methodname="CreateIPConfigPanel_WithData_ReturnsValidationText" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="1156838724" result="Passed" start-time="2026-05-26 04:56:54Z" end-time="2026-05-26 04:56:55Z" duration="0.021455" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1057" name="CreateNATPanel_WithTopology_DoesNotThrow" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateNATPanel_WithTopology_DoesNotThrow" methodname="CreateNATPanel_WithTopology_DoesNotThrow" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="988653601" result="Failed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.017279" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: No Exception to be thrown
+  But was:  <System.NullReferenceException: Object reference not set to an instance of an object
+  at SimRedes.UI.ConfigPanelFactory.CreateNATPanel (UnityEngine.Transform canvas, SimRedes.Network.TopologyManager topology) [0x001eb] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Scripts/UI/ConfigPanelFactory.cs:648 
+  at Tests.EditMode.UI.TestConfigPanelFactory.<CreateNATPanel_WithTopology_DoesNotThrow>b__13_0 () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:159 
+  at NUnit.Framework.Constraints.ThrowsConstraint+VoidInvocationDescriptor.Invoke () [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0 
+  at NUnit.Framework.Constraints.ThrowsConstraint+ExceptionInterceptor.Intercept (System.Object invocation) [0x00041] in <f577cd9686154d6ab10efd7e65e64366>:0 >
+]]></message>
+                  <stack-trace><![CDATA[at Tests.EditMode.UI.TestConfigPanelFactory.CreateNATPanel_WithTopology_DoesNotThrow () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:157
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1053" name="CreateRoutingPanel_WithNode_ReturnsPanel" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateRoutingPanel_WithNode_ReturnsPanel" methodname="CreateRoutingPanel_WithNode_ReturnsPanel" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="1013338222" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.018596" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+              <test-case id="1055" name="CreateVLANPanel_WithTopology_DoesNotThrow" fullname="Tests.EditMode.UI.TestConfigPanelFactory.CreateVLANPanel_WithTopology_DoesNotThrow" methodname="CreateVLANPanel_WithTopology_DoesNotThrow" classname="Tests.EditMode.UI.TestConfigPanelFactory" runstate="Runnable" seed="1656991572" result="Failed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.015327" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: No Exception to be thrown
+  But was:  <System.NullReferenceException: Object reference not set to an instance of an object
+  at SimRedes.UI.ConfigPanelFactory.CreateVLANPanel (UnityEngine.Transform canvas, SimRedes.Network.TopologyManager topology) [0x001f8] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Scripts/UI/ConfigPanelFactory.cs:374 
+  at Tests.EditMode.UI.TestConfigPanelFactory.<CreateVLANPanel_WithTopology_DoesNotThrow>b__11_0 () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:135 
+  at NUnit.Framework.Constraints.ThrowsConstraint+VoidInvocationDescriptor.Invoke () [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0 
+  at NUnit.Framework.Constraints.ThrowsConstraint+ExceptionInterceptor.Intercept (System.Object invocation) [0x00041] in <f577cd9686154d6ab10efd7e65e64366>:0 >
+]]></message>
+                  <stack-trace><![CDATA[at Tests.EditMode.UI.TestConfigPanelFactory.CreateVLANPanel_WithTopology_DoesNotThrow () [0x00000] in /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes/Assets/Editor/Tests/UI/TestConfigPanelFactory.cs:133
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[VLAN] Created VLAN 1
+[VLAN] Created VLAN 1
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1058" name="TestUIPanelFactory" fullname="Tests.EditMode.UI.TestUIPanelFactory" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.152085" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1061" name="CreateActivitiesPanel_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateActivitiesPanel_WithCallbacks_ReturnsPanel" methodname="CreateActivitiesPanel_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="1197696473" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.025181" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1062" name="CreateConnectivityPanel_ReturnsPanelWithRefs" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateConnectivityPanel_ReturnsPanelWithRefs" methodname="CreateConnectivityPanel_ReturnsPanelWithRefs" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="570818532" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.014019" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1064" name="CreateDiscLegendPanel_ReturnsPanelWithBackBtn" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateDiscLegendPanel_ReturnsPanelWithBackBtn" methodname="CreateDiscLegendPanel_ReturnsPanelWithBackBtn" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="1795565675" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.050503" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1063" name="CreateInstructionsPanel_ReturnsPanelWithBackBtn" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateInstructionsPanel_ReturnsPanelWithBackBtn" methodname="CreateInstructionsPanel_ReturnsPanelWithBackBtn" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="783309164" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.027365" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1060" name="CreateMainMenu_WithCallbacks_ReturnsPanel" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateMainMenu_WithCallbacks_ReturnsPanel" methodname="CreateMainMenu_WithCallbacks_ReturnsPanel" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="951695074" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.030006" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Navigator] Panel configurado: MainMenuPanel, botones: 6
+[Navigator] Panel configurado: MainMenuPanel, botones: 6
+]]></output>
+              </test-case>
+              <test-case id="1065" name="CreateNumericKeypad_Creates12Keys" fullname="Tests.EditMode.UI.TestUIPanelFactory.CreateNumericKeypad_Creates12Keys" methodname="CreateNumericKeypad_Creates12Keys" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="1583944169" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.003941" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1059" name="GetFont_ReturnsValidFont" fullname="Tests.EditMode.UI.TestUIPanelFactory.GetFont_ReturnsValidFont" methodname="GetFont_ReturnsValidFont" classname="Tests.EditMode.UI.TestUIPanelFactory" runstate="Runnable" seed="318868460" result="Passed" start-time="2026-05-26 04:56:55Z" end-time="2026-05-26 04:56:55Z" duration="0.000167" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: /Users/sebastianmarin/Library/Application Support/DefaultCompany/SimuladorRedes/TestResults.xml
+Saving results to: /Users/sebastianmarin/Library/Application Support/DefaultCompany/SimuladorRedes/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

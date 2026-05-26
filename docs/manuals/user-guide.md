@@ -143,12 +143,12 @@ Panel con 7 actividades académicas numeradas (0-6):
 
 | # | Actividad | Descripción |
 |:-:|-----------|-------------|
-| 0 | **Construir Topología** | El sistema detecta automáticamente el tipo de topología que construyes |
-| 1 | **Encontrar Fallos** | El sistema genera un fallo, tú debes diagnosticarlo y repararlo |
-| 2 | **Tablas de Enrutamiento** | Visualiza las tablas de routing de todos los routers |
-| 3 | **Mejor Ruta** | Elige la mejor ruta entre varias opciones (quiz de 4 escenarios) |
-| 4 | **Enrutamiento Estático** | Configura rutas estáticas en los routers |
-| 5 | **Enrutamiento Dinámico** | Simula RIP u OSPF y observa la convergencia |
+| 0 | **Construye la Topología** | El sistema detecta automáticamente el tipo de topología que construyes |
+| 1 | **Encuentra el Fallo** | El sistema genera un fallo, tú debes diagnosticarlo y repararlo |
+| 2 | **Tabla de Enrutamiento Tangible** | Visualiza las tablas de routing de todos los routers |
+| 3 | **Simulación de Mejor Ruta** | Elige la mejor ruta entre varias opciones (quiz de 4 escenarios) |
+| 4 | **Enrutamiento Estático Tangible** | Configura rutas estáticas en los routers |
+| 5 | **Protocolo de Enrutamiento Dinámico Tangible** | Simula RIP u OSPF y observa la convergencia |
 | 6 | **Escenarios** | Carga escenarios preconfigurados con diferentes niveles |
 
 ### Opción 3: PRUEBAS Y CONEXIONES
@@ -195,8 +195,8 @@ Cierra la aplicación.
 | 2 | 2 | **Switch** 🟩 Cyan | Colocar para crear un switch |
 | 3 | 3 | **PC** 🟩 Verde | Colocar para crear un PC |
 | 4 | 4 | **Enlace** 🟨 Amarillo | **Virtual**: se crean automáticamente al acercar nodos o manualmente en modo CONEXIÓN |
-| 5 | 5 | **Fallo** 🟥 Rojo | **Virtual**: generado por Actividad 1 (Encontrar Fallos) |
-| 6 | - | **Protocolo** 🟪 Magenta | **Virtual**: seleccionado en Actividad 5 (Enrutamiento Dinámico) |
+| 5 | 5 | **Fallo** 🟥 Rojo | **Virtual**: generado por Actividad 1 (Encuentra el Fallo) |
+| 6 | - | **Protocolo** 🟪 Magenta | **Virtual**: seleccionado en Actividad 5 (Protocolo de Enrutamiento Dinámico Tangible) |
 
 > 💡 En modo Debug (PC sin mesa IDEUM), las teclas 1-6 simulan todos los discos. En producción, solo los 3 físicos existen en la mesa.
 
@@ -256,7 +256,7 @@ El sistema detecta automáticamente qué tipo de topología estás construyendo:
 
 El tipo aparece en el panel de información (esquina superior derecha).
 
-### 6.1 Encontrar Fallos
+### 6.1 Encuentra el Fallo
 
 El sistema genera un fallo aleatorio. Debes diagnosticarlo y repararlo:
 
@@ -275,14 +275,14 @@ El sistema genera un fallo aleatorio. Debes diagnosticarlo y repararlo:
 - **Interfaz Down**: Una interfaz está administrativamente caída
 - **Gateway Faltante**: Un PC no tiene gateway configurado
 
-### 6.2 Tablas de Enrutamiento
+### 6.2 Tabla de Enrutamiento Tangible
 
 Visualiza las tablas de routing de todos los routers en la topología:
 
 - Muestra: Red destino, Máscara, Next Hop, Interfaz, Métrica, Protocolo
 - Útil para verificar rutas configuradas con discos 7-18
 
-### 6.3 Mejor Ruta
+### 6.3 Simulación de Mejor Ruta
 
 Actividad tipo quiz con 4 escenarios:
 

@@ -68,9 +68,11 @@ Los discos 7-18 no crean nodos en la topología. Al colocarlos sobre un router, 
 
 ### 7 Actividades Académicas
 1. Construir Topología
-2. Encontrar Fallos
-3. Tablas de Enrutamiento
-4. **Mejor Ruta** (selección de mejor ruta por longest prefix match + métrica)
+2. Encuentra el Fallo
+
+3. Tabla de Enrutamiento Tangible
+
+4. **Simulación de Mejor Ruta** (selección de mejor ruta por longest prefix match + métrica)
 5. Enrutamiento Estático
 6. Enrutamiento Dinámico (RIP/OSPF)
 7. Escenarios Preconfigurados
@@ -327,7 +329,7 @@ El `EditorBuildSettings.asset` debe tener `Assets/Main.unity` como primera escen
 ### Baja Prioridad
 - Métricas de desempeño detalladas
 
-## 9. Nueva Actividad: "Mejor Ruta" (Mayo 2026)
+## 9. Nueva Actividad: "Simulación de Mejor Ruta" (Mayo 2026)
 
 Actividad académica #4 donde el estudiante debe seleccionar la mejor ruta hacia un destino entre varias opciones.
 

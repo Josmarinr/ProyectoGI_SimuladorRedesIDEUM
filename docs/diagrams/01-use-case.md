@@ -20,9 +20,11 @@ graph TB
 
     subgraph "Actividades Académicas"
       UC5[Construir Topología]
-      UC6[Encontrar Fallos]
-      UC7[Ver Tablas de Enrutamiento]
-      UC8[Seleccionar Mejor Ruta]
+      UC6[Encuentra el Fallo]
+
+      UC7[Ver Tabla de Enrutamiento Tangible]
+
+      UC8[Seleccionar Mejor Ruta - Simulación]
       UC9[Configurar Rutas Estáticas]
       UC10[Simular Enrutamiento Dinámico]
       UC11[Cargar Escenarios]

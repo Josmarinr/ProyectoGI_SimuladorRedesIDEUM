@@ -7,7 +7,7 @@ Ubicación: `Assets/Scripts/Simulation/ScoringSystem.cs`
 ### Uso
 ```csharp
 // Iniciar sesión de evaluación
-ScoringSystem.Instance.StartSession("Construir Topologia");
+ScoringSystem.Instance.StartSession("Construye la Topología");
 
 // Agregar puntos por tareas
 ScoringSystem.Instance.AddTaskCompleted("Configurar router");

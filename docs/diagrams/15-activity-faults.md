@@ -1,4 +1,4 @@
-# DA-02: Diagrama de Actividad — Encontrar Fallos
+# DA-02: Diagrama de Actividad — Encuentra el Fallo
 
 > **Propósito**: Mostrar el flujo de la Actividad 1 donde el sistema genera un fallo aleatorio y el estudiante debe diagnosticarlo y resolverlo.
 

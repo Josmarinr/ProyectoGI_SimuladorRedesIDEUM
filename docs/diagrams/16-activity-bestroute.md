@@ -1,6 +1,6 @@
-# DA-03: Diagrama de Actividad — Mejor Ruta
+# DA-03: Diagrama de Actividad — Simulación de Mejor Ruta
 
-> **Propósito**: Mostrar el flujo de la Actividad 3 (Mejor Ruta) donde el estudiante debe seleccionar la mejor ruta hacia un destino entre varias opciones.
+> **Propósito**: Mostrar el flujo de la Actividad 3 (Simulación de Mejor Ruta) donde el estudiante debe seleccionar la mejor ruta hacia un destino entre varias opciones.
 
 ```mermaid
 graph TB

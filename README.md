@@ -18,7 +18,7 @@ Simulador de redes académicas para mesas táctiles **IDEUM 55"** utilizando **U
 ## Características Principales
 
 - **18 tipos de disco**: Router, Switch, PC, Enlace, Fallo, Protocolo + 12 de configuración de routing
-- **7 actividades académicas**: Construir Topología, Encontrar Fallos, Tablas de Enrutamiento, **Mejor Ruta**, Enrutamiento Estático, Enrutamiento Dinámico, Escenarios Preconfigurados
+- **7 actividades académicas**: Construye la Topología, Encuentra el Fallo, Tabla de Enrutamiento Tangible, **Simulación de Mejor Ruta**, Enrutamiento Estático Tangible, Protocolo de Enrutamiento Dinámico Tangible, Escenarios Preconfigurados
 - **Sistema de puntajes**: Evaluación automática con bonos y penalizaciones, panel visible en tiempo real
 - **Panel de puntaje**: Esquina inferior derecha muestra puntuación actual actualizada cada segundo
 - **Validación de IP**: Validación en tiempo real de direcciones IP y máscaras de subred
@@ -248,7 +248,7 @@ Enlaces = nodos → Anillo (cada uno al siguiente)
 Por defecto → Bus
 ```
 
-### 2. Encontrar Fallos ✓
+### 2. Encuentra el Fallo ✓
 Genera fallos aleatorios para diagnóstico:
 - Cable desconectado
 - IP incorrecta
@@ -256,25 +256,25 @@ Genera fallos aleatorios para diagnóstico:
 - Interfaz down (administrativamente)
 - Default gateway faltante
 
-### 3. Tablas de Enrutamiento ✓
+### 3. Tabla de Enrutamiento Tangible ✓
 - RoutingTable para cada NetworkNode
 - Métricas y next hops
 - Botón PING integrado
 - Visualización de rutas configuradas
 
-### 4. Mejor Ruta ✓ (NUEVA)
+### 4. Simulación de Mejor Ruta ✓
 Selección de la mejor ruta hacia un destino entre varias opciones:
 - **4 escenarios** con diferentes combinaciones de prefijo/métrica
 - El estudiante elige la ruta correcta (longest prefix match + lowest metric)
 - Explicación detallada de la respuesta correcta
 - Puntaje acumulado visible
 
-### 5. Enrutamiento Estático ✓
+### 5. Enrutamiento Estático Tangible ✓
 - El estudiante define rutas estáticas
 - Validación de conectividad
 - Botón PING para verificar rutas
 
-### 6. Enrutamiento Dinámico ✓
+### 6. Protocolo de Enrutamiento Dinámico Tangible ✓
 - **RIP**: Conteo de hops (máx 15)
 - **OSPF**: Costo por enlace
 - Advertisement automático cada 3 segundos
@@ -420,7 +420,7 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 | # | Bug | Síntoma | Fix |
 |---|-----|---------|-----|
 | 1 | **PRUEBAS Y CONEXIONES no funcionaba** | Al entrar, las teclas 1/2/3 no creaban dispositivos. No se podía hacer ping. | `ShowConnectivityPanel()` ahora llama `SetupManagers()` + `CreateVisualizer()` + `SubscribeToTopologyEvents()` |
-| 2 | **Encontrar Fallos limpiaba topología** | Al resolver un fallo, se borraban todos los nodos → la actividad se estancaba | `OnSolveClicked()` ya no llama `ClearTopology()`. Nuevo método `FixFault()` repara el fallo específico sin borrar la red |
+| 2 | **Encuentra el Fallo limpiaba topología** | Al resolver un fallo, se borraban todos los nodos → la actividad se estancaba | `OnSolveClicked()` ya no llama `ClearTopology()`. Nuevo método `FixFault()` repara el fallo específico sin borrar la red |
 | 3 | **Ping fallaba con Switches** | Switch no tiene IP, pero el código requería IP en ambos extremos → ping siempre fallaba | `CheckConnectivity()` ahora reconoce Switch como L2 transparente |
 | 4 | **Escenarios sin controles** | ESC/P/R no funcionaban en escenarios preconfigurados | `LoadScenario()` ahora llama `SetupManagers()` + crea `SimulationControls` + `ScoringSystem` |
 | 5 | **UI estática en Actividades 3 y 4** | Paneles de RoutingTables y StaticRouting mostraban texto hardcodeado | Conectar referencias `tableText`/`routesText`/`infoText` a los componentes de actividad desde SceneSetup |
@@ -430,7 +430,7 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 | 9 | **Doble ESC** | Dos handlers para ESC → conflicto | ESC unificado en SimulationControls |
 | 10 | **Routing faltante escenarios 2-4** | Pings entre subredes fallaban sin rutas | Rutas estáticas auto-configuradas en BuildScenarioTopology |
 | 11 | **Tecla 4 creaba Unknown** | Key 4 creaba nodo "Enlace" sin tipo válido | Cambiado a ToggleLinkMode("connect") |
-| 12 | **BestRoute activity faltante** | No existía clase ni panel para actividad "Mejor Ruta" | Nuevo BestRouteActivity.cs + panel |
+| 12 | **BestRoute activity faltante** | No existía clase ni panel para actividad "Simulación de Mejor Ruta" | Nuevo BestRouteActivity.cs + panel |
 | 13 | **Discos routing sin registro** | IDs 7-18 no estaban en DefaultConfiguration | Agregados con nombres y colores |
 
 ### Conocidos Actuales
@@ -455,12 +455,12 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 ### Completado ✓
 - Sistema de menú principal con navegación por teclado + mouse (sin numeración)
 - **7 actividades académicas completas**:
-  1. Construir Topología ✓
-  2. Encontrar Fallos ✓ (FIXED: ya no limpia topología al resolver)
-  3. Tablas de Enrutamiento ✓
-  4. Mejor Ruta ✓ (NUEVA)
-  5. Enrutamiento Estático ✓
-  6. Enrutamiento Dinámico (RIP/OSPF) ✓
+  1. Construye la Topología ✓
+  2. Encuentra el Fallo ✓ (FIXED: ya no limpia topología al resolver)
+  3. Tabla de Enrutamiento Tangible ✓
+  4. Simulación de Mejor Ruta ✓
+  5. Enrutamiento Estático Tangible ✓
+  6. Protocolo de Enrutamiento Dinámico Tangible (RIP/OSPF) ✓
   7. Escenarios Preconfigurados ✓ (FIXED: ahora con controles completos)
 - Panel de instrucciones de uso (Cómo Usar) con 2 columnas
 - Panel de pruebas de conectividad (ConnectivityTestPanel) (FIXED: ahora con managers activos)
@@ -477,7 +477,7 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 - TouchScriptDisabler para ocultar cursores táctiles en editor
 - **Panel de configuración de IP** con teclado numérico compacto
 - **Tablas ARP** para routers
-- **Tablas de Enrutamiento** editables para routers
+- **Tabla de Enrutamiento Tangible** editable para routers
 - **Validación de IP** en tiempo real
 - **Ping Visual Animado** con paquete siguiendo la ruta real
 - **CheckConnectivity** con soporte para Switches (L2 transparentes) (FIXED)

@@ -30,11 +30,11 @@
 ### Diagramas de Actividad
 | Archivo | Descripción |
 |---------|-------------|
-| [`diagrams/14-activity-topology.md`](diagrams/14-activity-topology.md) | Actividad: Construir Topología |
-| [`diagrams/15-activity-faults.md`](diagrams/15-activity-faults.md) | Actividad: Encontrar Fallos |
-| [`diagrams/16-activity-bestroute.md`](diagrams/16-activity-bestroute.md) | Actividad: Mejor Ruta |
-| [`diagrams/17-activity-static.md`](diagrams/17-activity-static.md) | Actividad: Enrutamiento Estático |
-| [`diagrams/18-activity-dynamic.md`](diagrams/18-activity-dynamic.md) | Actividad: Enrutamiento Dinámico |
+| [`diagrams/14-activity-topology.md`](diagrams/14-activity-topology.md) | Actividad: Construye la Topología |
+| [`diagrams/15-activity-faults.md`](diagrams/15-activity-faults.md) | Actividad: Encuentra el Fallo |
+| [`diagrams/16-activity-bestroute.md`](diagrams/16-activity-bestroute.md) | Actividad: Simulación de Mejor Ruta |
+| [`diagrams/17-activity-static.md`](diagrams/17-activity-static.md) | Actividad: Enrutamiento Estático Tangible |
+| [`diagrams/18-activity-dynamic.md`](diagrams/18-activity-dynamic.md) | Actividad: Protocolo de Enrutamiento Dinámico Tangible |
 
 ### Diagramas de Estado
 | Archivo | Descripción |
