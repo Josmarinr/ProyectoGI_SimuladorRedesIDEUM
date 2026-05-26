@@ -42,3 +42,15 @@ crashlytics-*
 
 # iOS
 *.ipa
+
+# User-specific Unity settings
+UserSettings/
+
+# Test results
+TestResults-*.xml
+
+# Crash dumps
+mono_crash.*.json
+
+# Junk
+nul
