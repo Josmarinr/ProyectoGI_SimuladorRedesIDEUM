@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 using SimRedes.Network;
@@ -56,6 +57,7 @@ namespace SimRedes.UI
             float inputX = 70;
             float fieldY = panelHeight / 2 - 95;
 
+            // ─── Etiqueta IP ───
             var ipLabelObj = new GameObject("IPLabel");
             ipLabelObj.transform.SetParent(panelObj.transform, false);
             var ipLabelRect = ipLabelObj.AddComponent<RectTransform>();
@@ -70,6 +72,10 @@ namespace SimRedes.UI
             ipLabelText.alignment = TextAnchor.MiddleRight;
             ipLabelText.font = bigFont;
 
+            // ─── Campo IP (sin InputField - solo Text + Button de seleccion) ───
+            string ipValue = nodeIP;
+            bool editingIP = true; // IP seleccionado por defecto
+
             var ipFieldObj = new GameObject("IPField");
             ipFieldObj.transform.SetParent(panelObj.transform, false);
             var ipFieldRect = ipFieldObj.AddComponent<RectTransform>();
@@ -83,7 +89,6 @@ namespace SimRedes.UI
             ipFieldImg.sprite = Sprite.Create(ipFieldTex, new Rect(0, 0, 260, 68), new Vector2(0.5f, 0.5f), 100);
             ipFieldImg.type = Image.Type.Sliced;
 
-            var ipField = ipFieldObj.AddComponent<InputField>();
             var ipFieldTextObj = new GameObject("Text");
             ipFieldTextObj.transform.SetParent(ipFieldObj.transform, false);
             var ipFieldTextRect = ipFieldTextObj.AddComponent<RectTransform>();
@@ -91,21 +96,24 @@ namespace SimRedes.UI
             ipFieldTextRect.anchorMax = Vector2.one;
             ipFieldTextRect.offsetMin = new Vector2(15, 2);
             ipFieldTextRect.offsetMax = new Vector2(-15, -2);
-            var ipFieldText = ipFieldTextObj.AddComponent<Text>();
-            ipFieldText.text = nodeIP;
-            ipFieldText.color = UIColors.textPrimary;
-            ipFieldText.fontSize = 20;
-            ipFieldText.alignment = TextAnchor.MiddleCenter;
-            ipFieldText.font = bigFont;
-            ipFieldText.raycastTarget = false;
-            ipField.textComponent = ipFieldText;
-            ipField.text = nodeIP;
-            UIComp.SetupNumericInput(ipField, (v) => { onIPChanged?.Invoke(v); });
-            // Boton invisible sobre el campo IP para capturar clicks y activar el InputField
-            CreateFieldClickOverlay(ipFieldObj, ipField);
+            var ipDisplayText = ipFieldTextObj.AddComponent<Text>();
+            ipDisplayText.text = ipValue;
+            ipDisplayText.color = UIColors.textPrimary;
+            ipDisplayText.fontSize = 20;
+            ipDisplayText.alignment = TextAnchor.MiddleCenter;
+            ipDisplayText.font = bigFont;
+            ipDisplayText.raycastTarget = false;
+
+            // Boton de seleccion del campo IP
+            CreateFieldSelectButton(ipFieldObj, () => {
+                editingIP = true;
+                ipFieldImg.color = UIColors.textAccent; // highlight
+                maskFieldImg.color = UIColors.surfaceElevated; // unhighlight
+            });
 
             fieldY -= 65;
 
+            // ─── Etiqueta Mascara ───
             var maskLabelObj = new GameObject("MaskLabel");
             maskLabelObj.transform.SetParent(panelObj.transform, false);
             var maskLabelRect = maskLabelObj.AddComponent<RectTransform>();
@@ -120,6 +128,9 @@ namespace SimRedes.UI
             maskLabelText.alignment = TextAnchor.MiddleRight;
             maskLabelText.font = bigFont;
 
+            // ─── Campo Mascara (sin InputField) ───
+            string maskValue = nodeMask;
+
             var maskFieldObj = new GameObject("MaskField");
             maskFieldObj.transform.SetParent(panelObj.transform, false);
             var maskFieldRect = maskFieldObj.AddComponent<RectTransform>();
@@ -133,7 +144,6 @@ namespace SimRedes.UI
             maskFieldImg.sprite = Sprite.Create(maskFieldTex, new Rect(0, 0, 260, 68), new Vector2(0.5f, 0.5f), 100);
             maskFieldImg.type = Image.Type.Sliced;
 
-            var maskField = maskFieldObj.AddComponent<InputField>();
             var maskFieldTextObj = new GameObject("Text");
             maskFieldTextObj.transform.SetParent(maskFieldObj.transform, false);
             var maskFieldTextRect = maskFieldTextObj.AddComponent<RectTransform>();
@@ -141,18 +151,24 @@ namespace SimRedes.UI
             maskFieldTextRect.anchorMax = Vector2.one;
             maskFieldTextRect.offsetMin = new Vector2(15, 2);
             maskFieldTextRect.offsetMax = new Vector2(-15, -2);
-            var maskFieldText = maskFieldTextObj.AddComponent<Text>();
-            maskFieldText.text = nodeMask;
-            maskFieldText.color = UIColors.textPrimary;
-            maskFieldText.fontSize = 20;
-            maskFieldText.alignment = TextAnchor.MiddleCenter;
-            maskFieldText.font = bigFont;
-            maskFieldText.raycastTarget = false;
-            maskField.textComponent = maskFieldText;
-            maskField.text = nodeMask;
-            UIComp.SetupNumericInput(maskField, (v) => { onMaskChanged?.Invoke(v); });
-            // Boton invisible sobre el campo Mascara para capturar clicks y activar el InputField
-            CreateFieldClickOverlay(maskFieldObj, maskField);
+            var maskDisplayText = maskFieldTextObj.AddComponent<Text>();
+            maskDisplayText.text = maskValue;
+            maskDisplayText.color = UIColors.textPrimary;
+            maskDisplayText.fontSize = 20;
+            maskDisplayText.alignment = TextAnchor.MiddleCenter;
+            maskDisplayText.font = bigFont;
+            maskDisplayText.raycastTarget = false;
+
+            // Boton de seleccion del campo Mascara
+            CreateFieldSelectButton(maskFieldObj, () => {
+                editingIP = false;
+                maskFieldImg.color = UIColors.textAccent;
+                ipFieldImg.color = UIColors.surfaceElevated;
+            });
+
+            // Highlight inicial: IP seleccionado
+            ipFieldImg.color = UIColors.textAccent;
+            maskFieldImg.color = UIColors.surfaceElevated;
 
             fieldY -= 65;
 
@@ -171,7 +187,61 @@ namespace SimRedes.UI
             validationText.font = smallFont;
 
             float keypadY = fieldY - 30;
-            UIPanelFactory.CreateNumericKeypad(panelObj.transform, keypadY, font, bigFont, ipField, maskField);
+            // Teclado numerico inline: usa editingIP, ipValue, maskValue directamente
+            // (sin InputField - todo el estado se maneja con variables de闭包)
+            string[] keys = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "DEL" };
+            float kSize = 54, kSpacing = 62, kStartX = -(kSpacing * 1.5f);
+            for (int ki = 0; ki < keys.Length; ki++)
+            {
+                int row = ki / 3, col = ki % 3;
+                float kx = kStartX + (col * kSpacing), ky = keypadY - (row * kSpacing);
+                var keyObj = new GameObject("Key_" + keys[ki]);
+                keyObj.transform.SetParent(panelObj.transform, false);
+                var kRect = keyObj.AddComponent<RectTransform>();
+                kRect.anchorMin = new Vector2(0.5f, 0.5f);
+                kRect.anchorMax = new Vector2(0.5f, 0.5f);
+                kRect.anchoredPosition = new Vector2(kx, ky);
+                kRect.sizeDelta = new Vector2(kSize, kSize);
+                var kImg = keyObj.AddComponent<Image>();
+                Texture2D kTex = UIComp.CreateRoundedRectTexture((int)kSize, (int)kSize, 10, UIColors.buttonNormal, UIColors.borderAccent, 1f);
+                kImg.sprite = Sprite.Create(kTex, new Rect(0, 0, (int)kSize, (int)kSize), new Vector2(0.5f, 0.5f), 100);
+                kImg.type = Image.Type.Sliced;
+                var kTextObj = new GameObject("Text");
+                kTextObj.transform.SetParent(keyObj.transform, false);
+                var kTextRect = kTextObj.AddComponent<RectTransform>();
+                kTextRect.anchorMin = Vector2.zero;
+                kTextRect.anchorMax = Vector2.one;
+                kTextRect.offsetMin = Vector2.zero;
+                kTextRect.offsetMax = Vector2.zero;
+                var kText = kTextObj.AddComponent<Text>();
+                kText.text = keys[ki];
+                kText.color = UIColors.textPrimary;
+                kText.fontSize = keys[ki] == "DEL" ? 10 : 20;
+                kText.alignment = TextAnchor.MiddleCenter;
+                kText.font = keys[ki] == "DEL" ? font : bigFont;
+                kText.raycastTarget = false;
+
+                string captured = keys[ki];
+                var kTrigger = keyObj.AddComponent<EventTrigger>();
+                var kEntry = new EventTrigger.Entry();
+                kEntry.eventID = EventTriggerType.PointerDown;
+                kEntry.callback.AddListener((data) => {
+                    string txt = editingIP ? ipValue : maskValue;
+                    if (captured == "DEL") {
+                        if (txt.Length > 0) txt = txt.Substring(0, txt.Length - 1);
+                    } else if (captured == ".") {
+                        if (txt.Length > 0 && txt[txt.Length-1] != '.') txt += ".";
+                    } else {
+                        if (txt.Length < 18) txt += captured;
+                    }
+                    if (editingIP) {
+                        ipValue = txt; ipDisplayText.text = txt; onIPChanged?.Invoke(txt);
+                    } else {
+                        maskValue = txt; maskDisplayText.text = txt; onMaskChanged?.Invoke(txt);
+                    }
+                });
+                kTrigger.triggers.Add(kEntry);
+            }
 
             float btnY = keypadY - (4 * 62) - 20;
 
@@ -196,9 +266,6 @@ namespace SimRedes.UI
 
             // Asegurar que el panel este al frente del canvas (sobre el background semi-transparente)
             panelObj.transform.SetAsLastSibling();
-
-            // Activar campo IP por defecto para que el teclado numerico escriba ahi
-            ipField.ActivateInputField();
 
             return validationText;
         }
@@ -893,16 +960,15 @@ namespace SimRedes.UI
         }
 
         /// <summary>
-        /// Crea un boton invisible sobre el InputField para capturar clicks y activar el campo.
-        /// Los InputFields creados por codigo no siempre reciben focus al hacer click en ellos,
-        /// pero un Button siempre funciona. Este boton transparente se pone como hijo del campo
-        /// para interceptar los clicks y forzar la activacion del InputField.
+        /// Crea un boton invisible sobre un campo de texto (IP o Mascara) para capturar clicks.
+        /// Al hacer click, invoca el callback onSelect para cambiar la seleccion al campo clickeado.
+        /// NO usa InputField - solo Image + Button para deteccion de clicks.
         /// </summary>
-        /// <param name="fieldObj">GameObject del InputField (debe tener Image + InputField).</param>
-        /// <param name="field">Componente InputField a activar.</param>
-        private static void CreateFieldClickOverlay(GameObject fieldObj, InputField field)
+        /// <param name="fieldObj">GameObject del campo visual (tiene RectTransform + Image).</param>
+        /// <param name="onSelect">Callback cuando el usuario hace click en este campo.</param>
+        private static void CreateFieldSelectButton(GameObject fieldObj, System.Action onSelect)
         {
-            GameObject overlay = new GameObject("ClickOverlay");
+            GameObject overlay = new GameObject("FieldSelectBtn");
             overlay.transform.SetParent(fieldObj.transform, false);
             var overlayRect = overlay.AddComponent<RectTransform>();
             overlayRect.anchorMin = Vector2.zero;
@@ -916,9 +982,7 @@ namespace SimRedes.UI
             overlayBtn.targetGraphic = overlayImg;
             overlayBtn.transition = Selectable.Transition.None;
             overlayBtn.navigation = new Navigation { mode = Navigation.Mode.None };
-            overlayBtn.onClick.AddListener(() => {
-                field.ActivateInputField();
-            });
+            overlayBtn.onClick.AddListener(() => onSelect?.Invoke());
         }
     }
 }
