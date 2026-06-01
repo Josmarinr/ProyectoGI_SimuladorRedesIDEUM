@@ -27,6 +27,12 @@ namespace SimRedes.UI
                 topology.OnNodeAdded += OnNodeAdded;
                 topology.OnNodeRemoved += OnNodeRemoved;
                 topology.OnTopologyChanged += OnTopologyChanged;
+
+                // Sincronizar nodos y enlaces existentes (por si se agregaron antes de que
+                // este Start() se ejecutara, ej: FindFaultActivity.LoadScenario en Awake/ConnectUI)
+                foreach (var node in topology.GetAllNodes())
+                    OnNodeAdded(node);
+                DrawLinks();
             }
         }
 
