@@ -710,7 +710,7 @@ namespace SimRedes.Simulation
             spawnIndex++;
             int discId = spawnIndex + 200; // ID unico (sobre 100 usado por TangibleDiscManager)
             topology.AddNode(discId, type, pos);
-            var devicePanel = Object.FindAnyObjectByType<DevicePanelController>();
+            var devicePanel = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
             if (devicePanel != null) devicePanel.RefreshDevicesPanel();
             UnityEngine.Debug.Log($"[ActivityLoader] Dispositivo agregado: {type} en {pos}");
         }
