@@ -97,6 +97,7 @@ namespace SimRedes.UI
             ipFieldText.fontSize = 20;
             ipFieldText.alignment = TextAnchor.MiddleCenter;
             ipFieldText.font = bigFont;
+            ipFieldText.raycastTarget = false;
             ipField.textComponent = ipFieldText;
             ipField.text = nodeIP;
             UIComp.SetupNumericInput(ipField, (v) => { onIPChanged?.Invoke(v); });
@@ -144,6 +145,7 @@ namespace SimRedes.UI
             maskFieldText.fontSize = 20;
             maskFieldText.alignment = TextAnchor.MiddleCenter;
             maskFieldText.font = bigFont;
+            maskFieldText.raycastTarget = false;
             maskField.textComponent = maskFieldText;
             maskField.text = nodeMask;
             UIComp.SetupNumericInput(maskField, (v) => { onMaskChanged?.Invoke(v); });
@@ -187,6 +189,9 @@ namespace SimRedes.UI
 
             Button cancelBtn = UIComp.CreateMenuButton(panelObj.transform, "CancelBtn", "CANCELAR", new Vector2(-60, btnY), new Vector2(160, 40), font, 16);
             cancelBtn.onClick.AddListener(() => onCancel?.Invoke());
+
+            // Asegurar que el panel este al frente del canvas (sobre el background semi-transparente)
+            panelObj.transform.SetAsLastSibling();
 
             return validationText;
         }
