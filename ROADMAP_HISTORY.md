@@ -145,3 +145,17 @@
   - Post-test (re-evaluacion, satisfaccion, preguntas abiertas)
 - Total: ~316+ tests (85 nuevos T4 + 12 nuevos T5 + 231 existentes)
 - **Pendiente**: A2 (pruebas en mesa IDEUM real)
+
+### Sesion 23 — Bugfix FindFaultActivity + CODE_INDEX.md
+- **Bug FindFaultActivity**: discos tactiles no se actualizaban en escenarios 3+
+  - Raiz #1: Start() ejecutaba LoadScenario(0) antes de que ActivityPanelFactory conectara
+    las referencias UI. Fix: nuevo metodo ConnectUI() llamado por CreateFindFaultPanel()
+    DESPUES de crear los elementos graficos. Start() ya no carga escenarios.
+  - Raiz #2: Al reingresar a la actividad, si FindFaultActivity ya existia en el GameManager,
+    Start() no se volvia a ejecutar. Fix: ActivityLoader llama Restart() explicitamente.
+  - Raiz #3: TangibleDiscManager acumulaba discos fantasma entre escenarios.
+    Fix: ClearAllDiscs() al inicio de cada LoadScenario().
+  - Safety net: FindUIReferences() busca componentes UI por nombre como fallback,
+    + Update() reintenta conectar cada 1s.
+- **CODE_INDEX.md**: indice compacto de los 46 scripts del proyecto (~18K tokens, bajo demanda)
+- **328/328 tests pasando**

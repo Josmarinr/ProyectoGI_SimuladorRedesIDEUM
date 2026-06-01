@@ -4,22 +4,14 @@
 
 ---
 
-## Estado Actual: 328 tests, codigo 100% documentado, VLANManager bugfix
+## Estado Actual: 328 tests, bugfix FindFaultActivity (discos tactiles en escenarios 3+)
 
-> Tras 21 sesiones previas: **316+ tests**, EIGRP, Input migration, SUS. En sesion 22:
-> - **D6**: Fix layout DynamicRoutingPanel — campos config superpuestos con botones principales
-> - **D7**: Fix feedbackText — mensaje emergente superpuesto con botones OSPF/EIGRP
-> - **D8**: Fix feedbackText StaticRouting — mensaje superpuesto con botones AÑADIR MANUAL/RUTA/TEST
-> - **D9**: Fix RoutingTablesActivity — Clear eliminado, header corregido, 3 mejoras menores
-> - **E1**: Documentar TopologyManager.cs (29 metodos) — Completada (40 miembros documentados)
-> - **E2**: Documentar SceneSetup.cs (19 metodos) — Completada (33/38 metodos documentados)
-> - **E3**: Documentar 3 factories UI — Completada (45 miembros en 3 archivos)
-> - **E4**: Documentar UIComponents.cs — Completada (42 miembros)
-> - **E5**: Documentar ActivityLoader.cs — Completada (17 miembros)
-> - **E6**: Documentar clases de red — Completada (114 miembros en 6 archivos)
-> - **E7**: Documentar actividades — Completada (49 miembros en 5 archivos)
-> - **E8**: Documentar modulo Tangible — Completada (44 miembros en 4 archivos)
-> - **E9**: Documentar resto — Completada (89 miembros en 5 archivos)
+> Tras 22 sesiones: **328 tests**, EIGRP, Input migration, SUS, CODE_INDEX.md. Sesion 23:
+> - **Fix FindFaultActivity**: discos tactiles no se actualizaban en escenarios 3+
+>   - Raiz: Start() ejecutaba LoadScenario() antes de conectar referencias UI
+>   - Fix: ConnectUI() llamada post-panel + FindUIReferences() fallback + restart en reingreso
+>   - Fix: TangibleDiscManager.ClearAllDiscs() al cambiar de escenario
+> - **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
 > - **Pendiente A2**: Pruebas en mesa IDEUM real con discos fisicos
 
 ---
