@@ -101,6 +101,8 @@ namespace SimRedes.UI
             ipField.textComponent = ipFieldText;
             ipField.text = nodeIP;
             UIComp.SetupNumericInput(ipField, (v) => { onIPChanged?.Invoke(v); });
+            // Boton invisible sobre el campo IP para capturar clicks y activar el InputField
+            CreateFieldClickOverlay(ipFieldObj, ipField);
 
             fieldY -= 65;
 
@@ -149,6 +151,8 @@ namespace SimRedes.UI
             maskField.textComponent = maskFieldText;
             maskField.text = nodeMask;
             UIComp.SetupNumericInput(maskField, (v) => { onMaskChanged?.Invoke(v); });
+            // Boton invisible sobre el campo Mascara para capturar clicks y activar el InputField
+            CreateFieldClickOverlay(maskFieldObj, maskField);
 
             fieldY -= 65;
 
@@ -192,6 +196,9 @@ namespace SimRedes.UI
 
             // Asegurar que el panel este al frente del canvas (sobre el background semi-transparente)
             panelObj.transform.SetAsLastSibling();
+
+            // Activar campo IP por defecto para que el teclado numerico escriba ahi
+            ipField.ActivateInputField();
 
             return validationText;
         }
@@ -883,6 +890,35 @@ namespace SimRedes.UI
             comp.fontSize = 13;
             comp.color = UIColors.textPrimary;
             comp.alignment = TextAnchor.UpperLeft;
+        }
+
+        /// <summary>
+        /// Crea un boton invisible sobre el InputField para capturar clicks y activar el campo.
+        /// Los InputFields creados por codigo no siempre reciben focus al hacer click en ellos,
+        /// pero un Button siempre funciona. Este boton transparente se pone como hijo del campo
+        /// para interceptar los clicks y forzar la activacion del InputField.
+        /// </summary>
+        /// <param name="fieldObj">GameObject del InputField (debe tener Image + InputField).</param>
+        /// <param name="field">Componente InputField a activar.</param>
+        private static void CreateFieldClickOverlay(GameObject fieldObj, InputField field)
+        {
+            GameObject overlay = new GameObject("ClickOverlay");
+            overlay.transform.SetParent(fieldObj.transform, false);
+            var overlayRect = overlay.AddComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            var overlayImg = overlay.AddComponent<Image>();
+            overlayImg.color = Color.clear;
+            overlayImg.raycastTarget = true;
+            var overlayBtn = overlay.AddComponent<Button>();
+            overlayBtn.targetGraphic = overlayImg;
+            overlayBtn.transition = Selectable.Transition.None;
+            overlayBtn.navigation = new Navigation { mode = Navigation.Mode.None };
+            overlayBtn.onClick.AddListener(() => {
+                field.ActivateInputField();
+            });
         }
     }
 }

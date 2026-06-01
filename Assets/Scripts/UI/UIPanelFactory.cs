@@ -109,7 +109,15 @@ namespace SimRedes.UI
                 string captured = keys[i];
                 keyBtn.onClick.AddListener(() =>
                 {
-                    InputField activeField = ipField.isFocused ? ipField : maskField;
+                    // Determinar campo activo: usar EventSystem en vez de isFocused
+                    // porque el boton del teclado roba el foco al hacer click
+                    InputField activeField = ipField;
+                    if (UnityEngine.EventSystems.EventSystem.current != null)
+                    {
+                        var selected = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+                        if (selected == ipField.gameObject) activeField = ipField;
+                        else if (selected == maskField.gameObject) activeField = maskField;
+                    }
                     if (captured == "DEL")
                     {
                         if (activeField.text.Length > 0)
@@ -126,6 +134,8 @@ namespace SimRedes.UI
                         if (activeField.text.Length < 18)
                             activeField.text = activeField.text + captured;
                     }
+                    // Restaurar foco al campo activo despues del click del teclado
+                    activeField.ActivateInputField();
                 });
             }
         }
