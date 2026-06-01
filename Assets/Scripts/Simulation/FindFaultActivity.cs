@@ -116,19 +116,24 @@ namespace SimRedes.Simulation
             scenarios = new List<FindFaultScenario>
             {
                 // ─── Escenario 1: Cable Caído ───
+                // Fallo: NO se crea el enlace. El usuario debe usar el boton CONECTAR del panel
+                // y hacer click en ambos routers para crear el enlace manualmente.
                 new FindFaultScenario
                 {
                     Name = "Cable Ca\u00eddo",
                     Description = "El enlace entre dos routers est\u00e1 desconectado.\n" +
-                                  "Los paquetes no pueden viajar de un router al otro.",
-                    Hint = "Usa el disco t\u00e1ctil de ENLACE para reconectar el cable.",
-                    DiscLabel = "ENLACE (Disco 4)",
+                                  "Los paquetes no pueden viajar de un router al otro.\n\n" +
+                                  "\u25b6 Soluci\u00f3n: Presiona CONECTAR en el panel derecho,\n" +
+                                  "luego haz click en Router1 y Router2.",
+                    Hint = "Usa el bot\u00f3n CONECTAR del panel de topolog\u00eda,\n" +
+                           "luego haz click en ambos routers.",
+                    DiscLabel = "VERIFICAR",
                     Devices = new List<(Network.DeviceType type, float x, float y)>
                     {
                         (Network.DeviceType.Router, 350f, 400f),
                         (Network.DeviceType.Router, 700f, 400f)
                     },
-                    Links = new List<(int from, int to)> { (0, 1) },
+                    Links = new List<(int from, int to)>(), // Sin enlace — usuario lo crea
                     IPConfigs = new List<(int deviceIdx, string ip, string mask)>
                     {
                         (0, "192.168.1.1", "255.255.255.0"),
@@ -139,13 +144,18 @@ namespace SimRedes.Simulation
                 },
 
                 // ─── Escenario 2: IP Errónea ───
+                // Fallo: Router tiene IP incorrecta (192.168.100.99 en vez de 192.168.1.1)
+                // Arreglo: Click en Router -> IPConfig -> cambiar IP -> APLICAR
                 new FindFaultScenario
                 {
                     Name = "IP Err\u00f3nea",
                     Description = "El Router tiene una direcci\u00f3n IP incorrecta.\n" +
-                                  "Los PCs no pueden alcanzar la red correcta.",
-                    Hint = "Usa el disco t\u00e1ctil de IP para corregir la direcci\u00f3n del Router.",
-                    DiscLabel = "IP (Disco 12)",
+                                  "Usa la IP 192.168.100.99 pero deber\u00eda ser 192.168.1.1.\n\n" +
+                                  "\u25b6 Soluci\u00f3n: Click en Router \u2192 IPConfig\n" +
+                                  "\u2192 cambiar IP a 192.168.1.1 \u2192 APLICAR",
+                    Hint = "Haz click en el Router, luego en IPConfig,\n" +
+                           "escribe 192.168.1.1 y presiona APLICAR.",
+                    DiscLabel = "VERIFICAR",
                     Devices = new List<(Network.DeviceType type, float x, float y)>
                     {
                         (Network.DeviceType.Router, 500f, 500f),
@@ -163,14 +173,19 @@ namespace SimRedes.Simulation
                     CorrectMask = "255.255.255.0"
                 },
 
-                // ─── Escenario 3: Interfaz Apagada ───
+                // ─── Escenario 3: Máscara Incorrecta ───
+                // Fallo: Router tiene mascara 255.0.0.0 en vez de 255.255.255.0
+                // Arreglo: Click en Router -> IPConfig -> cambiar mascara -> APLICAR
                 new FindFaultScenario
                 {
-                    Name = "Interfaz Apagada",
-                    Description = "La interfaz del Router est\u00e1 apagada.\n" +
-                                  "El Router no puede enviar ni recibir tr\u00e1fico.",
-                    Hint = "Usa el disco t\u00e1ctil de ACTIVAR para encender la interfaz.",
-                    DiscLabel = "ACTIVAR (Disco 10)",
+                    Name = "M\u00e1scara Incorrecta",
+                    Description = "El Router tiene una m\u00e1scara de red incorrecta.\n" +
+                                  "Usa 255.0.0.0 pero deber\u00eda ser 255.255.255.0.\n\n" +
+                                  "\u25b6 Soluci\u00f3n: Click en Router \u2192 IPConfig\n" +
+                                  "\u2192 cambiar M\u00e1scara a 255.255.255.0 \u2192 APLICAR",
+                    Hint = "Haz click en el Router, luego en IPConfig,\n" +
+                           "cambia la M\u00e1scara a 255.255.255.0 y presiona APLICAR.",
+                    DiscLabel = "VERIFICAR",
                     Devices = new List<(Network.DeviceType type, float x, float y)>
                     {
                         (Network.DeviceType.Router, 500f, 500f),
@@ -179,21 +194,30 @@ namespace SimRedes.Simulation
                     Links = new List<(int from, int to)> { (0, 1) },
                     IPConfigs = new List<(int deviceIdx, string ip, string mask)>
                     {
-                        (0, "192.168.1.1", "255.255.255.0"),
+                        (0, "192.168.1.1", "255.0.0.0"),
                         (1, "192.168.1.10", "255.255.255.0")
                     },
-                    FaultType = "interfaz",
-                    FaultDeviceIndex = 0
+                    FaultType = "mask",
+                    FaultDeviceIndex = 0,
+                    CorrectIP = "192.168.1.1",
+                    CorrectMask = "255.255.255.0"
                 },
 
-                // ─── Escenario 4: Sin Gateway ───
+                // ─── Escenario 4: PC sin IP ───
+                // Fallo: PC no tiene IP configurada
+                // Arreglo: Click en PC -> IPConfig -> escribir IP -> APLICAR
                 new FindFaultScenario
                 {
-                    Name = "Sin Gateway",
+                    Name = "PC sin IP",
                     Description = "El PC no tiene direcci\u00f3n IP configurada.\n" +
-                                  "No puede comunicarse con ning\u00fan dispositivo.",
-                    Hint = "Usa el disco t\u00e1ctil de GATEWAY para asignar una IP al PC.",
-                    DiscLabel = "GATEWAY (Disco 14)",
+                                  "No puede comunicarse con el Router.\n\n" +
+                                  "\u25b6 Soluci\u00f3n: Click en PC \u2192 IPConfig\n" +
+                                  "\u2192 escribir IP 192.168.1.10 y M\u00e1scara 255.255.255.0\n" +
+                                  "\u2192 APLICAR",
+                    Hint = "Haz click en el PC, luego en IPConfig,\n" +
+                           "escribe 192.168.1.10 y m\u00e1scara 255.255.255.0,\n" +
+                           "presiona APLICAR.",
+                    DiscLabel = "VERIFICAR",
                     Devices = new List<(Network.DeviceType type, float x, float y)>
                     {
                         (Network.DeviceType.Router, 500f, 500f),
@@ -292,71 +316,52 @@ namespace SimRedes.Simulation
         /// <summary>Aplica el fallo activo a la topologia segun el tipo.</summary>
         private void ApplyFault(FindFaultScenario scenario)
         {
+            // Escenario "cable": no se crea enlace (Links vacio en InitializeScenarios).
+            // El usuario debe usar CONECTAR en el panel para crearlo manualmente.
             switch (scenario.FaultType)
             {
                 case "cable":
-                    if (affectedLink != null)
-                        affectedLink.SetFault("cable_desconectado");
+                    // No hay enlace que fallar — el usuario lo crea con CONECTAR
                     break;
                 case "ip":
-                    if (affectedNode != null)
-                        affectedNode.SetInterfaceIP("G0/0", "192.168.100.99", "255.255.255.0");
+                    // La IP ya se configuro con el valor incorrecto en IPConfigs (192.168.100.99)
                     break;
-                case "interfaz":
-                    if (affectedNode != null)
-                        affectedNode.IsAdminDown = true;
+                case "mask":
+                    // La mascara ya se configuro con el valor incorrecto en IPConfigs (255.0.0.0)
                     break;
                 case "gateway":
-                    if (affectedNode != null)
-                    {
-                        affectedNode.IpAddress = "";
-                        affectedNode.SubnetMask = "";
-                    }
+                    // El PC ya se configuro sin IP (vacio en IPConfigs)
                     break;
             }
         }
 
-        /// <summary>Repara el fallo activo restaurando el estado correcto.</summary>
-        private void RepairFault(FindFaultScenario scenario)
-        {
-            switch (scenario.FaultType)
-            {
-                case "cable":
-                    if (affectedLink != null)
-                        affectedLink.ClearFault();
-                    break;
-                case "ip":
-                    if (affectedNode != null)
-                        affectedNode.SetInterfaceIP("G0/0", scenario.CorrectIP, scenario.CorrectMask);
-                    break;
-                case "interfaz":
-                    if (affectedNode != null)
-                        affectedNode.IsAdminDown = false;
-                    break;
-                case "gateway":
-                    if (affectedNode != null)
-                    {
-                        affectedNode.IpAddress = scenario.CorrectIP;
-                        affectedNode.SubnetMask = scenario.CorrectMask;
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>Valida si el estado actual de la red corresponde a un fallo reparado.</summary>
+        /// <summary>
+        /// Valida si el estado actual de la red corresponde a un fallo reparado.
+        /// NO repara — solo verifica el estado real del dispositivo/enlace.
+        /// El usuario debe arreglar el problema usando los paneles UI (IPConfig, CONECTAR, etc.)
+        /// y luego presionar VERIFICAR.
+        /// </summary>
         private bool ValidateSolution(FindFaultScenario scenario)
         {
             switch (scenario.FaultType)
             {
                 case "cable":
-                    return affectedLink != null && affectedLink.IsFunctional();
+                    // Verificar que existe un enlace entre los dos routers (discId=1 y discId=2)
+                    if (topologyManager == null) return false;
+                    var link = FindLink(1, 2);
+                    return link != null && link.IsFunctional();
                 case "ip":
+                    // Verificar que el Router tiene la IP correcta
                     return affectedNode != null &&
                            IPValidation.IsValidIP(affectedNode.IpAddress) &&
                            affectedNode.IpAddress == scenario.CorrectIP;
-                case "interfaz":
-                    return affectedNode != null && !affectedNode.IsAdminDown;
+                case "mask":
+                    // Verificar que el Router tiene la mascara correcta
+                    return affectedNode != null &&
+                           IPValidation.IsValidSubnetMask(affectedNode.SubnetMask) &&
+                           affectedNode.SubnetMask == scenario.CorrectMask;
                 case "gateway":
+                    // Verificar que el PC tiene una IP valida y coincide con la correcta
                     return affectedNode != null &&
                            IPValidation.IsValidIP(affectedNode.IpAddress) &&
                            affectedNode.IpAddress == scenario.CorrectIP;
@@ -396,8 +401,8 @@ namespace SimRedes.Simulation
             var scenario = scenarios[currentIndex];
             if (scenario.IsSolved) return;
 
-            RepairFault(scenario);
-
+            // Solo verificar — NO reparar. El usuario debe arreglar el problema
+            // a traves de los paneles UI (IPConfig, CONECTAR, etc.)
             if (ValidateSolution(scenario))
             {
                 scenario.IsSolved = true;
@@ -414,8 +419,6 @@ namespace SimRedes.Simulation
                     resultText.text = "\u274c El fallo contin\u00faa. Revisa la pista e intenta de nuevo.";
                     resultText.color = Color.red;
                 }
-                // Re-aplicar fallo para estado consistente
-                ApplyFault(scenario);
             }
         }
 
