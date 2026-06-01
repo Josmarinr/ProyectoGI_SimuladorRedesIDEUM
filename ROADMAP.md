@@ -8,9 +8,14 @@
 
 > Tras 22 sesiones: **328 tests**, EIGRP, Input migration, SUS, CODE_INDEX.md. Sesion 23:
 > - **Fix FindFaultActivity**: discos tactiles no se actualizaban en escenarios 3+
->   - Raiz: Start() ejecutaba LoadScenario() antes de conectar referencias UI
->   - Fix: ConnectUI() llamada post-panel + FindUIReferences() fallback + restart en reingreso
->   - Fix: TangibleDiscManager.ClearAllDiscs() al cambiar de escenario
+>   - Raiz #1: timing — Start() ejecutaba LoadScenario() antes de conectar refs UI
+>   - Raiz #2: timing — topologyManager se buscaba en Start() (siguiente frame)
+>     pero LoadScenario() se llamaba desde ConnectUI() (mismo frame) → null
+>   - Raiz #3: TangibleDiscManager acumulaba discos fantasma entre escenarios
+>   - Fix: Awake() inicializa escenarios + topologyManager inmediatamente
+>   - Fix: ConnectUI() llamada post-panel por ActivityPanelFactory
+>   - Fix: ActivityLoader destruye y recrea FindFaultActivity al reingresar
+>   - Fix: TangibleDiscManager.ClearAllDiscs() al cambiar escenario
 > - **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
 > - **Pendiente A2**: Pruebas en mesa IDEUM real con discos fisicos
 
