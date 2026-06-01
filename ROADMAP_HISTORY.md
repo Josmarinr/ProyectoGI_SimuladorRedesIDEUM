@@ -159,3 +159,24 @@
     + Update() reintenta conectar cada 1s.
 - **CODE_INDEX.md**: indice compacto de los 46 scripts del proyecto (~18K tokens, bajo demanda)
 - **328/328 tests pasando**
+
+### Sesion 24 — Rediseno FindFaultActivity + IPConfig fix + botones pantalla + escenarios
+- **Rediseno FindFaultActivity**: 4 escenarios ahora resolubles con interacciones UI reales:
+  - Esc1 (Cable Caido): no se crea enlace, usuario usa CONECTAR en panel + click routers
+  - Esc2 (IP Erronea): router con IP incorrecta, usuario la corrige via IPConfig
+  - Esc3 (Mascara Incorrecta): reemplaza Interfaz Apagada, usuario corrige mascara via IPConfig
+  - Esc4 (PC sin IP): usuario asigna IP via IPConfig
+  - Boton VERIFICAR solo valida estado actual (no repara magicamente)
+  - Eliminado RepairFault(), ValidateSolution() verifica estado real del dispositivo
+- **Fix IPConfigPanel**: InputFields eliminados completamente
+  - Reemplazados por Text + Button de seleccion + teclado inline por闭包
+  - Cero dependencia del EventSystem focus (solucionaba problemas de click en InputField)
+  - Teclado numerico inline, sin Button component (evita robo de foco)
+- **Botones ROUTER/SWITCH/PC**: agregados al panel HUD Topologia
+  - BuildTopologyActivity y modo simulacion libre ahora funcionan sin teclado
+  - Posiciones predefinidas, discId unico (200+)
+- **Escenarios predefinidos corregidos**:
+  - Esc4 (Red en Arbol): Router1=10.0.0.2, Router2=10.0.0.3 (misma subred que Router0)
+  - Esc5 (Detectar Fallos): fault.ip y fault.mask ahora se aplican al nodo
+    (SetNodeFault solo guardaba etiqueta, no modificaba configuracion real)
+- **328/328 tests pasando****

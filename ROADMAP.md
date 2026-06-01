@@ -4,21 +4,24 @@
 
 ---
 
-## Estado Actual: 328 tests, bugfix FindFaultActivity (discos tactiles en escenarios 3+)
+## Estado Actual: 328 tests, todas las actividades funcionan sin teclado
 
-> Tras 22 sesiones: **328 tests**, EIGRP, Input migration, SUS, CODE_INDEX.md. Sesion 23:
-> - **Fix FindFaultActivity**: discos tactiles no se actualizaban en escenarios 3+
->   - Raiz #1: timing — Start() ejecutaba LoadScenario() antes de conectar refs UI
->   - Raiz #2: timing — topologyManager se buscaba en Start() (siguiente frame)
->     pero LoadScenario() se llamaba desde ConnectUI() (mismo frame) → null
->   - Raiz #3: TangibleDiscManager acumulaba discos fantasma entre escenarios
->   - Fix: Awake() inicializa escenarios + topologyManager inmediatamente
->   - Fix: ConnectUI() llamada post-panel por ActivityPanelFactory
->   - Fix: ActivityLoader destruye y recrea FindFaultActivity al reingresar
->   - Fix: TangibleDiscManager.ClearAllDiscs() al cambiar escenario
->   - **Fix NodeVisualizer**: sincroniza nodos existentes al suscribirse en Start()
->     (los nodos creados en Awake/ConnectUI no tenian representacion visual)
+> Tras 22 sesiones: **328 tests**. Sesion 23+24:
+> - **Bugfix FindFaultActivity**: discos tactiles en escenarios 3+ corregido
+>   (timing Awake vs Start, NodeVisualizer sync, TangibleDiscManager cleanup)
 > - **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
+> - **Rediseno FindFaultActivity**: 4 escenarios resolubles con clicks reales:
+>   1. Cable Caido → CONECTAR + click routers
+>   2. IP Erronea → click router → IPConfig → editar IP
+>   3. Mascara Incorrecta → click router → IPConfig → editar mascara
+>   4. PC sin IP → click PC → IPConfig → escribir IP+mask
+> - **Fix IPConfigPanel**: InputFields eliminados, reemplazados por Text +
+>   Button de seleccion + teclado inline (no depende de EventSystem focus)
+> - **Botones ROUTER/SWITCH/PC**: agregados al panel HUD para agregar
+>   dispositivos sin teclado (BuildTopActivity y modo sim libre)
+> - **Escenarios predefinidos corregidos**:
+>   - Esc5 (Detectar Fallos): fault.ip/fault.mask ahora se aplican al nodo
+>   - Esc4 (Red en Arbol): IPs de Router1/Router2 en misma subred que Router0
 > - **Pendiente A2**: Pruebas en mesa IDEUM real con discos fisicos
 
 ---
