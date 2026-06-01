@@ -306,7 +306,7 @@ namespace SimRedes.Simulation
 
             font = UIComp.GetFont();
 
-            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(420, 520), 20,
+            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(420, 560), 20,
                 UIColors.surfaceElevated, UIColors.borderAccent);
             panelObj.name = "TopologyInfoPanel";
 
@@ -418,7 +418,7 @@ namespace SimRedes.Simulation
                 new Vector2(devSpacing, devBtnY), new Vector2(80, 35), font, 12);
             pcBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.PC));
 
-            float advBtnY = -230f;
+            float advBtnY = -250f;
             float advSpacing = 100f;
 
             Button vlanBtn = UIComp.CreateMenuButton(panelObj.transform, "VLANBtn", "VLAN",
