@@ -880,6 +880,7 @@ namespace SimRedes.UI
             inputText.fontSize = fontSize;
             inputText.font = font;
             inputText.alignment = TextAnchor.MiddleLeft;
+            inputText.raycastTarget = false;
 
             // Placeholder
             var placeholderObj = new GameObject("Placeholder");
@@ -895,6 +896,7 @@ namespace SimRedes.UI
             phText.fontSize = fontSize;
             phText.font = font;
             phText.alignment = TextAnchor.MiddleLeft;
+            phText.raycastTarget = false;
 
             var inputField = inputObj.AddComponent<InputField>();
             inputField.textComponent = inputText;

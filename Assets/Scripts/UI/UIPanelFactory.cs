@@ -845,6 +845,7 @@ namespace SimRedes.UI
             textComp.font = font;
             textComp.fontSize = 14;
             textComp.color = Color.white;
+            textComp.raycastTarget = false;
             textComp.alignment = TextAnchor.MiddleLeft;
             inputField.textComponent = textComp;
 

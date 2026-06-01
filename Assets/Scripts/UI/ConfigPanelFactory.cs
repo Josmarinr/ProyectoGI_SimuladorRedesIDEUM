@@ -513,6 +513,7 @@ namespace SimRedes.UI
             textComp.fontSize = fontSize;
             textComp.color = color;
             textComp.alignment = TextAnchor.MiddleLeft;
+            textComp.raycastTarget = false;
             field.textComponent = textComp;
             return textComp;
         }
