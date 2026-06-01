@@ -16,6 +16,8 @@
 >   - Fix: ConnectUI() llamada post-panel por ActivityPanelFactory
 >   - Fix: ActivityLoader destruye y recrea FindFaultActivity al reingresar
 >   - Fix: TangibleDiscManager.ClearAllDiscs() al cambiar escenario
+>   - **Fix NodeVisualizer**: sincroniza nodos existentes al suscribirse en Start()
+>     (los nodos creados en Awake/ConnectUI no tenian representacion visual)
 > - **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
 > - **Pendiente A2**: Pruebas en mesa IDEUM real con discos fisicos
 
