@@ -104,13 +104,6 @@ namespace SimRedes.UI
             ipDisplayText.font = bigFont;
             ipDisplayText.raycastTarget = false;
 
-            // Boton de seleccion del campo IP
-            CreateFieldSelectButton(ipFieldObj, () => {
-                editingIP = true;
-                ipFieldImg.color = UIColors.textAccent; // highlight
-                maskFieldImg.color = UIColors.surfaceElevated; // unhighlight
-            });
-
             fieldY -= 65;
 
             // ─── Etiqueta Mascara ───
@@ -159,7 +152,12 @@ namespace SimRedes.UI
             maskDisplayText.font = bigFont;
             maskDisplayText.raycastTarget = false;
 
-            // Boton de seleccion del campo Mascara
+            // Botones de seleccion (ambos aqui para evitar CS0841: deben declararse las Image antes de usarlas en lambdas)
+            CreateFieldSelectButton(ipFieldObj, () => {
+                editingIP = true;
+                ipFieldImg.color = UIColors.textAccent;
+                maskFieldImg.color = UIColors.surfaceElevated;
+            });
             CreateFieldSelectButton(maskFieldObj, () => {
                 editingIP = false;
                 maskFieldImg.color = UIColors.textAccent;
