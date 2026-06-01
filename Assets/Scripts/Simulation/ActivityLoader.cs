@@ -403,7 +403,7 @@ namespace SimRedes.Simulation
                 linkCtrl.StoreLinkButtons(connectBtn, disconnectBtn);
             }
 
-            float devBtnY = -195f;
+            float devBtnY = -200f;
             float devSpacing = 75f;
 
             Button routerBtn = UIComp.CreateMenuButton(panelObj.transform, "RouterBtn", "ROUTER",
