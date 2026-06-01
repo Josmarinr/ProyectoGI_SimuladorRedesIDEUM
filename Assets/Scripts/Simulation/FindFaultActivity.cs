@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SimRedes.Network;
+using SimRedes.Tangible;
 using SimRedes.UI;
 
 namespace SimRedes.Simulation
@@ -62,6 +63,8 @@ namespace SimRedes.Simulation
         private int currentIndex = 0;
         private NetworkNode affectedNode;
         private NetworkLink affectedLink;
+        private bool uiReferencesConnected = false;
+        private float retryTimer = 0f;
 
         /// <summary>Inicializa la actividad: busca TopologyManager, carga escenarios y construye el primero.</summary>
         private void Start()
@@ -74,7 +77,90 @@ namespace SimRedes.Simulation
             }
 
             InitializeScenarios();
+            // No cargar escenario inmediatamente — esperar a que ActivityPanelFactory
+            // conecte las referencias UI via Initialize()
+        }
+
+        /// <summary>
+        /// Conecta las referencias UI y carga el primer escenario.
+        /// Llamado por ActivityPanelFactory.CreateFindFaultPanel() DESPUES de crear los elementos UI.
+        /// </summary>
+        public void ConnectUI(Text title, Text desc, Text hint, Text result, Text status,
+            Button discBtn, Text discBtnText, Button next, Text nextBtnText, Button prev)
+        {
+            scenarioTitleText = title;
+            faultDescriptionText = desc;
+            hintText = hint;
+            resultText = result;
+            statusText = status;
+            discButton = discBtn;
+            discButtonText = discBtnText;
+            nextButton = next;
+            nextButtonText = nextBtnText;
+            prevButton = prev;
+            uiReferencesConnected = true;
+
+            // Ahora que las referencias UI existen, cargar el primer escenario
             LoadScenario(0);
+        }
+
+        /// <summary>
+        /// Busca las referencias UI por nombre como fallback si ConnectUI no se llamo.
+        /// Sigue el mismo patron que BuildTopologyActivity.FindUITexts().
+        /// </summary>
+        private void FindUIReferences()
+        {
+            if (uiReferencesConnected) return;
+
+            var panel = GameObject.Find("FindFaultPanel");
+            if (panel == null) return;
+
+            var texts = panel.GetComponentsInChildren<Text>(true);
+            var buttons = panel.GetComponentsInChildren<Button>(true);
+
+            foreach (var t in texts)
+            {
+                switch (t.gameObject.name)
+                {
+                    case "ScenarioTitleText": scenarioTitleText = t; break;
+                    case "FaultDescriptionText": faultDescriptionText = t; break;
+                    case "HintText": hintText = t; break;
+                    case "ResultText": resultText = t; break;
+                    case "StatusText": statusText = t; break;
+                }
+                // Child Text of TactileDiscBtn named "Text"
+                if (t.transform.parent != null &&
+                    t.transform.parent.name == "TactileDiscBtn" &&
+                    t.gameObject.name == "Text")
+                    discButtonText = t;
+            }
+
+            foreach (var b in buttons)
+            {
+                switch (b.gameObject.name)
+                {
+                    case "TactileDiscBtn": discButton = b; break;
+                    case "NextBtn": nextButton = b; nextButtonText = b.GetComponentInChildren<Text>(); break;
+                    case "PrevBtn": prevButton = b; break;
+                }
+            }
+
+            if (scenarioTitleText != null && discButton != null)
+                uiReferencesConnected = true;
+        }
+
+        /// <summary>Reintenta conectar UI cada segundo hasta lograrlo (para casos donde el panel se crea despues).</summary>
+        private void Update()
+        {
+            if (!uiReferencesConnected)
+            {
+                retryTimer += Time.deltaTime;
+                if (retryTimer >= 1f)
+                {
+                    retryTimer = 0f;
+                    FindUIReferences();
+                }
+            }
         }
 
         /// <summary>Configura los 4 escenarios de la actividad.</summary>
@@ -186,6 +272,10 @@ namespace SimRedes.Simulation
         {
             if (topologyManager == null) return;
             if (index < 0 || index >= scenarios.Count) return;
+
+            // Limpiar discos tactiles del escenario anterior para evitar estado fantasma
+            var discManager = Object.FindAnyObjectByType<TangibleDiscManager>();
+            if (discManager != null) discManager.ClearAllDiscs();
 
             topologyManager.ClearTopology();
             currentIndex = index;

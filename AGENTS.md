@@ -81,3 +81,8 @@ No cerrar una tarea sin verificar que la documentacion refleje el estado actual 
 ### Contexto de Propuesta (bajo demanda)
 `docs/proposal-context.md` contiene el texto completo de la propuesta academica.
 NO se carga automaticamente. Leer solo cuando el usuario pregunte "que falta de la propuesta".
+
+### CODE_INDEX.md (AHORRO DE TOKENS)
+`CODE_INDEX.md` contiene un indice compacto de los 46 scripts del proyecto (~18K tokens).
+Cargarlo **solo cuando sea necesario orientarse** sin leer archivos completos.
+NO se carga automaticamente. Leer bajo demanda para localizar archivos rapidamente.

@@ -116,8 +116,16 @@ namespace SimRedes.Simulation
                 case 1:
                     // Limpiar topologia y cargar escenario pre-hecho
                     if (topology != null) topology.ClearTopology();
-                    if (gameManagerObj.GetComponent<FindFaultActivity>() == null)
+                    var findFault = gameManagerObj.GetComponent<FindFaultActivity>();
+                    if (findFault == null)
+                    {
                         gameManagerObj.AddComponent<FindFaultActivity>();
+                    }
+                    else
+                    {
+                        // Re-ingreso: forzar reinicio — FindFaultActivity.ConnectUI() cargará escenario 0
+                        findFault.Restart();
+                    }
                     ActivityPanelFactory.CreateFindFaultPanel(canvas.transform,
                         onDiscClick: () => {
                             var act = gameManagerObj.GetComponent<FindFaultActivity>();

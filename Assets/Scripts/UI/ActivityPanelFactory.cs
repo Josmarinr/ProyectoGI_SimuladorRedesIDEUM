@@ -297,16 +297,9 @@ namespace SimRedes.UI
             var activity = UnityEngine.Object.FindAnyObjectByType<FindFaultActivity>();
             if (activity != null)
             {
-                activity.scenarioTitleText = titleTextComp;
-                activity.faultDescriptionText = descText;
-                activity.hintText = hintTextComp;
-                activity.resultText = resultTextComp;
-                activity.statusText = statusTextComp;
-                activity.discButton = discBtn;
-                activity.discButtonText = discTextComp;
-                activity.nextButton = nextBtn;
-                activity.nextButtonText = nextBtn.GetComponentInChildren<Text>();
-                activity.prevButton = prevBtn;
+                activity.ConnectUI(titleTextComp, descText, hintTextComp, resultTextComp,
+                    statusTextComp, discBtn, discTextComp, nextBtn,
+                    nextBtn.GetComponentInChildren<Text>(), prevBtn);
             }
 
             return panelObj;
