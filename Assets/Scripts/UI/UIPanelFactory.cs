@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 using SimRedes.Network;
@@ -87,10 +88,6 @@ namespace SimRedes.UI
                 keyImg.sprite = Sprite.Create(keyTex, new Rect(0, 0, (int)keySize, (int)keySize), new Vector2(0.5f, 0.5f), 100);
                 keyImg.type = Image.Type.Sliced;
 
-                var keyBtn = keyObj.AddComponent<Button>();
-                keyBtn.targetGraphic = keyImg;
-                keyBtn.colors = UIComp.GetButtonColors(UIColors.buttonNormal);
-
                 var keyTextObj = new GameObject("Text");
                 keyTextObj.transform.SetParent(keyObj.transform, false);
                 var keyTextRect = keyTextObj.AddComponent<RectTransform>();
@@ -105,16 +102,24 @@ namespace SimRedes.UI
                 keyText.fontSize = keys[i] == "DEL" ? 10 : 20;
                 keyText.alignment = TextAnchor.MiddleCenter;
                 keyText.font = keys[i] == "DEL" ? font : bigFont;
+                keyText.raycastTarget = false;
 
                 string captured = keys[i];
-                keyBtn.onClick.AddListener(() =>
+                // Usar EventTrigger en vez de Button para evitar que el boton
+                // robe el foco del InputField activo. El Button tiene su propio
+                // manejo de eventos que siempre toma el foco del EventSystem.
+                var trigger = keyObj.AddComponent<EventTrigger>();
+
+                // PointerDown: ejecutar la accion ANTES de que cambie el foco
+                var pdEntry = new EventTrigger.Entry();
+                pdEntry.eventID = EventTriggerType.PointerDown;
+                pdEntry.callback.AddListener((data) =>
                 {
-                    // Determinar campo activo: usar EventSystem en vez de isFocused
-                    // porque el boton del teclado roba el foco al hacer click
+                    // En PointerDown el EventSystem aun tiene el InputField seleccionado
                     InputField activeField = ipField;
-                    if (UnityEngine.EventSystems.EventSystem.current != null)
+                    if (EventSystem.current != null)
                     {
-                        var selected = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+                        var selected = EventSystem.current.currentSelectedGameObject;
                         if (selected == ipField.gameObject) activeField = ipField;
                         else if (selected == maskField.gameObject) activeField = maskField;
                     }
@@ -134,9 +139,10 @@ namespace SimRedes.UI
                         if (activeField.text.Length < 18)
                             activeField.text = activeField.text + captured;
                     }
-                    // Restaurar foco al campo activo despues del click del teclado
+                    // Restaurar foco (PointerDown no lo roba)
                     activeField.ActivateInputField();
                 });
+                trigger.triggers.Add(pdEntry);
             }
         }
 
