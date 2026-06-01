@@ -232,8 +232,8 @@ namespace SimRedes.Simulation
                 ipConfigurations = new List<IPConfig>
                 {
                     new IPConfig { deviceIndex = 0, ip = "10.0.0.1", mask = "255.255.255.0" },
-                    new IPConfig { deviceIndex = 1, ip = "10.0.1.1", mask = "255.255.255.0" },
-                    new IPConfig { deviceIndex = 2, ip = "10.0.2.1", mask = "255.255.255.0" },
+                    new IPConfig { deviceIndex = 1, ip = "10.0.0.2", mask = "255.255.255.0" },
+                    new IPConfig { deviceIndex = 2, ip = "10.0.0.3", mask = "255.255.255.0" },
                     new IPConfig { deviceIndex = 7, ip = "192.168.1.10", mask = "255.255.255.0" },
                     new IPConfig { deviceIndex = 8, ip = "192.168.1.20", mask = "255.255.255.0" },
                     new IPConfig { deviceIndex = 9, ip = "192.168.2.10", mask = "255.255.255.0" },

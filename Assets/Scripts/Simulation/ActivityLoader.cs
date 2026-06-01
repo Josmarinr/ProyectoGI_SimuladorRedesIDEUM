@@ -629,7 +629,15 @@ namespace SimRedes.Simulation
             foreach (var fault in scenario.faults)
             {
                 if (fault.deviceIndex < createdNodes.Count)
-                    topology.SetNodeFault(createdNodes[fault.deviceIndex].DiscId, fault.faultType);
+                {
+                    var fNode = createdNodes[fault.deviceIndex];
+                    topology.SetNodeFault(fNode.DiscId, fault.faultType);
+                    // Aplicar IP/mask incorrecta del fallo al nodo (el usuario debe corregirla)
+                    if (!string.IsNullOrEmpty(fault.ip))
+                        fNode.IpAddress = fault.ip;
+                    if (!string.IsNullOrEmpty(fault.mask))
+                        fNode.SubnetMask = fault.mask;
+                }
             }
 
             var routers = createdNodes.Where(n => n.Type == Network.DeviceType.Router).ToList();
@@ -649,8 +657,10 @@ namespace SimRedes.Simulation
             }
             else if (scenario.name == "Red en Arbol" && routers.Count >= 3)
             {
-                routers[0].RoutingTable.AddStaticRoute("192.168.1.0", "255.255.255.0", "10.0.1.1", "G0/0");
-                routers[0].RoutingTable.AddStaticRoute("192.168.2.0", "255.255.255.0", "10.0.2.1", "G0/0");
+                // Router0 -> LANs via Router1(10.0.0.2) y Router2(10.0.0.3)
+                routers[0].RoutingTable.AddStaticRoute("192.168.1.0", "255.255.255.0", "10.0.0.2", "G0/0");
+                routers[0].RoutingTable.AddStaticRoute("192.168.2.0", "255.255.255.0", "10.0.0.3", "G0/0");
+                // Router1 y Router2 -> default via Router0(10.0.0.1)
                 routers[1].RoutingTable.Clear();
                 routers[1].RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "10.0.0.1", "G0/0");
                 routers[2].RoutingTable.Clear();
