@@ -23,6 +23,13 @@ namespace SimRedes.Simulation
         private TopologyManager topology;
         private Canvas canvas;
         private Font font;
+        private int spawnIndex = 0;
+        private Vector2[] spawnPositions = new Vector2[]
+        {
+            new Vector2(100, 400), new Vector2(300, 350), new Vector2(200, 500),
+            new Vector2(150, 600), new Vector2(250, 600), new Vector2(300, 250),
+            new Vector2(100, 250), new Vector2(200, 700), new Vector2(300, 700)
+        };
 
         private void Start()
         {
@@ -396,6 +403,21 @@ namespace SimRedes.Simulation
                 linkCtrl.StoreLinkButtons(connectBtn, disconnectBtn);
             }
 
+            float devBtnY = -180f;
+            float devSpacing = 75f;
+
+            Button routerBtn = UIComp.CreateMenuButton(panelObj.transform, "RouterBtn", "ROUTER",
+                new Vector2(-devSpacing, devBtnY), new Vector2(80, 35), font, 12);
+            routerBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Router));
+
+            Button switchBtn = UIComp.CreateMenuButton(panelObj.transform, "SwitchBtn", "SWITCH",
+                new Vector2(0, devBtnY), new Vector2(80, 35), font, 12);
+            switchBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Switch));
+
+            Button pcBtn = UIComp.CreateMenuButton(panelObj.transform, "PCBtn", "PC",
+                new Vector2(devSpacing, devBtnY), new Vector2(80, 35), font, 12);
+            pcBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.PC));
+
             float advBtnY = -210f;
             float advSpacing = 100f;
 
@@ -669,6 +691,28 @@ namespace SimRedes.Simulation
 
             var devicePanelCtrl = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
             if (devicePanelCtrl != null) devicePanelCtrl.RefreshDevicesPanel();
+        }
+
+        /// <summary>
+        /// Agrega un dispositivo en la siguiente posicion predefinida.
+        /// Alternativa a los atajos de teclado (1/2/3) para uso sin teclado fisico.
+        /// </summary>
+        private void AddDeviceAtSpawn(Network.DeviceType type)
+        {
+            EnsureTopology();
+            if (topology == null)
+            {
+                var gm = GameObject.Find("GameManager");
+                if (gm == null) gm = new GameObject("GameManager");
+                topology = gm.AddComponent<TopologyManager>();
+            }
+            Vector2 pos = spawnPositions[spawnIndex % spawnPositions.Length];
+            spawnIndex++;
+            int discId = spawnIndex + 200; // ID unico (sobre 100 usado por TangibleDiscManager)
+            topology.AddNode(discId, type, pos);
+            var devicePanel = Object.FindAnyObjectByType<DevicePanelController>();
+            if (devicePanel != null) devicePanel.RefreshDevicesPanel();
+            UnityEngine.Debug.Log($"[ActivityLoader] Dispositivo agregado: {type} en {pos}");
         }
 
         /// <summary>
