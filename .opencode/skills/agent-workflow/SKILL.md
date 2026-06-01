@@ -10,142 +10,139 @@ description: >-
 
 # Skill: Agent Workflow & Communication
 
-## 🔄 Flujo de trabajo
+## Flujo de trabajo
 
 ```
-Usuario → main → architect → programmer → reviewer → tester → main → Usuario
-         ↑___________ retroalimentación en cada paso ____________|
+Usuario -> main -> architect -> programmer -> reviewer -> tester -> main -> Usuario
+         ^___________ retroalimentacion en cada paso ____________|
 ```
 
-### Responsabilidades de cada agente
+### Responsabilidades
 
-| Agente | Qué hace | Qué produce | A quién se lo pasa |
+| Agente | Que hace | Que produce | A quien se lo pasa |
 |--------|----------|-------------|-------------------|
-| `main` | Coordina, decide, reporta al usuario | Estado, resumen, decisiones | Usuario + subagentes |
-| `architect` | Diseña plan de implementación | Plan detallado con archivos y cambios | `main` |
-| `programmer` | Implementa el plan | Código editado, archivos modificados | `main` |
-| `reviewer` | Revisa cambios | Lista de issues (crítico/advertencia/nota) | `main` |
-| `tester` | Ejecuta tests | Resultados (pasaron/fallaron) | `main` |
-| `builder` | Build & deploy | Build output, errores | `main` |
+| main | Coordina, decide, reporta | Estado, resumen, decisiones | Usuario + subagentes |
+| architect | Disena plan implementacion | Plan detallado con archivos y cambios | main |
+| programmer | Implementa el plan | Codigo editado, archivos modificados | main |
+| reviewer | Revisa cambios | Lista de issues (critico/advertencia/nota) | main |
+| tester | Ejecuta tests | Resultados (pasaron/fallaron) | main |
+| builder | Build & deploy | Build output, errores | main |
 
-## 📤 Formato de respuesta para subagentes
+## Formato de respuesta para subagentes
 
-### Architect → Main
+### Architect -> Main
 ```markdown
-## Plan: [título]
+## Plan: [titulo]
 
 ### Resumen
-[1-2 líneas]
+[1-2 lineas]
 
 ### Archivos a modificar
-1. `ruta/archivo.cs` — qué cambiar
+1. `ruta/archivo.cs` -- que cambiar
 
 ### Orden
 1. Primero X, luego Y
 
-### Cambios específicos
+### Cambios especificos
 - `archivo.cs:45-60`: cambiar X por Y
 ```
 
-### Programmer → Main
+### Programmer -> Main
 ```markdown
-## Implementación completada
+## Implementacion completada
 
 ### Modificados
 - `archivo1.cs`: [cambio]
 - `archivo2.cs`: [cambio]
 
 ### Creados
-- `nuevo.cs`: [propósito]
+- `nuevo.cs`: [proposito]
 
 ### Convenciones
-- ✅ Naming PascalCase
-- ✅ FindObjectOfType en Start
-- ✅ OnDestroy cleanup
+- Naming PascalCase: OK
+- FindObjectOfType en Start: OK
+- OnDestroy cleanup: OK
 ```
 
-### Reviewer → Main
+### Reviewer -> Main
 ```markdown
-## Revisión: [archivos]
+## Revision: [archivos]
 
-### ❌ Crítico (debe corregirse)
-- `archivo.cs:45`: NullReferenceException posible
+### Problemas
+- `archivo.cs:45`: [CRITICO] NullReferenceException posible
+- `archivo.cs:120`: [WARN] Variable no usada
 
-### ⚠️ Advertencia
-- `archivo.cs:120`: Variable no usada
-
-### ✅ No se encontraron problemas adicionales
+### Resumen
+[N] criticos, [N] advertencias, [N] notas
 ```
 
-### Tester → Main
+### Tester -> Main
 ```markdown
 ## Resultados de Tests
 
-### ✅ Pasaron: 47/47
+### Pasaron: 47/47
 - Suite IPValidation: 18/18
 - Suite RoutingTable: 14/14
-- Suite RouteBuilderState: 15/15
 
 ### Resumen
-Todos los tests pasan sin regresión.
+Todos los tests pasan sin regresion.
 ```
 
-### Builder → Main
+### Builder -> Main
 ```markdown
 ## Resultado de Build
 
 ### Build: IDEUM / PC
-### Estado: ✅ Completado
+### Estado: Completado
 
 ### Archivos
 - `/ruta/al/build.exe`
 
-### Próximos pasos
+### Proximos pasos
 - Copiar a mesa IDEUM
 ```
 
-## 📝 Reglas de comunicación
+## Reglas de comunicacion
 
-1. **Sé conciso** — ve al grano, no añadas prosa innecesaria
-2. **Sé específico** — menciona archivos:línea, nombres exactos
-3. **Clasifica por severidad** — crítico > advertencia > nota
-4. **Si hay error, di cómo solucionarlo** — no solo reportes el problema
-5. **No escondas resultados** — el usuario debe ver todo
+1. Se conciso -- ve al grano, no anadas prosa innecesaria.
+2. Se especifico -- menciona archivos:linea, nombres exactos.
+3. Clasifica por severidad -- critico > advertencia > nota.
+4. Si hay error, di como solucionarlo -- no solo reportes.
+5. No escondas resultados -- el usuario debe ver todo.
 
-## 🚨 Escalamiento de problemas
+## Escalamiento de problemas
 
 Si un subagente encuentra un problema que no puede resolver:
 
 ```markdown
-## ⛔ Bloqueante
+## Bloqueante
 
 ### Problema
-[descripción clara]
+[descripcion clara]
 
-### Causa raíz
-[qué lo está causando]
+### Causa raiz
+[que lo esta causando]
 
 ### Opciones
-1. [opción A] — [pros/cons]
-2. [opción B] — [pros/cons]
+1. [opcion A] -- [pros/cons]
+2. [opcion B] -- [pros/cons]
 
 ### Sugerencia
-[qué recomienda el agente]
+[que recomienda el agente]
 ```
 
-## ✅ Verificación post-implementación
+## Verificacion post-implementacion
 
-Antes de marcar una tarea como completada:
+Antes de marcar completada:
+1. El codigo compila? (verificacion mental)
+2. Los tests pasan? (ejecutar suite relevante)
+3. Las convenciones del proyecto se respetan?
+4. El ROADMAP.md esta actualizado?
+5. El usuario fue notificado del resultado?
 
-1. ¿El código compila? (verificación mental)
-2. ¿Los tests pasan? (ejecutar suite relevante)
-3. ¿Las convenciones del proyecto se respetan?
-4. ¿El ROADMAP.md está actualizado?
-5. ¿El usuario fue notificado del resultado?
+## Checklist para main antes de delegar
 
-## 📋 Checklist para main antes de delegar
-
-- [ ] ¿Tarea requiere 2+ pasos? → delegar a architect → programmer → reviewer → tester
-- [ ] ¿Tarea es simple (1-2 tool calls)? → hacerla directamente, no delegar
-- [ ] ¿El subagente tiene el contexto necesario? (skills a cargar, archivos a leer)
-- [ ] ¿El subagente sabe qué devolver?
+- Tarea requiere 2+ pasos? -> delegar a architect -> programmer -> reviewer -> tester
+- Tarea simple (1-2 tool calls)? -> hacerla directamente
+- El subagente tiene el contexto necesario? (skills, archivos)
+- El subagente sabe que devolver?

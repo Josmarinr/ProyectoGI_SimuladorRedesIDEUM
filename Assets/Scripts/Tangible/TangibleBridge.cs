@@ -6,6 +6,11 @@ using TE;
 
 namespace SimRedes.Tangible
 {
+    /// <summary>
+    /// Puente entre el servicio TangibleEngine (IDEUM) y el simular.
+    /// Traduce eventos de discos fisicos (anadir/mover/quitar) del hardware IDEUM
+    /// a llamadas en TangibleDiscManager, mapeando IDs de TangibleEngine a IDs unicos.
+    /// </summary>
     public class TangibleBridge : MonoBehaviour
     {
         // Trackea la relación entre tangible.Id (del servicio TangibleEngine)
@@ -16,6 +21,10 @@ namespace SimRedes.Tangible
         [SerializeField] private float canvasWidth = 4096f;
         [SerializeField] private float canvasHeight = 2160f;
 
+        /// <summary>
+        /// Se suscribe a los eventos de TangibleEngine (anadir/mover/quitar)
+        /// e inicia la corrutina de verificacion periodica de conectividad.
+        /// </summary>
         private void Start()
         {
             try
@@ -37,6 +46,10 @@ namespace SimRedes.Tangible
             UnityEngine.Debug.Log($"[TangibleBridge][{level}][{System.DateTime.Now:HH:mm:ss.fff}] {message}");
         }
 
+        /// <summary>
+        /// Verifica cada 5 segundos (hasta 30s) que TangibleDiscManager exista
+        /// y tenga discos activos, alertando si no detecta discos tras 10s.
+        /// </summary>
         private System.Collections.IEnumerator PeriodicConnectivityCheck()
         {
             float elapsed = 0f;
@@ -57,6 +70,11 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Procesa la deteccion de un nuevo disco fisico: mapea su PatternId a tipo,
+        /// convierte coordenadas y lo registra en TangibleDiscManager.
+        /// </summary>
+        /// <param name="tangible">Dato del disco detectado por TangibleEngine.</param>
         private void HandleTangibleAdded(TE.Tangible tangible)
         {
             try
@@ -90,6 +108,11 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Procesa la remocion de un disco fisico: lo elimina de TangibleDiscManager
+        /// y del mapeo interno.
+        /// </summary>
+        /// <param name="tangible">Dato del disco removido por TangibleEngine.</param>
         private void HandleTangibleRemoved(TE.Tangible tangible)
         {
             try
@@ -113,6 +136,11 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Actualiza la posicion de un disco fisico cuando TangibleEngine reporta movimiento,
+        /// solo si la distancia supera el umbral de 5px.
+        /// </summary>
+        /// <param name="tangible">Dato del disco actualizado por TangibleEngine.</param>
         private void HandleTangibleUpdated(TE.Tangible tangible)
         {
             try
@@ -141,6 +169,12 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Convierte coordenadas de pantalla (TangibleEngine) a coordenadas del Canvas,
+        /// usando la resolucion de referencia configurada (4096x2160).
+        /// </summary>
+        /// <param name="screenPosition">Posicion en pixeles del TangibleEngine.</param>
+        /// <returns>Posicion escalada al espacio del Canvas.</returns>
         private Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
         {
             float displayWidth = Display.main.systemWidth;
@@ -162,6 +196,12 @@ namespace SimRedes.Tangible
             );
         }
 
+        /// <summary>
+        /// Mapea el PatternId de TangibleEngine al tipo de disco fisico (1=Router, 2=Switch, 3=PC).
+        /// Descarta patrones fuera del rango 1-3.
+        /// </summary>
+        /// <param name="patternId">Identificador de patron del disco fisico.</param>
+        /// <returns>Tipo de disco (1-3) o -1 si no es un disco fisico valido.</returns>
         private int MapPatternToDiscType(int patternId)
         {
             // Solo 3 discos fisicos: Router(1), Switch(2), PC(3)
@@ -172,6 +212,9 @@ namespace SimRedes.Tangible
             return -1; // señal de ignorar
         }
 
+        /// <summary>
+        /// Desuscribe todos los eventos de TangibleEngine para evitar fugas de memoria.
+        /// </summary>
         private void OnDestroy()
         {
             TE.TangibleEngine.OnTangibleAdded -= HandleTangibleAdded;

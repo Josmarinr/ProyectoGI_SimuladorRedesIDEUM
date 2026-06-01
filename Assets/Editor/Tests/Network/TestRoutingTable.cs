@@ -118,15 +118,14 @@ namespace Tests.EditMode.Network
             var router = CreateTestRouter();
             var table = router.RoutingTable;
 
-            // Two routes to same network, different metrics
-            table.AddStaticRoute("10.0.0.0", "255.0.0.0", "10.0.0.1", "G0/0");
-            // Manually add a second route with lower metric via the entry
-            var entries = table.GetAllEntries();
-            entries.Add(new RoutingEntry("10.0.0.0", "255.0.0.0", "10.0.0.2", "G0/1", 5, "Static"));
+            // Two routes to same network with different metrics (using public API)
+            table.AddOspfRoute("10.0.0.0", "10.0.0.2", "G0/1", 10);
+            table.AddRipRoute("10.0.0.0", "10.0.0.1", "G0/0", 5);
 
-            var best = table.FindBestRoute("10.1.1.1");
+            var best = table.FindBestRoute("10.0.0.55");
             Assert.IsNotNull(best);
-            Assert.AreEqual("10.0.0.1", best.NextHop); // first entry has metric 0 < 5
+            Assert.AreEqual("10.0.0.1", best.NextHop); // RIP metric 5 < OSPF metric 10
+            Assert.AreEqual(5, best.Metric);
         }
 
         [Test]
@@ -183,6 +182,71 @@ namespace Tests.EditMode.Network
 
             // Second reference should still have the entry (it's a copy)
             Assert.AreEqual(1, entries2.Count);
+        }
+
+        // ================================================================
+        // EIGRP Route Tests
+        // ================================================================
+
+        [Test]
+        public void AddEigrpRoute_SetsCorrectDefaults()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+
+            table.AddEigrpRoute("10.0.0.0", "10.0.0.1", "G0/0", 128);
+
+            var entry = table.GetAllEntries()[0];
+            Assert.AreEqual("10.0.0.0", entry.DestinationNetwork);
+            Assert.AreEqual("255.255.255.0", entry.SubnetMask); // default /24
+            Assert.AreEqual(128, entry.Metric);
+            Assert.AreEqual("EIGRP", entry.Protocol);
+        }
+
+        [Test]
+        public void AddEigrpRoute_MultipleRoutes_AllStored()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+
+            table.AddEigrpRoute("10.0.0.0", "10.0.0.1", "G0/0", 128);
+            table.AddEigrpRoute("172.16.0.0", "172.16.0.1", "G0/1", 256);
+            table.AddEigrpRoute("192.168.1.0", "192.168.1.1", "G0/2", 64);
+
+            Assert.AreEqual(3, table.GetAllEntries().Count);
+        }
+
+        [Test]
+        public void FindBestRoute_EigrpRoute_LowerMetricSelected()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+
+            // Two EIGRP routes to same network with different metrics (using public API)
+            table.AddEigrpRoute("10.0.0.0", "10.0.0.2", "G0/1", 256);
+            table.AddEigrpRoute("10.0.0.0", "10.0.0.1", "G0/0", 64);
+
+            var best = table.FindBestRoute("10.0.0.1");
+            Assert.IsNotNull(best);
+            Assert.AreEqual("10.0.0.1", best.NextHop); // lower metric (64 < 256)
+            Assert.AreEqual(64, best.Metric);
+        }
+
+        [Test]
+        public void FindBestRoute_RespectsLongestPrefix_AcrossProtocols()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+
+            // /16 route via Static (explicit mask)
+            table.AddStaticRoute("10.0.0.0", "255.255.0.0", "10.0.0.2", "G0/1");
+            // More specific /24 route via EIGRP (default mask)
+            table.AddEigrpRoute("10.0.0.0", "10.0.0.1", "G0/0", 128);
+
+            // 10.0.0.55 matches both /16 and /24. /24 should win.
+            var best = table.FindBestRoute("10.0.0.55");
+            Assert.IsNotNull(best);
+            Assert.AreEqual("EIGRP", best.Protocol); // /24 wins over /16 regardless of protocol or metric
         }
 
         [Test]

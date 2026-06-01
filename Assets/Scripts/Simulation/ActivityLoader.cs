@@ -11,6 +11,11 @@ using UIColors = SimRedes.UI.UIComponents.Colors;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Cargador de actividades del simulador. Administra la transicion entre el menu principal
+    /// y las distintas actividades (topologia, fallos, enrutamiento estatico/dinamico, etc.).
+    /// Crea los paneles UI necesarios y los componentes asociados a cada actividad.
+    /// </summary>
     public class ActivityLoader : MonoBehaviour
     {
         internal string selectedProtocol = null;
@@ -25,6 +30,10 @@ namespace SimRedes.Simulation
             canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         }
 
+        /// <summary>
+        /// Almacena el protocolo de enrutamiento dinamico seleccionado (RIP, OSPF o EIGRP).
+        /// </summary>
+        /// <param name="protocol">Nombre del protocolo ("RIP", "OSPF" o "EIGRP").</param>
         public void SetSelectedProtocol(string protocol)
         {
             selectedProtocol = protocol;
@@ -35,6 +44,10 @@ namespace SimRedes.Simulation
             if (topology == null) topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
         }
 
+        /// <summary>
+        /// Garantiza que los gestores necesarios para el panel de conectividad existan
+        /// (TopologyManager, NodeVisualizer, PingVisualizer), creandolos si es necesario.
+        /// </summary>
         private void EnsureManagersForConnectivity()
         {
             var gameManagerObj = GameObject.Find("GameManager");
@@ -66,6 +79,12 @@ namespace SimRedes.Simulation
             canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         }
 
+        /// <summary>
+        /// Inicia una actividad por su indice. Destruye el panel de actividades, crea el HUD
+        /// de simulacion y agrega los componentes especificos segun la actividad elegida.
+        /// </summary>
+        /// <param name="activityIndex">Indice de la actividad (0: BuildTopology, 1: FindFault,
+        /// 2: RoutingTables, 3: BestRoute, 4: StaticRouting, 5: DynamicRouting, 6: Escenarios).</param>
         public void SelectActivity(int activityIndex)
         {
             UnityEngine.Debug.Log("[ActivityLoader] Actividad seleccionada: " + activityIndex);
@@ -95,12 +114,22 @@ namespace SimRedes.Simulation
                     UnityEngine.Debug.Log("[ActivityLoader] Iniciando: Construye la Topolog\u00eda");
                     break;
                 case 1:
+                    // Limpiar topologia y cargar escenario pre-hecho
+                    if (topology != null) topology.ClearTopology();
                     if (gameManagerObj.GetComponent<FindFaultActivity>() == null)
                         gameManagerObj.AddComponent<FindFaultActivity>();
                     ActivityPanelFactory.CreateFindFaultPanel(canvas.transform,
-                        onSolve: () => {
+                        onDiscClick: () => {
                             var act = gameManagerObj.GetComponent<FindFaultActivity>();
-                            if (act != null) act.OnSolveClicked();
+                            if (act != null) act.OnDiscButtonClicked();
+                        },
+                        onNext: () => {
+                            var act = gameManagerObj.GetComponent<FindFaultActivity>();
+                            if (act != null) act.OnNextClicked();
+                        },
+                        onPrev: () => {
+                            var act = gameManagerObj.GetComponent<FindFaultActivity>();
+                            if (act != null) act.OnPrevClicked();
                         },
                         onBack: () => GoBackToMainMenu()
                     );
@@ -131,6 +160,7 @@ namespace SimRedes.Simulation
                         canvas.transform,
                         onSelectRIP: () => SetSelectedProtocol("RIP"),
                         onSelectOSPF: () => SetSelectedProtocol("OSPF"),
+                        onSelectEIGRP: () => SetSelectedProtocol("EIGRP"),
                         onStart: (panel) => {
                             var act = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
                             if (act != null) act.StartProtocol(panel);
@@ -178,6 +208,11 @@ namespace SimRedes.Simulation
                 gameManagerObj.AddComponent<BuildTopologyActivity>();
         }
 
+        /// <summary>
+        /// Inicia una simulacion libre. Destruye el menu principal, crea el HUD de simulacion
+        /// y los componentes base (BuildTopologyActivity, SimulationControls, ScoringSystem).
+        /// </summary>
+        /// <param name="canvasTransform">Transform del canvas donde se crea el HUD.</param>
         public void StartSimulation(Transform canvasTransform)
         {
             var menuMgr = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
@@ -217,6 +252,11 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log("[ActivityLoader] Simulacion iniciada");
         }
 
+        /// <summary>
+        /// Muestra el panel de conectividad independiente. Crea los gestores si no existen
+        /// y configura el ConnectivityTestPanel con referencias a los textos UI.
+        /// </summary>
+        /// <param name="canvasTransform">Transform del canvas donde se crea el panel.</param>
         public void ShowConnectivityPanel(Transform canvasTransform)
         {
             EnsureManagersForConnectivity();
@@ -241,6 +281,11 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log("[ActivityLoader] Panel de conectividad creado");
         }
 
+        /// <summary>
+        /// Crea el panel HUD de simulacion con informacion de topologia, botones de accion
+        /// (LIMPIAR, PING, VOLVER, CONECTAR, DESCONECTAR) y botones de red avanzada (VLAN, ACL, NAT).
+        /// </summary>
+        /// <param name="ct">Transform del canvas raiz.</param>
         private void CreateSimulationHUDPanel(Transform ct)
         {
             var existingPanel = GameObject.Find("TopologyInfoPanel");
@@ -372,6 +417,11 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log("[ActivityLoader] Panel de topologia creado");
         }
 
+        /// <summary>
+        /// Crea el panel de configuracion avanzada de red (VLAN, ACL o NAT) delegando en
+        /// ConfigPanelFactory segun el tipo solicitado.
+        /// </summary>
+        /// <param name="type">Tipo de panel: "VLAN", "ACL" o "NAT".</param>
         private void CreateNetworkAdvancedPanel(string type)
         {
             var topo = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
@@ -388,6 +438,11 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Crea el panel de seleccion de escenarios preconfigurados. Si no hay escenarios
+        /// registrados, agrega uno de prueba rapida por defecto.
+        /// </summary>
+        /// <param name="canvasTransform">Transform del canvas donde se crea el panel.</param>
         private void CreateScenariosPanel(Transform canvasTransform)
         {
             var existingPanel = GameObject.Find("ScenariosPanel");
@@ -441,6 +496,11 @@ namespace SimRedes.Simulation
             );
         }
 
+        /// <summary>
+        /// Carga un escenario preconfigurado: configura los gestores, crea el HUD de simulacion,
+        /// inicia la sesion de puntuacion y muestra la informacion del escenario.
+        /// </summary>
+        /// <param name="scenarioIndex">Indice del escenario en la lista de PredefinedScenarios.</param>
         private void LoadScenario(int scenarioIndex)
         {
             var scenariosPanel = GameObject.Find("ScenariosPanel");
@@ -493,6 +553,10 @@ namespace SimRedes.Simulation
             ShowScenarioInfo(scenario);
         }
 
+        /// <summary>
+        /// Muestra el panel de informacion de un escenario con opcion para iniciarlo.
+        /// </summary>
+        /// <param name="scenario">Escenario a mostrar.</param>
         private void ShowScenarioInfo(PredefinedScenarios.NetworkScenario scenario)
         {
             if (canvas == null) canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
@@ -505,6 +569,12 @@ namespace SimRedes.Simulation
             );
         }
 
+        /// <summary>
+        /// Construye la topologia de red a partir de un escenario preconfigurado.
+        /// Crea dispositivos, enlaces, configuraciones IP y fallos segun la definicion del escenario.
+        /// Tambien agrega rutas estaticas predefinidas para escenarios conocidos (Dos Routers, Anillo, Arbol).
+        /// </summary>
+        /// <param name="scenario">Escenario con la configuracion de dispositivos, enlaces y rutas.</param>
         private void BuildScenarioTopology(PredefinedScenarios.NetworkScenario scenario)
         {
             var topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
@@ -588,6 +658,10 @@ namespace SimRedes.Simulation
             if (devicePanelCtrl != null) devicePanelCtrl.RefreshDevicesPanel();
         }
 
+        /// <summary>
+        /// Vuelve al menu principal. Utiliza SceneCleanupService si existe para limpiar la escena,
+        /// o crea el menu directamente via SceneSetup.CreateMainMenuPublic.
+        /// </summary>
         private void GoBackToMainMenu()
         {
             var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
@@ -612,6 +686,12 @@ namespace SimRedes.Simulation
 
         // ==================== DYNAMIC ROUTING ====================
 
+        /// <summary>
+        /// Inicia el protocolo de enrutamiento dinamico seleccionado (RIP/OSPF/EIGRP).
+        /// Valida que existan al menos 2 routers y que se haya seleccionado un protocolo.
+        /// Configura los callbacks de log y convergencia, y arranca DynamicRoutingProtocol.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad de enrutamiento dinamico (contiene RightPanel con Text de estado).</param>
         public void StartDynamicProtocol(GameObject panel)
         {
             EnsureTopology();
@@ -649,9 +729,12 @@ namespace SimRedes.Simulation
             }
 
             dynProtocol = gameManager.AddComponent<DynamicRoutingProtocol>();
-            dynProtocol.protocol = selectedProtocol == "RIP" ?
-                DynamicRoutingProtocol.ProtocolType.RIP :
-                DynamicRoutingProtocol.ProtocolType.OSPF;
+            if (selectedProtocol == "RIP")
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.RIP;
+            else if (selectedProtocol == "EIGRP")
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
+            else
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.OSPF;
 
             dynProtocol.OnProtocolLog += (msg) => {
                 UnityEngine.Debug.Log($"[{selectedProtocol}] {msg}");
@@ -681,6 +764,11 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Detiene el protocolo de enrutamiento dinamico activo. Actualiza el texto de estado
+        /// del panel indicando que el protocolo esta pausado.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de estado).</param>
         public void StopDynamicProtocol(GameObject panel)
         {
             if (dynProtocol != null)
@@ -696,6 +784,11 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Limpia todas las rutas dinamicas del protocolo activo y vacia las tablas de
+        /// enrutamiento de todos los routers en la topologia.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de estado).</param>
         public void ClearDynamicRoutes(GameObject panel)
         {
             if (dynProtocol != null) dynProtocol.ClearAllRoutes();
@@ -713,6 +806,11 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Muestra las tablas de enrutamiento de todos los routers en un panel de texto.
+        /// Trunca el contenido a 400 caracteres si es necesario.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de salida).</param>
         public void ShowAllRouterRoutes(GameObject panel)
         {
             EnsureTopology();

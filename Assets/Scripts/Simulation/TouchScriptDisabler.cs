@@ -20,7 +20,7 @@ namespace SimRedes
 
         private void DisableTouchScriptCursors()
         {
-            var cursorManagers = FindObjectsByType<CursorManager>();
+            var cursorManagers = FindObjectsByType<CursorManager>(FindObjectsSortMode.None);
             foreach (var cm in cursorManagers)
             {
                 cm.enabled = false;

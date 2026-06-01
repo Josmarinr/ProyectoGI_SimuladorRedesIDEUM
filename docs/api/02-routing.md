@@ -33,6 +33,11 @@ public void AddOspfRoute(string destNetwork, string nextHop, string outInterface
 ```
 Agrega ruta aprendida por OSPF. Asigna máscara /24 automáticamente si no se especifica.
 
+```csharp
+public void AddEigrpRoute(string destNetwork, string nextHop, string outInterface, int compositeMetric)
+```
+Agrega ruta aprendida por EIGRP con métrica compuesta. Asigna máscara /24 automáticamente.
+
 **Búsqueda**
 
 ```csharp
@@ -78,7 +83,7 @@ Entrada individual en la tabla de enrutamiento.
 | `NextHop` | `string` | IP del siguiente salto |
 | `OutInterface` | `string` | Interfaz de salida (ej: "G0/0") |
 | `Metric` | `int` | Métrica de la ruta |
-| `Protocol` | `string` | Protocolo de origen ("Static", "RIP", "OSPF") |
+| `Protocol` | `string` | Protocolo de origen ("Static", "RIP", "OSPF", "EIGRP") |
 
 ### Métodos
 

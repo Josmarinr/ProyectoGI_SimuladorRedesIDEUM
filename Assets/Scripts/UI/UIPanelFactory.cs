@@ -9,19 +9,39 @@ using UIColors = SimRedes.UI.UIComponents.Colors;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Fabrica de paneles de interfaz de usuario para navegacion e informacion general.
+    /// Crea menus, paneles de conectividad, leyenda de discos y componentes UI base.
+    /// </summary>
     public static class UIPanelFactory
     {
+        /// <summary>
+        /// Referencias a los elementos del panel de conectividad.
+        /// </summary>
         public struct ConnectivityPanelRefs
         {
+            /// <summary>Objeto raiz del panel.</summary>
             public GameObject panelObj;
+            /// <summary>Texto que muestra el nodo origen.</summary>
             public Text sourceText;
+            /// <summary>Texto que muestra el nodo destino.</summary>
             public Text destText;
+            /// <summary>Texto del resultado de la prueba.</summary>
             public Text resultText;
+            /// <summary>Icono del resultado (check/cruz).</summary>
             public Text resultIcon;
+            /// <summary>Boton para ejecutar ping.</summary>
             public Button pingButton;
+            /// <summary>Texto de estadisticas de pings.</summary>
             public Text statusText;
         }
 
+        /// <summary>
+        /// Obtiene una fuente dinamica Arial del tamano especificado.
+        /// Fallback a LegacyRuntime.ttf si Arial no esta disponible.
+        /// </summary>
+        /// <param name="size">Tamano de la fuente en puntos (default 14).</param>
+        /// <returns>Fuente lista para usar en componentes Text.</returns>
         public static Font GetFont(int size = 14)
         {
             Font font = Font.CreateDynamicFontFromOSFont("Arial", size);
@@ -30,6 +50,16 @@ namespace SimRedes.UI
             return font;
         }
 
+        /// <summary>
+        /// Crea un teclado numerico virtual (0-9, punto, DEL) para ingresar direcciones IP.
+        /// Los botones escriben en el InputField activo (IP o mascara).
+        /// </summary>
+        /// <param name="parent">Transform padre donde se creara el teclado.</param>
+        /// <param name="startY">Posicion Y inicial del teclado.</param>
+        /// <param name="font">Fuente para botones especiales (DEL).</param>
+        /// <param name="bigFont">Fuente para botones numericos.</param>
+        /// <param name="ipField">Campo de entrada de IP.</param>
+        /// <param name="maskField">Campo de entrada de mascara.</param>
         internal static void CreateNumericKeypad(Transform parent, float startY, Font font, Font bigFont, InputField ipField, InputField maskField)
         {
             string[] keys = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "DEL" };
@@ -100,6 +130,12 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Crea el panel de puntaje ubicado en la esquina inferior derecha.
+        /// Muestra la etiqueta "Puntaje" y el puntaje numerico.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateScorePanel(Transform canvas)
         {
             Font font = GetFont(18);
@@ -120,6 +156,14 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de dispositivos ubicado en la esquina superior izquierda.
+        /// Muestra la lista de nodos disponibles en la topologia.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <param name="nodeCount">Cantidad de nodos a mostrar.</param>
+        /// <param name="onItemClicked">Callback al hacer clic en un nodo de la lista.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateDevicesPanel(Transform canvas, int nodeCount,
             Action<int> onItemClicked)
         {
@@ -139,6 +183,13 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de prueba de conectividad con campos de origen/destino,
+        /// boton de ping, icono de resultado y estadisticas.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <param name="onBack">Callback al presionar el boton VOLVER.</param>
+        /// <returns>Estructura con referencias a los componentes del panel.</returns>
         public static ConnectivityPanelRefs CreateConnectivityPanel(Transform canvas,
             Action onBack = null)
         {
@@ -290,6 +341,13 @@ namespace SimRedes.UI
             };
         }
 
+        /// <summary>
+        /// Crea el panel de instrucciones "Como Usar" con tres columnas:
+        /// controles de teclado, descripcion de actividades y conceptos de red.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <param name="onBack">Callback al presionar VOLVER o ESC.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateInstructionsPanel(Transform canvas,
             Action onBack)
         {
@@ -377,6 +435,13 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de leyenda de discos mostrando todos los IDs (1-18)
+        /// con su color, etiqueta y descripcion, organizados en tres secciones.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <param name="onBack">Callback al presionar VOLVER o ESC.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateDiscLegendPanel(Transform canvas, Action onBack)
         {
             Font font = GetFont();
@@ -445,6 +510,16 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea una seccion de la leyenda con un encabezado y una lista de discos,
+        /// cada uno con circulo de color, etiqueta y descripcion.
+        /// </summary>
+        /// <param name="parent">Transform padre.</param>
+        /// <param name="sectionName">Texto del encabezado de la seccion.</param>
+        /// <param name="discIds">Arreglo de IDs de discos a incluir.</param>
+        /// <param name="headerY">Posicion Y del encabezado.</param>
+        /// <param name="spacing">Espaciado entre items.</param>
+        /// <param name="font">Fuente a utilizar.</param>
         private static void CreateLegendSection(Transform parent, string sectionName, int[] discIds,
             float headerY, float spacing, Font font,
             float xHeader, float xCircle, float xLabel, float xDesc)
@@ -517,6 +592,12 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Alterna la visibilidad del panel de ejemplos de topologias.
+        /// Si ya existe, lo destruye; si no, lo crea con los tipos de topologia.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <param name="font">Fuente a utilizar.</param>
         public static void ToggleTopologyExamplePanel(Transform canvas, Font font)
         {
             var existingPanel = GameObject.Find("TopologyExamplePanel");
@@ -621,6 +702,19 @@ namespace SimRedes.UI
             backBtn.onClick.AddListener(() => UnityEngine.Object.Destroy(panelObj));
         }
 
+        /// <summary>
+        /// Crea el menu principal con botones para iniciar simulacion, actividades,
+        /// pruebas de conectividad, instrucciones, leyenda de discos y salir.
+        /// Configura MenuNavigator y MainMenuManager.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el menu.</param>
+        /// <param name="onStartSimulation">Callback para iniciar simulacion.</param>
+        /// <param name="onActivities">Callback para abrir actividades.</param>
+        /// <param name="onConnectivity">Callback para pruebas de conectividad.</param>
+        /// <param name="onInstructions">Callback para panel de instrucciones.</param>
+        /// <param name="onDiscLegend">Callback para leyenda de discos.</param>
+        /// <param name="onExit">Callback para salir de la aplicacion.</param>
+        /// <returns>Objeto del panel del menu principal.</returns>
         public static GameObject CreateMainMenu(Transform canvas,
             Action onStartSimulation, Action onActivities, Action onConnectivity,
             Action onInstructions, Action onDiscLegend, Action onExit)
@@ -675,6 +769,14 @@ namespace SimRedes.UI
             return mainMenuPanel;
         }
 
+        /// <summary>
+        /// Crea el panel de seleccion de actividades con botones para cada una
+        /// de las 7 actividades disponibles (Construye Topologia a Escenarios).
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onSelectActivity">Callback con el indice de la actividad seleccionada.</param>
+        /// <param name="onBack">Callback para volver al menu principal.</param>
+        /// <returns>Objeto del panel de actividades.</returns>
         public static GameObject CreateActivitiesPanel(Transform canvas, Action<int> onSelectActivity, Action onBack)
         {
             Font font = GetFont();
@@ -704,6 +806,17 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea un campo de entrada de texto estilizado para configuracion de red.
+        /// Incluye imagen de fondo, texto de placeholder y el InputField.
+        /// </summary>
+        /// <param name="parent">Transform padre.</param>
+        /// <param name="placeholder">Texto placeholder del campo.</param>
+        /// <param name="leftX">Posicion X del borde izquierdo.</param>
+        /// <param name="rightX">Posicion X del borde derecho.</param>
+        /// <param name="yPos">Posicion Y del campo.</param>
+        /// <param name="font">Fuente a utilizar.</param>
+        /// <returns>InputField creado.</returns>
         internal static InputField CreateConfigField(Transform parent, string placeholder, float leftX, float rightX, float yPos, Font font)
         {
             var inputObj = new GameObject("ConfigField");
@@ -753,6 +866,16 @@ namespace SimRedes.UI
             return inputField;
         }
 
+        /// <summary>
+        /// Crea un dropdown (lista desplegable) con las opciones indicadas.
+        /// Configura template, caption, texto y flecha.
+        /// </summary>
+        /// <param name="parent">Transform padre.</param>
+        /// <param name="options">Lista de opciones del dropdown.</param>
+        /// <param name="font">Fuente a utilizar.</param>
+        /// <param name="position">Posicion anclada del dropdown.</param>
+        /// <param name="size">Tamano del dropdown.</param>
+        /// <returns>Objeto GameObject del dropdown.</returns>
         internal static GameObject CreateDropdown(Transform parent, System.Collections.Generic.List<string> options, Font font, Vector2 position, Vector2 size)
         {
             GameObject dropdownObj = new GameObject("Dropdown");
@@ -812,15 +935,11 @@ namespace SimRedes.UI
         }
 
         /// <summary>
-        /// DEPRECATED — Este método no se usa en ninguna parte. Se deja como stub
-        /// para no romper referencias en builds previas.
+        /// Actualiza el texto de estado del panel de enrutamiento dinamico
+        /// con el nombre del protocolo seleccionado.
         /// </summary>
-        [Obsolete("CreateStatusPanel is deprecated and will be removed. No callers exist.")]
-        public static void CreateStatusPanel(Transform canvasTransform)
-        {
-            Debug.LogWarning("[UIPanelFactory] CreateStatusPanel is deprecated — no-op.");
-        }
-
+        /// <param name="panel">Objeto del panel que contiene RightPanel.</param>
+        /// <param name="protocol">Nombre del protocolo activo (RIP, OSPF, EIGRP).</param>
         internal static void UpdateStatusText(GameObject panel, string protocol)
         {
             var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();

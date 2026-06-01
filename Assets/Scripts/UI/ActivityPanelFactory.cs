@@ -9,8 +9,18 @@ using UIColors = SimRedes.UI.UIComponents.Colors;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Fabrica de paneles de interfaz para las actividades del simulador.
+    /// Crea los paneles especificos de cada actividad (topologia, fallo, routing, etc.).
+    /// </summary>
     public static class ActivityPanelFactory
     {
+        /// <summary>
+        /// Crea el panel de informacion para la actividad "Construye la Topologia".
+        /// Muestra teclas de control y ejemplos de topologias.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz donde se instancia el panel.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateBuildTopologyInfoPanel(Transform canvas)
         {
             Font font = UIPanelFactory.GetFont();
@@ -64,6 +74,14 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de la actividad "Simulacion de Mejor Ruta".
+        /// Muestra IP destino, resultados, puntaje y botones SIGUIENTE/VOLVER.
+        /// Conecta los componentes con BestRouteActivity.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onBack">Callback para volver.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateBestRoutePanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
@@ -132,63 +150,134 @@ namespace SimRedes.UI
             return panelObj;
         }
 
-        public static GameObject CreateFindFaultPanel(Transform canvas, Action onSolve, Action onBack)
+        /// <summary>
+        /// Crea el panel de la actividad "Encuentra el Fallo" con 4 escenarios pre-hechos.
+        /// Muestra descripcion del fallo, pista, disco tactil, resultado y navegacion.
+        /// Conecta los componentes con FindFaultActivity.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onDiscClick">Callback al presionar el disco tactil.</param>
+        /// <param name="onNext">Callback al presionar SIGUIENTE/FINALIZAR.</param>
+        /// <param name="onPrev">Callback al presionar ANTERIOR.</param>
+        /// <param name="onBack">Callback para volver al menu.</param>
+        /// <returns>Objeto del panel creado.</returns>
+        public static GameObject CreateFindFaultPanel(Transform canvas,
+            Action onDiscClick, Action onNext, Action onPrev, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(520, 540), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(600, 680), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "FindFaultPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Encuentra el Fallo", 26, new Vector2(0, 230), font);
 
+            UIComp.CreateMenuTitle(panelObj.transform, "Encuentra el Fallo", 24, new Vector2(0, 290), font);
+
+            // ─── Titulo de escenario ───
+            var titleObj = new GameObject("ScenarioTitleText");
+            titleObj.transform.SetParent(panelObj.transform, false);
+            var titleRect = titleObj.AddComponent<RectTransform>();
+            titleRect.anchorMin = new Vector2(0.5f, 0.5f);
+            titleRect.anchorMax = new Vector2(0.5f, 0.5f);
+            titleRect.anchoredPosition = new Vector2(0, 230);
+            titleRect.sizeDelta = new Vector2(520, 30);
+            var titleTextComp = titleObj.AddComponent<Text>();
+            titleTextComp.text = "Escenario 1/4";
+            titleTextComp.color = UIColors.textAccent;
+            titleTextComp.fontSize = 16;
+            titleTextComp.fontStyle = FontStyle.Bold;
+            titleTextComp.alignment = TextAnchor.MiddleCenter;
+            titleTextComp.font = font;
+
+            // ─── Descripcion del fallo ───
             var descObj = new GameObject("FaultDescriptionText");
             descObj.transform.SetParent(panelObj.transform, false);
             var descRect = descObj.AddComponent<RectTransform>();
             descRect.anchorMin = new Vector2(0.5f, 0.5f);
             descRect.anchorMax = new Vector2(0.5f, 0.5f);
-            descRect.anchoredPosition = new Vector2(0, 140);
-            descRect.sizeDelta = new Vector2(440, 80);
+            descRect.anchoredPosition = new Vector2(0, 145);
+            descRect.sizeDelta = new Vector2(500, 100);
             var descText = descObj.AddComponent<Text>();
-            descText.text = "Coloca dispositivos y genera un fallo para identificarlo.";
+            descText.text = "Descripci\u00f3n del fallo";
             descText.color = UIColors.textPrimary;
             descText.fontSize = 15;
             descText.alignment = TextAnchor.MiddleCenter;
             descText.font = font;
-            descText.lineSpacing = 1.2f;
+            descText.lineSpacing = 1.3f;
 
+            // ─── Pista ───
             var hintObj = new GameObject("HintText");
             hintObj.transform.SetParent(panelObj.transform, false);
             var hintRect = hintObj.AddComponent<RectTransform>();
             hintRect.anchorMin = new Vector2(0.5f, 0.5f);
             hintRect.anchorMax = new Vector2(0.5f, 0.5f);
-            hintRect.anchoredPosition = new Vector2(0, 50);
-            hintRect.sizeDelta = new Vector2(440, 40);
+            hintRect.anchoredPosition = new Vector2(0, 55);
+            hintRect.sizeDelta = new Vector2(500, 35);
             var hintTextComp = hintObj.AddComponent<Text>();
-            hintTextComp.text = "Pista: --";
+            hintTextComp.text = "\u2139\ufe0f Pista:";
             hintTextComp.color = new Color(0.8f, 0.8f, 0.3f);
-            hintTextComp.fontSize = 14;
+            hintTextComp.fontSize = 13;
             hintTextComp.alignment = TextAnchor.MiddleCenter;
             hintTextComp.font = font;
 
+            // ─── Disco tactil (boton grande) ───
+            Color discBtnColor = new Color(0.2f, 0.5f, 0.8f, 1f);
+            var discObj = new GameObject("TactileDiscBtn");
+            discObj.transform.SetParent(panelObj.transform, false);
+            var discRect = discObj.AddComponent<RectTransform>();
+            discRect.anchorMin = new Vector2(0.5f, 0.5f);
+            discRect.anchorMax = new Vector2(0.5f, 0.5f);
+            discRect.anchoredPosition = new Vector2(0, -25);
+            discRect.sizeDelta = new Vector2(240, 70);
+            var discImg = discObj.AddComponent<Image>();
+            var discTex = UIComp.CreateRoundedRectTexture(240, 70, 18, discBtnColor, UIColors.borderAccent, 3f);
+            discImg.sprite = Sprite.Create(discTex, new Rect(0, 0, 240, 70), new Vector2(0.5f, 0.5f), 100);
+            discImg.type = Image.Type.Sliced;
+            var discBtn = discObj.AddComponent<Button>();
+            discBtn.colors = UIComp.GetButtonColors(discBtnColor);
+            discBtn.onClick.AddListener(() => onDiscClick?.Invoke());
+
+            var discTextObj = new GameObject("Text");
+            discTextObj.transform.SetParent(discObj.transform, false);
+            var discTextRect = discTextObj.AddComponent<RectTransform>();
+            discTextRect.anchorMin = Vector2.zero;
+            discTextRect.anchorMax = Vector2.one;
+            discTextRect.offsetMin = Vector2.zero;
+            discTextRect.offsetMax = Vector2.zero;
+            var discTextComp = discTextObj.AddComponent<Text>();
+            discTextComp.text = "Disco T\u00e1ctil";
+            discTextComp.color = Color.white;
+            discTextComp.fontSize = 16;
+            discTextComp.fontStyle = FontStyle.Bold;
+            discTextComp.alignment = TextAnchor.MiddleCenter;
+            discTextComp.font = font;
+
+            // ─── Resultado ───
             var resultObj = new GameObject("ResultText");
             resultObj.transform.SetParent(panelObj.transform, false);
             var resultRect = resultObj.AddComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0.5f, 0.5f);
             resultRect.anchorMax = new Vector2(0.5f, 0.5f);
-            resultRect.anchoredPosition = new Vector2(0, -10);
-            resultRect.sizeDelta = new Vector2(440, 40);
+            resultRect.anchoredPosition = new Vector2(0, -110);
+            resultRect.sizeDelta = new Vector2(500, 40);
             var resultTextComp = resultObj.AddComponent<Text>();
             resultTextComp.text = "";
             resultTextComp.color = UIColors.textPrimary;
             resultTextComp.fontSize = 15;
+            resultTextComp.fontStyle = FontStyle.Bold;
             resultTextComp.alignment = TextAnchor.MiddleCenter;
             resultTextComp.font = font;
 
-            Button solveBtn = UIComp.CreateMenuButton(panelObj.transform, "SolveBtn", "RESOLVER", new Vector2(0, -80), new Vector2(160, 45), font, 16);
-            solveBtn.onClick.AddListener(() => onSolve?.Invoke());
+            // ─── Botones de navegacion ───
+            Button prevBtn = UIComp.CreateMenuButton(panelObj.transform, "PrevBtn", "\u25c0 ANTERIOR", new Vector2(-150, -170), new Vector2(130, 40), font, 13);
+            prevBtn.onClick.AddListener(() => onPrev?.Invoke());
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -160), new Vector2(140, 40), font, 14);
+            Button nextBtn = UIComp.CreateMenuButton(panelObj.transform, "NextBtn", "SIGUIENTE \u25b6", new Vector2(150, -170), new Vector2(130, 40), font, 13);
+            nextBtn.onClick.AddListener(() => onNext?.Invoke());
+
+            // ─── Boton volver ───
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -240), new Vector2(140, 40), font, 14);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
 
+            // ─── Status ───
             var statusObj = new GameObject("StatusText");
             statusObj.transform.SetParent(panelObj.transform, false);
             var statusRect = statusObj.AddComponent<RectTransform>();
@@ -196,27 +285,41 @@ namespace SimRedes.UI
             statusRect.anchorMax = new Vector2(0.5f, 0f);
             statusRect.pivot = new Vector2(0.5f, 0f);
             statusRect.anchoredPosition = new Vector2(0, 30);
-            statusRect.sizeDelta = new Vector2(440, 30);
+            statusRect.sizeDelta = new Vector2(500, 25);
             var statusTextComp = statusObj.AddComponent<Text>();
             statusTextComp.text = "Modo: Encuentra el Fallo";
             statusTextComp.color = UIColors.textSecondary;
-            statusTextComp.fontSize = 13;
+            statusTextComp.fontSize = 12;
             statusTextComp.alignment = TextAnchor.MiddleCenter;
             statusTextComp.font = font;
 
+            // ─── Conectar con FindFaultActivity ───
             var activity = UnityEngine.Object.FindAnyObjectByType<FindFaultActivity>();
             if (activity != null)
             {
+                activity.scenarioTitleText = titleTextComp;
                 activity.faultDescriptionText = descText;
                 activity.hintText = hintTextComp;
                 activity.resultText = resultTextComp;
-                activity.solveButton = solveBtn;
                 activity.statusText = statusTextComp;
+                activity.discButton = discBtn;
+                activity.discButtonText = discTextComp;
+                activity.nextButton = nextBtn;
+                activity.nextButtonText = nextBtn.GetComponentInChildren<Text>();
+                activity.prevButton = prevBtn;
             }
 
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de la actividad "Tabla de Enrutamiento Tangible".
+        /// Muestra informacion a la izquierda y las tablas de rutas a la derecha.
+        /// Conecta los componentes con RoutingTablesActivity.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onBack">Callback para volver.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateRoutingTablesPanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
@@ -276,6 +379,14 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de la actividad "Enrutamiento Estatico Tangible".
+        /// Incluye botones para anadir rutas manuales, de ejemplo y probar enrutamiento.
+        /// Conecta los componentes con StaticRoutingActivity.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onBack">Callback para volver.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateStaticRoutingPanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
@@ -330,7 +441,7 @@ namespace SimRedes.UI
                 feedbackRect.anchorMin = new Vector2(0.5f, 0f);
                 feedbackRect.anchorMax = new Vector2(0.5f, 0f);
                 feedbackRect.pivot = new Vector2(0.5f, 0f);
-                feedbackRect.anchoredPosition = new Vector2(0, 125);
+                feedbackRect.anchoredPosition = new Vector2(0, 175);
                 feedbackRect.sizeDelta = new Vector2(500, 30);
                 var feedbackTextComp = feedbackObj.AddComponent<Text>();
                 feedbackTextComp.text = "";
@@ -358,15 +469,35 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de la actividad "Protocolo de Enrutamiento Dinamico Tangible".
+        /// Incluye botones para RIP, OSPF, EIGRP, START/STOP, configuracion avanzada
+        /// con discos virtuales 15-18 y conecta componentes con DynamicRoutingActivity.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="onSelectRIP">Callback al seleccionar RIP.</param>
+        /// <param name="onSelectOSPF">Callback al seleccionar OSPF.</param>
+        /// <param name="onStart">Callback al presionar START.</param>
+        /// <param name="onStop">Callback al presionar STOP.</param>
+        /// <param name="onClearRoutes">Callback para limpiar rutas.</param>
+        /// <param name="onViewRoutes">Callback para ver rutas.</param>
+        /// <param name="onBack">Callback para volver.</param>
+        /// <param name="onSetNeighbor">Callback para configurar vecino (disco 15).</param>
+        /// <param name="onSetNetwork">Callback para anunciar red (disco 16).</param>
+        /// <param name="onSetCost">Callback para establecer costo/delay (disco 17).</param>
+        /// <param name="onSetBW">Callback para establecer ancho de banda (disco 18).</param>
+        /// <param name="onSelectEIGRP">Callback al seleccionar EIGRP.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateDynamicRoutingPanel(Transform canvas,
             Action onSelectRIP, Action onSelectOSPF, Action<GameObject> onStart,
             Action<GameObject> onStop, Action<GameObject> onClearRoutes,
             Action<GameObject> onViewRoutes, Action onBack,
             Action<string> onSetNeighbor = null, Action<string> onSetNetwork = null,
-            Action<int> onSetCost = null, Action<int> onSetBW = null)
+            Action<int> onSetCost = null, Action<int> onSetBW = null,
+            Action onSelectEIGRP = null)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(750, 720), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(750, 820), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "DynamicRoutingPanel";
             UIComp.CreateMenuTitle(panelObj.transform, "Protocolo de Enrutamiento Din\u00e1mico Tangible", 24, new Vector2(0, 260), font);
@@ -382,7 +513,8 @@ namespace SimRedes.UI
             leftText.text =                 "PROTOCOLO DE ENRUTAMIENTO\n" +
                 "DIN\u00c1MICO TANGIBLE\n\n" +
                 "RIP (conteo de hops)\n" +
-                "OSPF (costo por enlace)\n\n" +
+                "OSPF (costo por enlace)\n" +
+                "EIGRP (metrica compuesta)\n\n" +
                 "BOTONES:\n  START = Iniciar envio\n  STOP = Detener\n  LIMPIAR = Borrar rutas\n  VER RUTAS = Mostrar\n\n" +
                 "Usa teclas 1-4 para\ncrear la topologia.";
             leftText.color = UIColors.textPrimary;
@@ -406,33 +538,42 @@ namespace SimRedes.UI
             rightText.font = font;
             rightText.name = "StatusText";
 
-            float btnY = -165, btnSpacing = 130;
+            float btnY = -165, btnSpacing = 110;
 
             var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
 
-            Button ripBtn = UIComp.CreateMenuButton(panelObj.transform, "RIPBtn", "RIP", new Vector2(-btnSpacing, btnY), new Vector2(100, 45), font, 16);
+            Button ripBtn = UIComp.CreateMenuButton(panelObj.transform, "RIPBtn", "RIP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(95, 45), font, 16);
             ripBtn.onClick.AddListener(() => {
                 UIPanelFactory.UpdateStatusText(panelObj, "RIP");
                 if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.RIP);
+                onSelectRIP?.Invoke();
             });
 
-            Button ospfBtn = UIComp.CreateMenuButton(panelObj.transform, "OSBFBtn", "OSPF", new Vector2(0, btnY), new Vector2(100, 45), font, 16);
+            Button ospfBtn = UIComp.CreateMenuButton(panelObj.transform, "OSBFBtn", "OSPF", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(95, 45), font, 16);
             ospfBtn.onClick.AddListener(() => {
                 UIPanelFactory.UpdateStatusText(panelObj, "OSPF");
                 if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.OSPF);
+                onSelectOSPF?.Invoke();
             });
 
-            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartBtn", "START", new Vector2(btnSpacing, btnY), new Vector2(100, 45), font, 16);
+            Button eigrpBtn = UIComp.CreateMenuButton(panelObj.transform, "EIGRPBtn", "EIGRP", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(95, 45), font, 16);
+            eigrpBtn.onClick.AddListener(() => {
+                UIPanelFactory.UpdateStatusText(panelObj, "EIGRP");
+                if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.EIGRP);
+                onSelectEIGRP?.Invoke();
+            });
+
+            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartBtn", "START", new Vector2(btnSpacing * 1.5f, btnY), new Vector2(95, 45), font, 16);
             startBtn.onClick.AddListener(() => onStart?.Invoke(panelObj));
 
             btnY -= 60;
-            Button stopBtn = UIComp.CreateMenuButton(panelObj.transform, "StopBtn", "STOP", new Vector2(-btnSpacing, btnY), new Vector2(100, 40), font, 14);
+            Button stopBtn = UIComp.CreateMenuButton(panelObj.transform, "StopBtn", "STOP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(95, 40), font, 14);
             stopBtn.onClick.AddListener(() => onStop?.Invoke(panelObj));
 
-            Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR", new Vector2(0, btnY), new Vector2(100, 40), font, 14);
+            Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(95, 40), font, 14);
             clearBtn.onClick.AddListener(() => onClearRoutes?.Invoke(panelObj));
 
-            Button viewBtn = UIComp.CreateMenuButton(panelObj.transform, "ViewBtn", "VER RUTAS", new Vector2(btnSpacing, btnY), new Vector2(100, 40), font, 14);
+            Button viewBtn = UIComp.CreateMenuButton(panelObj.transform, "ViewBtn", "VER RUTAS", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(95, 40), font, 14);
             viewBtn.onClick.AddListener(() => onViewRoutes?.Invoke(panelObj));
 
             var protocolStatusObj = new GameObject("ProtocolStatusText");
@@ -461,7 +602,7 @@ namespace SimRedes.UI
                 feedbackRect.anchorMin = new Vector2(0.5f, 0f);
                 feedbackRect.anchorMax = new Vector2(0.5f, 0f);
                 feedbackRect.pivot = new Vector2(0.5f, 0f);
-                feedbackRect.anchoredPosition = new Vector2(0, 200);
+                feedbackRect.anchoredPosition = new Vector2(0, 280);
                 feedbackRect.sizeDelta = new Vector2(500, 30);
                 var feedbackTextComp = feedbackObj.AddComponent<Text>();
                 feedbackTextComp.text = "";
@@ -475,10 +616,10 @@ namespace SimRedes.UI
             var discConfigLabel = new GameObject("DiscConfigLabel");
             discConfigLabel.transform.SetParent(panelObj.transform, false);
             var dclRect = discConfigLabel.AddComponent<RectTransform>();
-            dclRect.anchorMin = new Vector2(0.5f, 0f);
-            dclRect.anchorMax = new Vector2(0.5f, 0f);
-            dclRect.pivot = new Vector2(0.5f, 1f);
-            dclRect.anchoredPosition = new Vector2(0, -60);
+            dclRect.anchorMin = new Vector2(0.5f, 0.5f);
+            dclRect.anchorMax = new Vector2(0.5f, 0.5f);
+            dclRect.pivot = new Vector2(0.5f, 0.5f);
+            dclRect.anchoredPosition = new Vector2(0, -255);
             dclRect.sizeDelta = new Vector2(650, 20);
             var dclText = discConfigLabel.AddComponent<Text>();
             dclText.text = "--- CONFIG. AVANZADA (Discos Virtuales 15-18) ---";
@@ -487,6 +628,9 @@ namespace SimRedes.UI
             dclText.alignment = TextAnchor.MiddleCenter;
             dclText.font = font;
 
+            /// <summary>
+            /// Crea una etiqueta de texto para la configuracion avanzada de discos virtuales.
+            /// </summary>
             Text CreateConfigLabel(Transform parent, string text, Vector2 pos, float w, float h, int fsize)
             {
                 var obj = new GameObject("ConfigLabel");
@@ -503,27 +647,27 @@ namespace SimRedes.UI
                 return t;
             }
 
-            float discY = -90;
+            float discY = -280;
             CreateConfigLabel(panelObj.transform, "Vecino (15):", new Vector2(-250, discY), 200, 20, 11);
             var neighborInput = UIComp.CreateInputField(panelObj.transform, "NeighborInput", new Vector2(-120, discY), new Vector2(140, 28), "", "Router1", font, 13);
             Button neighborBtn = UIComp.CreateMenuButton(panelObj.transform, "NeighborBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
             if (onSetNeighbor != null) neighborBtn.onClick.AddListener(() => onSetNeighbor(neighborInput.text));
 
-            discY -= 35;
+            discY -= 22;
             CreateConfigLabel(panelObj.transform, "Anunciar Red (16):", new Vector2(-250, discY), 200, 20, 11);
             var networkInput = UIComp.CreateInputField(panelObj.transform, "NetworkInput", new Vector2(-120, discY), new Vector2(140, 28), "", "10.0.0.0/8", font, 13);
             Button networkBtn = UIComp.CreateMenuButton(panelObj.transform, "NetworkBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
             if (onSetNetwork != null) networkBtn.onClick.AddListener(() => onSetNetwork(networkInput.text));
 
-            discY -= 35;
-            CreateConfigLabel(panelObj.transform, "Costo OSPF (17):", new Vector2(-250, discY), 200, 20, 11);
+            discY -= 22;
+            CreateConfigLabel(panelObj.transform, "Costo/Delay (17):", new Vector2(-250, discY), 200, 20, 11);
             var costInput = UIComp.CreateInputField(panelObj.transform, "CostInput", new Vector2(-120, discY), new Vector2(140, 28), "10", "10", font, 13);
             Button costBtn = UIComp.CreateMenuButton(panelObj.transform, "CostBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
             if (onSetCost != null) costBtn.onClick.AddListener(() => {
                 if (int.TryParse(costInput.text, out int cost)) onSetCost(cost);
             });
 
-            discY -= 35;
+            discY -= 22;
             CreateConfigLabel(panelObj.transform, "Ancho Banda (18):", new Vector2(-250, discY), 200, 20, 11);
             var bwInput = UIComp.CreateInputField(panelObj.transform, "BWInput", new Vector2(-120, discY), new Vector2(140, 28), "1000", "1000", font, 13);
             Button bwBtn = UIComp.CreateMenuButton(panelObj.transform, "BWBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
@@ -531,11 +675,20 @@ namespace SimRedes.UI
                 if (int.TryParse(bwInput.text, out int bw)) onSetBW(bw);
             });
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, discY - 40), new Vector2(140, 40), font, 14);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -385), new Vector2(140, 40), font, 14);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de seleccion de escenarios preconfigurados.
+        /// Muestra hasta 5 escenarios con nombre, dificultad, descripcion y boton de click.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="scenarios">Lista de escenarios disponibles.</param>
+        /// <param name="onScenarioClick">Callback con el indice del escenario seleccionado.</param>
+        /// <param name="onBack">Callback para volver.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateScenariosPanel(Transform canvas,
             List<PredefinedScenarios.NetworkScenario> scenarios,
             Action<int> onScenarioClick, Action onBack)
@@ -644,6 +797,15 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de informacion detallada de un escenario.
+        /// Muestra el nombre, objetivos, ayudas y botones INICIAR/CANCELAR.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="scenario">Escenario a mostrar.</param>
+        /// <param name="onStart">Callback al presionar INICIAR.</param>
+        /// <param name="onCancel">Callback al presionar CANCELAR.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateScenarioInfoPanel(Transform canvas,
             PredefinedScenarios.NetworkScenario scenario,
             Action onStart, Action onCancel)

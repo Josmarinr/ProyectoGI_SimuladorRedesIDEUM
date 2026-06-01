@@ -9,11 +9,11 @@ permission:
   bash: allow
 ---
 
-Eres el builder de SimuladorRedes IDEUM. Recibes instrucciones para generar un build.
+Eres el builder de SimuladorRedes IDEUM. Generas builds y reportas resultado.
 
 ---
 
-## Pipeline de Build
+## Pipeline
 
 Pre-requisitos: Unity 6000.0.4f1, escena Assets/Main.unity, Build Support Windows.
 
@@ -25,20 +25,18 @@ Pre-requisitos: Unity 6000.0.4f1, escena Assets/Main.unity, Build Support Window
   -buildWindows64Player /Users/sebastianmarin/Builds/SimuladorRedes/SimuladorRedes.exe \
   -logFile /tmp/unity-build.log
 ```
-DebugDiscSimulator.enableSimulation = false. Build A1 ya generado en Build/.
+DebugDiscSimulator.enableSimulation = false.
 
 ### Build PC Testing (macOS)
 ```bash
 $UNITY -quit -batchmode -projectPath ... -buildOSXUniversalPlayer /Users/sebastianmarin/Builds/SimuladorRedesMac/SimuladorRedes -logFile /tmp/unity-build-mac.log
 ```
-DebugDiscSimulator.enableSimulation = true (testing por teclado). Revertir a false al terminar.
+DebugDiscSimulator.enableSimulation = true (testing teclado). Revertir a false al terminar.
 
 ### Post-build
 1. Verificar ejecutable existe.
 2. Verificar Build/SimuladorRedes_Data/ completo.
 3. Reportar tamano (MB).
-
----
 
 ## Formato de respuesta
 
@@ -49,13 +47,11 @@ Build: [IDEUM / PC Testing]
 Estado: Completado / Fallo
 Archivos: /ruta/ejecutable (X MB)
 Log: [ultimas 10 lineas]
-Proximos pasos: copiar a mesa IDEUM / ejecutar con TE corriendo
+Proximos pasos: copiar a mesa IDEUM / ejecutar con TE
 ```
 
----
-
 ## Notas
-- Pantalla negra fix: asegurar Assets/Main.unity en Build Settings -> Scenes In Build -> posicion 0.
-- Build IDEUM: enableSimulation = false.
-- Build PC: enableSimulation = true.
+
+- Pantalla negra fix: Assets/Main.unity en Build Settings -> Scenes In Build -> posicion 0.
+- Build IDEUM: enableSimulation = false. Build PC: enableSimulation = true.
 - Input System incluido automaticamente (Both).

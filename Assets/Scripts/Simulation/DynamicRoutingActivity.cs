@@ -54,9 +54,12 @@ namespace SimRedes.Simulation
             if (dynProtocol != null) { dynProtocol.StopProtocol(); Destroy(dynProtocol); }
 
             dynProtocol = gameObject.AddComponent<DynamicRoutingProtocol>();
-            dynProtocol.protocol = currentProtocol == RoutingProtocol.RIP
-                ? DynamicRoutingProtocol.ProtocolType.RIP
-                : DynamicRoutingProtocol.ProtocolType.OSPF;
+            if (currentProtocol == RoutingProtocol.RIP)
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.RIP;
+            else if (currentProtocol == RoutingProtocol.EIGRP)
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
+            else
+                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.OSPF;
 
             // Aplicar configuracion virtual de discos 15-18 antes de iniciar
             ApplyDiscConfigToProtocol(dynProtocol);
@@ -119,9 +122,9 @@ namespace SimRedes.Simulation
             {
                 infoText.text = "ENRUTAMIENTO DINÁMICO\n\n" +
                     "Simula protocolos de enrutamiento\n" +
-                    "dinámico: RIP y OSPF.\n\n" +
+                    "dinámico: RIP, OSPF y EIGRP.\n\n" +
                     "BOTONES:\n" +
-                    "  RIP / OSPF = Elegir protocolo\n" +
+                    "  RIP / OSPF / EIGRP = Elegir\n" +
                     "  START = Simular advertisement\n" +
                     "  STOP = Detener simulacion\n" +
                     "  VER RUTAS = Mostrar tablas";
@@ -161,9 +164,10 @@ namespace SimRedes.Simulation
                 content += "Routers detectados: " + routers.Count + "\n\n";
                 content += "Presiona START para comenzar\n";
                 content += "la simulacion de advertisements.\n\n";
-                content += "Diferencias RIP vs OSPF:\n";
+                content += "Diferencias RIP vs OSPF vs EIGRP:\n";
                 content += "- RIP: conteo de hops\n";
                 content += "- OSPF: costo de enlace\n";
+                content += "- EIGRP: metrica compuesta (BW, Delay)\n";
             }
 
             tablesText.text = content;
@@ -211,6 +215,19 @@ namespace SimRedes.Simulation
         {
             bandwidth = Mathf.Max(1, bw);
             ShowFeedback($"Ancho de banda: {bandwidth} Mbps");
+        }
+
+        public void SetKValue(int kIndex, int value)
+        {
+            if (dynProtocol != null)
+            {
+                dynProtocol.SetKValue(kIndex, value);
+                ShowFeedback($"K{kIndex} establecido a {value}");
+            }
+            else
+            {
+                ShowFeedback("Inicia el protocolo primero antes de configurar K values");
+            }
         }
 
         /// <summary>

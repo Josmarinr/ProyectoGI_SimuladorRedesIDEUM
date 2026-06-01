@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using SimRedes.Network;
 using SimRedes.Simulation;
 using UIColors = SimRedes.UI.UIComponents.Colors;
@@ -32,7 +33,7 @@ namespace SimRedes.UI
                 UpdateScoreDisplay();
             }
 
-            if (Input.GetMouseButtonDown(0) && selectedNodeForRemoval != -1)
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && selectedNodeForRemoval != -1)
             {
                 var devicePanel = GameObject.Find("DevicesPanel");
                 if (devicePanel != null)
@@ -40,7 +41,7 @@ namespace SimRedes.UI
                     var rt = devicePanel.GetComponent<RectTransform>();
                     if (rt != null)
                     {
-                        Vector2 mousePos = Input.mousePosition;
+                        Vector2 mousePos = Mouse.current.position.ReadValue();
                         Vector2 localPoint;
                         RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, mousePos, null, out localPoint);
 

@@ -11,7 +11,7 @@ namespace SimRedes.Simulation
 {
     public class DynamicRoutingProtocol : MonoBehaviour
     {
-        public enum ProtocolType { RIP, OSPF }
+        public enum ProtocolType { RIP, OSPF, EIGRP }
 
         [Header("Configuracion")]
         public ProtocolType protocol = ProtocolType.RIP;
@@ -30,6 +30,9 @@ namespace SimRedes.Simulation
         private string manualNetwork = "";
         private int? customCost = null; // null = calcular desde BW, valor = override manual
         private int customBandwidth = 1000;
+
+        // K values para EIGRP (metric = (K1*BW + K3*Delay) * 256)
+        private int k1 = 1, k2 = 0, k3 = 1, k4 = 0, k5 = 0;
 
         public event Action<string> OnProtocolLog;
         public event Action OnConvergence;
@@ -152,11 +155,21 @@ namespace SimRedes.Simulation
                                 connState.KnownNetworks.Add(network);
                                 changed = true;
 
-                                int metric = protocol == ProtocolType.RIP ? state.KnownNetworks.Count : CalculateOSPFCost(state.Router, connected);
+                                int metric;
+                                if (protocol == ProtocolType.RIP)
+                                    metric = state.KnownNetworks.Count;
+                                else if (protocol == ProtocolType.EIGRP)
+                                    metric = CalculateEIGRPMetric(state.Router, connected);
+                                else
+                                    metric = CalculateOSPFCost(state.Router, connected);
 
                                 if (protocol == ProtocolType.RIP)
                                 {
                                     connState.Router.RoutingTable.AddRipRoute(network, GetNextHop(state.Router, connected), GetInterface(state.Router, connected), state.KnownNetworks.Count);
+                                }
+                                else if (protocol == ProtocolType.EIGRP)
+                                {
+                                    connState.Router.RoutingTable.AddEigrpRoute(network, GetNextHop(state.Router, connected), GetInterface(state.Router, connected), metric);
                                 }
                                 else
                                 {
@@ -269,6 +282,34 @@ namespace SimRedes.Simulation
             }
 
             return bwCost;
+        }
+
+        private int CalculateEIGRPMetric(NetworkNode from, NetworkNode to)
+        {
+            int minBW_kbps = customBandwidth * 1000;
+            int totalDelay = 10;
+            if (customCost.HasValue)
+                totalDelay = customCost.Value;
+
+            float bwComponent = (10000000f / Mathf.Max(1, minBW_kbps)) * 256f;
+            float delayComponent = totalDelay * 256f;
+            float metric = (k1 * bwComponent) + (k3 * delayComponent);
+            return Mathf.Max(1, Mathf.RoundToInt(metric));
+        }
+
+        private NetworkLink FindLink(NetworkNode from, NetworkNode to)
+        {
+            if (topology == null) return null;
+            var links = topology.GetAllLinks();
+            foreach (var link in links)
+            {
+                if ((link.SourceNode == from && link.DestinationNode == to) ||
+                    (link.SourceNode == to && link.DestinationNode == from))
+                {
+                    return link;
+                }
+            }
+            return null;
         }
 
         public void SimulateConvergence(System.Action onComplete)
@@ -396,6 +437,38 @@ namespace SimRedes.Simulation
             Log($"Ancho de banda personalizado: {customBandwidth} Mbps");
         }
 
+        /// <summary>
+        /// Establece un K value individual para EIGRP (kIndex 1-5).
+        /// </summary>
+        public void SetKValue(int kIndex, int value)
+        {
+            switch (kIndex)
+            {
+                case 1: k1 = Mathf.Max(0, value); break;
+                case 2: k2 = Mathf.Max(0, value); break;
+                case 3: k3 = Mathf.Max(0, value); break;
+                case 4: k4 = Mathf.Max(0, value); break;
+                case 5: k5 = Mathf.Max(0, value); break;
+                default:
+                    Log($"Indice K invalido: {kIndex}. Usar 1-5.");
+                    return;
+            }
+            Log($"K{kIndex} establecido a {value}");
+        }
+
+        /// <summary>
+        /// Establece todos los K values para EIGRP simultaneamente.
+        /// </summary>
+        public void SetAllKValues(int k1, int k2, int k3, int k4, int k5)
+        {
+            this.k1 = Mathf.Max(0, k1);
+            this.k2 = Mathf.Max(0, k2);
+            this.k3 = Mathf.Max(0, k3);
+            this.k4 = Mathf.Max(0, k4);
+            this.k5 = Mathf.Max(0, k5);
+            Log($"K values establecidos: K1={this.k1}, K2={this.k2}, K3={this.k3}, K4={this.k4}, K5={this.k5}");
+        }
+
         public void ClearAllRoutes()
         {
             var routers = GetRouters();
@@ -407,6 +480,7 @@ namespace SimRedes.Simulation
             isRunning = false;
             isConverged = false;
             advertisementCount = 0;
+            k1 = 1; k2 = 0; k3 = 1; k4 = 0; k5 = 0;
             Log("Todas las rutas han sido eliminadas");
         }
     }

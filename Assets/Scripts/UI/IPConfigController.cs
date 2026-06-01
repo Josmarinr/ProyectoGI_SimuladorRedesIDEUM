@@ -9,7 +9,6 @@ namespace SimRedes.UI
     {
         private int currentIPConfigNodeDiscId = -1;
         private GameObject ipConfigBackground;
-        private InputField activeInputField;
 
         private TopologyManager topology;
         private NodeVisualizer visualizer;

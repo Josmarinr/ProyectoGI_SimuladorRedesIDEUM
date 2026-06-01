@@ -5,32 +5,63 @@ using SimRedes.Network;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Metodos de utilidad para la creacion de componentes UI del simulador.
+    /// Proporciona fabricas de paneles, botones, textos, dropdowns y campos de entrada
+    /// con la paleta de colores y estilo visual definidos.
+    /// </summary>
     public static class UIComponents
     {
+        /// <summary>
+        /// Define la paleta de colores consistente del simulador. Todos los paneles, botones
+        /// y textos usan estos colores para mantener una apariencia uniforme.
+        /// </summary>
         public static class Colors
         {
+            /// <summary>Color de fondo base de paneles y ventanas.</summary>
             public static readonly Color backgroundBase = new Color(0.051f, 0.067f, 0.090f, 0.95f);
+            /// <summary>Color de superficie de paneles estandar.</summary>
             public static readonly Color surfacePanel = new Color(0.086f, 0.106f, 0.133f, 0.95f);
+            /// <summary>Color de superficie elevada (dropdowns, elementos interactivos).</summary>
             public static readonly Color surfaceElevated = new Color(0.129f, 0.149f, 0.176f, 0.95f);
+            /// <summary>Color de borde por defecto.</summary>
             public static readonly Color border = new Color(0.188f, 0.212f, 0.239f, 0.6f);
+            /// <summary>Color de borde de acento (paneles activos o destacados).</summary>
             public static readonly Color borderAccent = new Color(0.345f, 0.651f, 1f, 0.7f);
 
+            /// <summary>Color de texto principal (blanco azulado claro).</summary>
             public static readonly Color textPrimary = new Color(0.902f, 0.929f, 0.953f, 1f);
+            /// <summary>Color de texto secundario (gris suave).</summary>
             public static readonly Color textSecondary = new Color(0.545f, 0.580f, 0.620f, 1f);
+            /// <summary>Color de texto de acento (azul).</summary>
             public static readonly Color textAccent = new Color(0.345f, 0.651f, 1f, 1f);
+            /// <summary>Color de texto de advertencia (amarillo/dorado).</summary>
             public static readonly Color textWarning = new Color(0.824f, 0.600f, 0.133f, 1f);
 
+            /// <summary>Color de fondo de boton en estado normal.</summary>
             public static readonly Color buttonNormal = new Color(0.200f, 0.380f, 0.580f, 1f);
+            /// <summary>Color de boton en hover.</summary>
             public static readonly Color buttonHover = new Color(0.280f, 0.460f, 0.660f, 1f);
+            /// <summary>Color de boton seleccionado.</summary>
             public static readonly Color buttonSelected = new Color(0.320f, 0.520f, 0.720f, 1f);
+            /// <summary>Color de boton presionado.</summary>
             public static readonly Color buttonPressed = new Color(0.150f, 0.280f, 0.450f, 1f);
 
+            /// <summary>Color de fondo de boton de peligro/eliminacion.</summary>
             public static readonly Color buttonDanger = new Color(0.455f, 0.129f, 0.129f, 1f);
+            /// <summary>Color de boton de peligro en hover.</summary>
             public static readonly Color buttonDangerHover = new Color(0.545f, 0.176f, 0.176f, 1f);
 
+            /// <summary>Color de fondo de boton de advertencia.</summary>
             public static readonly Color buttonWarning = new Color(0.565f, 0.314f, 0.063f, 1f);
+            /// <summary>Color de boton de advertencia en hover.</summary>
             public static readonly Color buttonWarningHover = new Color(0.647f, 0.376f, 0.102f, 1f);
 
+            /// <summary>
+            /// Devuelve el color asociado a un tipo de dispositivo de red.
+            /// </summary>
+            /// <param name="type">Tipo de dispositivo (Router, Switch, PC).</param>
+            /// <returns>Color representativo del dispositivo.</returns>
             public static Color GetColorForDeviceType(Network.DeviceType type)
             {
                 switch (type)
@@ -49,6 +80,11 @@ namespace SimRedes.UI
 
         private static string TEXT_OBJ = "Text";
 
+        /// <summary>
+        /// Obtiene una fuente del sistema. Intenta cargar Arial; si falla, usa LegacyRuntime.ttf.
+        /// </summary>
+        /// <param name="size">Tamano de la fuente (por defecto 14).</param>
+        /// <returns>Fuente cargada valida.</returns>
         public static Font GetFont(int size = 14)
         {
             Font font = Font.CreateDynamicFontFromOSFont("Arial", size);
@@ -57,6 +93,12 @@ namespace SimRedes.UI
             return font;
         }
 
+        /// <summary>
+        /// Construye un ColorBlock para un boton a partir de su color normal.
+        /// Los colores de hover, presionado y deshabilitado se derivan automaticamente.
+        /// </summary>
+        /// <param name="normalColor">Color base del boton en estado normal.</param>
+        /// <returns>ColorBlock configurado con los colores derivados.</returns>
         public static ColorBlock GetButtonColors(Color normalColor)
         {
             var colors = new ColorBlock();
@@ -68,6 +110,17 @@ namespace SimRedes.UI
             return colors;
         }
 
+        /// <summary>
+        /// Crea un texto informativo centrado en una posicion dada del Canvas.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="text">Contenido del texto.</param>
+        /// <param name="position">Posicion anclada en el Canvas.</param>
+        /// <param name="font">Fuente a usar.</param>
+        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <param name="color">Color del texto.</param>
+        /// <param name="bold">Si el texto debe mostrarse en negrita.</param>
+        /// <returns>Componente Text creado.</returns>
         public static Text CreateInfoText(Transform parent, string text, Vector2 position, Font font, int fontSize, Color color, bool bold)
         {
             var textObj = new GameObject("InfoText");
@@ -89,6 +142,16 @@ namespace SimRedes.UI
             return textComponent;
         }
 
+        /// <summary>
+        /// Crea un objeto de texto simple alineado a la izquierda.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="text">Contenido del texto.</param>
+        /// <param name="font">Fuente a usar.</param>
+        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <param name="color">Color del texto.</param>
+        /// <param name="style">Estilo de fuente (Normal, Bold, etc.).</param>
+        /// <returns>GameObject con el componente Text.</returns>
         public static GameObject CreateSimpleText(Transform parent, string text, Font font, int fontSize, Color color, FontStyle style)
         {
             var textObj = new GameObject(TEXT_OBJ);
@@ -109,6 +172,10 @@ namespace SimRedes.UI
             return textObj;
         }
 
+        /// <summary>
+        /// Aplica el estilo de titulo (negrita + color primario) a un componente Text existente.
+        /// </summary>
+        /// <param name="text">Componente Text a modificar.</param>
         public static void ApplyTitleStyle(Text text)
         {
             if (text != null)
@@ -118,6 +185,13 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Crea un boton circular pequeno con el texto "i" para informacion.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="position">Posicion anclada del boton.</param>
+        /// <param name="font">Fuente para el texto "i".</param>
+        /// <returns>Componente Button creado.</returns>
         public static Button CreateSmallInfoButton(Transform parent, Vector2 position, Font font)
         {
             var btnObj = new GameObject("InfoButton");
@@ -158,11 +232,28 @@ namespace SimRedes.UI
             return btn;
         }
 
+        /// <summary>
+        /// Crea un panel de menu redondeado con el estilo visual por defecto.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="name">Nombre del GameObject.</param>
+        /// <param name="size">Dimensiones del panel.</param>
+        /// <returns>GameObject del panel creado.</returns>
         public static GameObject CreateMenuPanel(Transform parent, string name, Vector2 size)
         {
             return CreateRoundedPanel(parent, size, 25, Colors.surfacePanel, Colors.borderAccent, name);
         }
 
+        /// <summary>
+        /// Crea un panel con esquinas redondeadas, color de relleno y borde opcional.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="size">Dimensiones del panel.</param>
+        /// <param name="cornerRadius">Radio de las esquinas redondeadas.</param>
+        /// <param name="backgroundColor">Color de relleno; si es null usa surfacePanel.</param>
+        /// <param name="borderColor">Color del borde; si es null usa borderAccent.</param>
+        /// <param name="name">Nombre del GameObject.</param>
+        /// <returns>GameObject del panel redondeado.</returns>
         public static GameObject CreateRoundedPanel(Transform parent, Vector2 size, int cornerRadius = 20, Color? backgroundColor = null, Color? borderColor = null, string name = "RoundedPanel")
         {
             GameObject panel = new GameObject(name);
@@ -188,6 +279,15 @@ namespace SimRedes.UI
             return panel;
         }
 
+        /// <summary>
+        /// Crea un texto de titulo centrado con el color de acento del simulador.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="title">Contenido del titulo.</param>
+        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <param name="position">Posicion anclada en el Canvas.</param>
+        /// <param name="font">Fuente a usar.</param>
+        /// <returns>Componente Text del titulo.</returns>
         public static Text CreateMenuTitle(Transform parent, string title, int fontSize, Vector2 position, Font font)
         {
             var titleObj = new GameObject("MenuTitle");
@@ -209,6 +309,17 @@ namespace SimRedes.UI
             return titleText;
         }
 
+        /// <summary>
+        /// Crea un boton de menu redondeado con texto centrado y colores del simulador.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="name">Nombre del GameObject del boton.</param>
+        /// <param name="label">Texto a mostrar en el boton.</param>
+        /// <param name="position">Posicion anclada del boton.</param>
+        /// <param name="size">Dimensiones del boton.</param>
+        /// <param name="font">Fuente del texto.</param>
+        /// <param name="fontSize">Tamano de fuente (por defecto 18).</param>
+        /// <returns>Componente Button creado.</returns>
         public static Button CreateMenuButton(Transform parent, string name, string label, Vector2 position, Vector2 size, Font font, int fontSize = 18)
         {
             var btnObj = new GameObject(name);
@@ -253,6 +364,17 @@ namespace SimRedes.UI
             return btn;
         }
 
+        /// <summary>
+        /// Crea un boton pequeno sin bordes redondeados, util para acciones secundarias.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="name">Nombre del GameObject del boton.</param>
+        /// <param name="label">Texto del boton.</param>
+        /// <param name="position">Posicion anclada del boton.</param>
+        /// <param name="width">Ancho del boton.</param>
+        /// <param name="height">Alto del boton.</param>
+        /// <param name="font">Fuente del texto.</param>
+        /// <returns>Componente Button creado.</returns>
         public static Button CreateSmallButton(Transform parent, string name, string label, Vector2 position, float width, float height, Font font)
         {
             var btnObj = new GameObject(name);
@@ -291,6 +413,12 @@ namespace SimRedes.UI
             return btn;
         }
 
+        /// <summary>
+        /// Crea un fondo semitransparente que destruye el panel indicado al hacer clic fuera de el.
+        /// </summary>
+        /// <param name="canvasTransform">Transform del Canvas raiz.</param>
+        /// <param name="panelName">Nombre del GameObject del panel a cerrar.</param>
+        /// <returns>GameObject del fondo de cierre.</returns>
         public static GameObject CreateClickOutsideToClose(Transform canvasTransform, string panelName)
         {
             var bgObj = new GameObject("ClickOutsideBG_" + panelName);
@@ -324,6 +452,16 @@ namespace SimRedes.UI
             return bgObj;
         }
 
+        /// <summary>
+        /// Crea un dropdown simple con las opciones dadas y estilo visual del simulador.
+        /// Configura template, item, scroll rect y label automaticamente.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="options">Lista de opciones a mostrar.</param>
+        /// <param name="font">Fuente del texto del dropdown.</param>
+        /// <param name="position">Posicion anclada del dropdown.</param>
+        /// <param name="size">Dimensiones del dropdown.</param>
+        /// <returns>GameObject del dropdown configurado.</returns>
         public static GameObject CreateSimpleDropdown(Transform parent, List<string> options, Font font, Vector2 position, Vector2 size)
         {
             var dropdownObj = new GameObject("Dropdown");
@@ -393,6 +531,12 @@ namespace SimRedes.UI
             return dropdownObj;
         }
 
+        /// <summary>
+        /// Configura un InputField para que solo acepte caracteres numericos y puntos.
+        /// Filtra la entrada en tiempo real y notifica los cambios validos.
+        /// </summary>
+        /// <param name="inputField">InputField a configurar.</param>
+        /// <param name="onValueChanged">Callback invocado con el valor filtrado.</param>
         public static void SetupNumericInput(InputField inputField, System.Action<string> onValueChanged)
         {
             inputField.onValueChanged.AddListener((value) =>
@@ -416,6 +560,19 @@ namespace SimRedes.UI
             };
         }
 
+        /// <summary>
+        /// Crea un texto informativo con control completo sobre posicion, tamano y alineacion.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="text">Contenido del texto.</param>
+        /// <param name="position">Posicion anclada en el Canvas.</param>
+        /// <param name="size">Dimensiones del rectangulo del texto.</param>
+        /// <param name="font">Fuente a usar.</param>
+        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <param name="color">Color del texto.</param>
+        /// <param name="bold">Si el texto debe mostrarse en negrita.</param>
+        /// <param name="alignment">Alineacion del texto.</param>
+        /// <returns>Componente Text creado.</returns>
         public static Text CreateInfoTextFull(Transform parent, string text, Vector2 position, Vector2 size,
             Font font, int fontSize, Color color, bool bold, TextAnchor alignment)
         {
@@ -438,6 +595,17 @@ namespace SimRedes.UI
             return textComponent;
         }
 
+        /// <summary>
+        /// Genera una textura con esquinas redondeadas y borde opcional.
+        /// Utiliza distancia a rectangulo redondeado para determinar cada pixel.
+        /// </summary>
+        /// <param name="width">Ancho de la textura en pixeles.</param>
+        /// <param name="height">Alto de la textura en pixeles.</param>
+        /// <param name="cornerRadius">Radio de las esquinas redondeadas.</param>
+        /// <param name="fillColor">Color de relleno interior.</param>
+        /// <param name="borderColor">Color del borde (por defecto transparente).</param>
+        /// <param name="borderWidth">Grosor del borde en pixeles (0 = sin borde).</param>
+        /// <returns>Texture2D con esquinas redondeadas.</returns>
         public static Texture2D CreateRoundedRectTexture(int width, int height, int cornerRadius, Color fillColor, Color borderColor = default, float borderWidth = 0f)
         {
             Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
@@ -478,6 +646,16 @@ namespace SimRedes.UI
             return tex;
         }
 
+        /// <summary>
+        /// Calcula la distancia desde un punto al borde de un rectangulo redondeado.
+        /// Usada internamente por CreateRoundedRectTexture para el pintado pixel a pixel.
+        /// </summary>
+        /// <param name="point">Punto a evaluar.</param>
+        /// <param name="center">Centro del rectangulo.</param>
+        /// <param name="width">Ancho del rectangulo.</param>
+        /// <param name="height">Alto del rectangulo.</param>
+        /// <param name="radius">Radio de las esquinas.</param>
+        /// <returns>Distancia al borde: 0 si esta dentro, positiva si esta fuera.</returns>
         private static float DistanceToRoundedRect(Vector2 point, Vector2 center, float width, float height, float radius)
         {
             float halfW = width / 2f - radius;
@@ -498,12 +676,30 @@ namespace SimRedes.UI
             return Mathf.Sqrt(Mathf.Pow(dx - halfW, 2) + Mathf.Pow(dy - halfH, 2));
         }
 
+        /// <summary>
+        /// Crea un Sprite con esquinas redondeadas a partir de una textura generada.
+        /// </summary>
+        /// <param name="width">Ancho del sprite en pixeles.</param>
+        /// <param name="height">Alto del sprite en pixeles.</param>
+        /// <param name="cornerRadius">Radio de las esquinas redondeadas.</param>
+        /// <param name="fillColor">Color de relleno.</param>
+        /// <param name="borderColor">Color del borde.</param>
+        /// <param name="borderWidth">Grosor del borde en pixeles.</param>
+        /// <returns>Sprite redondeado listo para usar en Image.</returns>
         public static Sprite CreateRoundedRectSprite(int width, int height, int cornerRadius, Color fillColor, Color borderColor = default, float borderWidth = 2f)
         {
             Texture2D tex = CreateRoundedRectTexture(width, height, cornerRadius, fillColor, borderColor, borderWidth);
             return Sprite.Create(tex, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 100);
         }
 
+        /// <summary>
+        /// Crea un icono redondo para representar un dispositivo de red.
+        /// Soporta anti-aliasing para bordes suaves.
+        /// </summary>
+        /// <param name="size">Tamano del icono en pixeles.</param>
+        /// <param name="color">Color del icono.</param>
+        /// <param name="antiAlias">Si debe aplicar suavizado de bordes.</param>
+        /// <returns>Sprite circular del dispositivo.</returns>
         public static Sprite CreateDeviceIcon(int size, Color color, bool antiAlias = true)
         {
             Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
@@ -555,6 +751,16 @@ namespace SimRedes.UI
             return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
         }
 
+        /// <summary>
+        /// Crea un boton redondeado con texto centrado y colores por defecto del simulador.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="name">Nombre del GameObject del boton.</param>
+        /// <param name="label">Texto a mostrar en el boton.</param>
+        /// <param name="position">Posicion anclada del boton.</param>
+        /// <param name="size">Dimensiones del boton.</param>
+        /// <param name="cornerRadius">Radio de las esquinas redondeadas.</param>
+        /// <returns>Componente Button creado.</returns>
         public static Button CreateRoundedButton(Transform parent, string name, string label, Vector2 position, Vector2 size, int cornerRadius = 15)
         {
             GameObject btnObj = new GameObject(name);
@@ -604,6 +810,16 @@ namespace SimRedes.UI
             return button;
         }
 
+        /// <summary>
+        /// Crea una columna informativa de texto con alineacion superior izquierda.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="position">Posicion anclada de la columna.</param>
+        /// <param name="width">Ancho de la columna.</param>
+        /// <param name="height">Alto de la columna.</param>
+        /// <param name="font">Fuente del texto.</param>
+        /// <param name="text">Contenido del texto.</param>
+        /// <returns>GameObject de la columna con componente Text.</returns>
         public static GameObject CreateInfoColumn(Transform parent, Vector2 position, float width, float height, Font font, string text)
         {
             var colObj = new GameObject("InfoColumn");
@@ -622,6 +838,18 @@ namespace SimRedes.UI
             return colObj;
         }
 
+        /// <summary>
+        /// Crea un campo de entrada de texto con fondo, texto y placeholder configurados.
+        /// </summary>
+        /// <param name="parent">Transform padre del Canvas.</param>
+        /// <param name="name">Nombre del GameObject del campo.</param>
+        /// <param name="position">Posicion anclada del campo.</param>
+        /// <param name="size">Dimensiones del campo.</param>
+        /// <param name="defaultValue">Valor inicial del campo.</param>
+        /// <param name="placeholder">Texto de placeholder cuando esta vacio.</param>
+        /// <param name="font">Fuente del texto.</param>
+        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <returns>Componente InputField creado.</returns>
         public static InputField CreateInputField(Transform parent, string name, Vector2 position, Vector2 size,
             string defaultValue, string placeholder, Font font, int fontSize)
         {

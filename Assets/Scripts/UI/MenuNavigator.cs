@@ -5,8 +5,15 @@ using UnityEngine.InputSystem;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Navegador de menus con soporte para teclado (flechas, Enter, ESC, numeros) y mouse.
+    /// Mantiene un indice de seleccion, animaciones de escala y colores de boton.
+    /// </summary>
     public class MenuNavigator : MonoBehaviour
     {
+        /// <summary>
+        /// Instancia singleton del navegador de menus.
+        /// </summary>
         public static MenuNavigator Instance { get; private set; }
 
         private Button[] currentButtons;
@@ -27,6 +34,9 @@ namespace SimRedes.UI
         private Vector3[] targetScales;
         private bool[] isHovered;
 
+        /// <summary>
+        /// Configura el singleton. Si ya existe otra instancia, la destruye y se queda con la nueva.
+        /// </summary>
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -36,6 +46,9 @@ namespace SimRedes.UI
             Instance = this;
         }
 
+        /// <summary>
+        /// Limpia la referencia al singleton al destruirse.
+        /// </summary>
         private void OnDestroy()
         {
             if (Instance == this)
@@ -47,6 +60,10 @@ namespace SimRedes.UI
             UnityEngine.Debug.Log("[MenuNavigator] Iniciado");
         }
 
+        /// <summary>
+        /// Procesa entrada del teclado (flechas, Enter, ESC, digitos 1-6) y del mouse
+        /// para navegar entre botones del panel activo. Actualiza hover y animaciones en cada frame.
+        /// </summary>
         private void Update()
         {
             if (!isInitialized || currentButtons == null || currentButtons.Length == 0) return;
@@ -62,7 +79,6 @@ namespace SimRedes.UI
                 selectedIndex--;
                 if (selectedIndex < 0) selectedIndex = currentButtons.Length - 1;
                 UpdateSelection();
-                PlayClickSound();
                 UnityEngine.Debug.Log("[Navigator] Arriba, index: " + selectedIndex);
             }
             else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
@@ -70,7 +86,6 @@ namespace SimRedes.UI
                 selectedIndex++;
                 if (selectedIndex >= currentButtons.Length) selectedIndex = 0;
                 UpdateSelection();
-                PlayClickSound();
                 UnityEngine.Debug.Log("[Navigator] Abajo, index: " + selectedIndex);
             }
             else if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
@@ -110,69 +125,85 @@ namespace SimRedes.UI
                 SelectAndInvoke(5);
             }
             
-            if (Input.GetMouseButtonDown(0))
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 CheckMouseClick();
             }
         }
 
+        /// <summary>
+        /// Detecta si el mouse hizo clic sobre algun boton y lo selecciona e invoca.
+        /// </summary>
         private void CheckMouseClick()
         {
             if (currentButtons == null || currentPanel == null) return;
             
-            Vector2 mousePos = Input.mousePosition;
-            
-            for (int i = 0; i < currentButtons.Length; i++)
+            if (Mouse.current != null)
             {
-                if (currentButtons[i] == null) continue;
+                Vector2 mousePos = Mouse.current.position.ReadValue();
                 
-                RectTransform rt = currentButtons[i].GetComponent<RectTransform>();
-                if (rt == null) continue;
-                
-                bool isOver = RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, null);
-                
-                if (isOver)
+                for (int i = 0; i < currentButtons.Length; i++)
                 {
-                    selectedIndex = i;
-                    UpdateSelection();
-                    InvokeSelectedButton();
-                    break;
-                }
-            }
-        }
-
-        private void UpdateHoverState()
-        {
-            if (currentButtons == null || currentPanel == null) return;
-            
-            Vector2 mousePos = Input.mousePosition;
-            
-            for (int i = 0; i < currentButtons.Length; i++)
-            {
-                if (currentButtons[i] == null) continue;
-                
-                RectTransform rt = currentButtons[i].GetComponent<RectTransform>();
-                if (rt == null) continue;
-                
-                bool isOver = RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, null);
-                
-                if (isOver && i != selectedIndex)
-                {
-                    selectedIndex = i;
-                    UpdateSelection();
-                }
-                
-                if (isOver != isHovered[i])
-                {
-                    isHovered[i] = isOver;
-                    if (!isOver && i != selectedIndex)
+                    if (currentButtons[i] == null) continue;
+                    
+                    RectTransform rt = currentButtons[i].GetComponent<RectTransform>();
+                    if (rt == null) continue;
+                    
+                    bool isOver = RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, null);
+                    
+                    if (isOver)
                     {
-                        targetScales[i] = Vector3.one;
+                        selectedIndex = i;
+                        UpdateSelection();
+                        InvokeSelectedButton();
+                        break;
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Actualiza el estado de hover sobre los botones segun la posicion del mouse.
+        /// Cambia el indice seleccionado si el mouse pasa sobre otro boton.
+        /// </summary>
+        private void UpdateHoverState()
+        {
+            if (currentButtons == null || currentPanel == null) return;
+            
+            if (Mouse.current != null)
+            {
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                
+                for (int i = 0; i < currentButtons.Length; i++)
+                {
+                    if (currentButtons[i] == null) continue;
+                    
+                    RectTransform rt = currentButtons[i].GetComponent<RectTransform>();
+                    if (rt == null) continue;
+                    
+                    bool isOver = RectTransformUtility.RectangleContainsScreenPoint(rt, mousePos, null);
+                    
+                    if (isOver && i != selectedIndex)
+                    {
+                        selectedIndex = i;
+                        UpdateSelection();
+                    }
+                    
+                    if (isOver != isHovered[i])
+                    {
+                        isHovered[i] = isOver;
+                        if (!isOver && i != selectedIndex)
+                        {
+                            targetScales[i] = Vector3.one;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Interpola la escala de cada boton hacia su escala objetivo para una animacion suave.
+        /// </summary>
         private void UpdateAnimations()
         {
             if (currentButtons == null || targetScales == null) return;
@@ -192,13 +223,12 @@ namespace SimRedes.UI
             }
         }
 
-        private void PlayClickSound()
-        {
-            #if UNITY_EDITOR
-            // Debug feedback
-            #endif
-        }
-
+        /// <summary>
+        /// Configura el panel actual para navegacion. Busca todos los botones hijos,
+        /// reinicia el indice de seleccion y las escalas, y aplica la seleccion inicial.
+        /// </summary>
+        /// <param name="panel">GameObject del panel que contiene los botones.</param>
+        /// <param name="onEscapeCallback">Accion a ejecutar al presionar ESC.</param>
         public void SetupPanel(GameObject panel, System.Action onEscapeCallback)
         {
             if (panel == null) return;
@@ -223,6 +253,10 @@ namespace SimRedes.UI
             UnityEngine.Debug.Log("[Navigator] Panel configurado: " + panel.name + ", botones: " + currentButtons.Length);
         }
 
+        /// <summary>
+        /// Selecciona e invoca el boton en el indice dado (usado por atajos numericos 1-6).
+        /// </summary>
+        /// <param name="index">Indice del boton a seleccionar e invocar.</param>
         private void SelectAndInvoke(int index)
         {
             if (currentButtons != null && index >= 0 && index < currentButtons.Length)
@@ -233,6 +267,9 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Invoca el evento onClick del boton actualmente seleccionado.
+        /// </summary>
         private void InvokeSelectedButton()
         {
             if (selectedIndex >= 0 && selectedIndex < currentButtons.Length && currentButtons[selectedIndex] != null)
@@ -242,6 +279,10 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Actualiza los colores, escala y estilo de texto de todos los botones
+        /// segun el indice seleccionado actual.
+        /// </summary>
         private void UpdateSelection()
         {
             if (currentButtons == null) return;
@@ -291,6 +332,9 @@ namespace SimRedes.UI
             }
         }
 
+        /// <summary>
+        /// Limpia el estado del navegador: botones, panel, callback y arreglos de animacion.
+        /// </summary>
         public void ClearPanel()
         {
             currentButtons = null;

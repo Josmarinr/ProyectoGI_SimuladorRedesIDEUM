@@ -117,3 +117,31 @@
 - Item 4: Anteproyecto de Trabajo de Grado creado en docs/anteproyecto-grado.md
   - 12 secciones: problema, objetivos, marco teorico, metodologia, cronograma, etc.
 - Commit: pendiente (sesion activa)
+
+### Sesion 22 — Input migration final, EIGRP, SUS instruments + 85 tests nuevos
+- **T2**: Migrados ultimos 5 usos de Input Manager (Mouse.current) en MenuNavigator.cs y DevicePanelController.cs
+  - `Input.GetMouseButtonDown(0)` → `Mouse.current.leftButton.wasPressedThisFrame`
+  - `Input.mousePosition` → `Mouse.current.position.ReadValue()`
+  - Agregados null checks para Mouse.current
+- **T3**: Eliminado metodo obsoleto `CreateStatusPanel` de UIPanelFactory.cs (lineas 814-822)
+  - Confirmado: 0 referencias en todo el proyecto
+- **T4**: 85 tests nuevos de red (4 suites):
+  - TestARPTable.cs: 13 tests (entradas, duplicados, envejecimiento, busqueda)
+  - TestVLANManager.cs: 18 tests (creacion, asignacion, comunicacion entre VLANs)
+  - TestACLManager.cs: 29 tests (13 ACLRule + 16 ACLManager; wildcards, protocolos, puertos, orden)
+  - TestNATManager.cs: 25 tests (static/dynamic/PAT, traduccion bidireccional, lookup)
+- **T5**: Protocolo EIGRP implementado:
+  - RoutingProtocols.cs: `EIGRP` al enum + `SimulateEIGRPAdvertisement()`
+  - RoutingTable.cs: `AddEigrpRoute()` con protocolo "EIGRP"
+  - DynamicRoutingProtocol.cs: `ProtocolType.EIGRP`, metrica compuesta (BW+Delay)*256, K values K1-K5
+  - DynamicRoutingActivity.cs: mapeo EIGRP + SetKValue()
+  - ActivityPanelFactory.cs: boton EIGRP en UI (4 columnas RIP/OSPF/EIGRP/START)
+  - ActivityLoader.cs: case 5 con onSelectEIGRP
+  - DiscEventHandler.cs: disco 6 (Protocolo) selecciona EIGRP
+  - 12 tests nuevos (4 RoutingTable + 8 DynamicRoutingProtocol)
+- **T6**: Instrumentos evaluacion usabilidad creados en docs/instrumentos-evaluacion-usabilidad.md
+  - Pre-test (datos demograficos, autoevaluacion 9 temas, expectativas)
+  - SUS estandar 10 preguntas adaptado al contexto tangible
+  - Post-test (re-evaluacion, satisfaccion, preguntas abiertas)
+- Total: ~316+ tests (85 nuevos T4 + 12 nuevos T5 + 231 existentes)
+- **Pendiente**: A2 (pruebas en mesa IDEUM real)

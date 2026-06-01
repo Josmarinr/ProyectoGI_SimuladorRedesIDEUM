@@ -51,7 +51,7 @@ namespace Tests.EditMode.Simulation
             // Reset singleton instance if it was set by this test
             var instanceField = typeof(PredefinedScenarios).GetField("<Instance>k__BackingField",
                 System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            if (instanceField != null && instanceField.GetValue(null) == scenarios)
+            if (instanceField != null && (PredefinedScenarios)instanceField.GetValue(null) == scenarios)
                 instanceField.SetValue(null, null);
             
             if (go != null)

@@ -16,6 +16,11 @@ using PingVis = SimRedes.UI.PingVisualizer;
 
 namespace SimRedes
 {
+    /// <summary>
+    /// Punto de entrada principal de la escena. Configura resolucion, camara, canvas,
+    /// managers globales, menu principal y el ciclo de vida de la simulacion.
+    /// Se ejecuta en Awake() y orquesta la inicializacion completa del simulador.
+    /// </summary>
     public class SceneSetup : MonoBehaviour
     {
         [Header("Config")]
@@ -36,6 +41,10 @@ namespace SimRedes
 
         // ==================== MONOBEHAVIOUR ====================
 
+        /// <summary>
+        /// Inicializa la escena: configura resolucion, camara, canvas y decide
+        /// si mostrar el menu principal o arrancar la simulacion directamente.
+        /// </summary>
         private void Awake()
         {
             Debug.Log("[SceneSetup] Awake() iniciando...");
@@ -54,6 +63,10 @@ namespace SimRedes
             Debug.Log("[SceneSetup] Awake() completado");
         }
 
+        /// <summary>
+        /// Re-aplica configuracion de camara (por si URP la sobrescribe),
+        /// cachea referencias a managers y se suscribe a eventos de topologia.
+        /// </summary>
         private void Start()
         {
             Debug.Log("[SceneSetup] Start() - re-aplicando configuracion de camara por seguridad");
@@ -64,6 +77,10 @@ namespace SimRedes
             Debug.Log("[SceneSetup] Start() completado");
         }
 
+        /// <summary>
+        /// Verifica y re-aplica la configuracion ortogonal de la camara principal.
+        /// Ejecutado en Start() como medida de seguridad ante sobrescritura de URP.
+        /// </summary>
         private void EnsureCameraSetup()
         {
             Camera cam = Camera.main;
@@ -103,6 +120,9 @@ namespace SimRedes
             Screen.SetResolution(1920, 1080, false);
         }
 
+        /// <summary>
+        /// Crea o configura la camara principal en modo ortogonal con fondo oscuro.
+        /// </summary>
         private void SetupCamera()
         {
             Camera cam = Camera.main;
@@ -118,6 +138,12 @@ namespace SimRedes
             cam.clearFlags = CameraClearFlags.SolidColor;
         }
 
+        /// <summary>
+        /// Crea o reutiliza el Canvas principal configurando el CanvasScaler
+        /// con resolucion de referencia 4096x2160 y ScaleWithScreenSize.
+        /// <see cref="SetupScene"/>
+        /// </summary>
+        /// <returns>Canvas configurado de la escena.</returns>
         private Canvas SetupCanvas()
         {
             Canvas existingCanvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
@@ -145,6 +171,11 @@ namespace SimRedes
             return canvasComp;
         }
 
+        /// <summary>
+        /// Instancia todos los managers globales (TangibleDiscManager, TopologyManager,
+        /// DiscEventHandler, TangibleBridge, etc.) en un unico GameObject "GameManager".
+        /// Tambien crea SceneCleanupService y TE.TangibleEngine si no existen.
+        /// </summary>
         public void SetupManagers()
         {
             var gameManagerObj = GameObject.Find("GameManager");
@@ -202,6 +233,11 @@ namespace SimRedes
             Debug.Log("[SceneSetup] Managers configurados");
         }
 
+        /// <summary>
+        /// Crea u obtiene el NodeVisualizer y sus contenedores de nodos y enlaces
+        /// bajo el transform del Canvas.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde se insertara el visualizador.</param>
         public void CreateVisualizer(Transform ct)
         {
             if (UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>() == null)
@@ -221,6 +257,10 @@ namespace SimRedes
             }
         }
 
+        /// <summary>
+        /// Configura manualmente resolucion, camara y canvas.
+        /// Util cuando se omite el autoSetup en favor de inicializacion diferida.
+        /// </summary>
         public void SetupScene()
         {
             SetupResolution();
@@ -231,6 +271,10 @@ namespace SimRedes
             bigFont = UIComp.GetFont(16);
         }
 
+        /// <summary>
+        /// Busca y cachea referencias a los managers principales (TopologyManager,
+        /// NodeVisualizer, NodeInteractionController, DevicePanelController, ActivityLoader).
+        /// </summary>
         private void CacheReferences()
         {
             topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
@@ -242,6 +286,10 @@ namespace SimRedes
             activityLoader = UnityEngine.Object.FindAnyObjectByType<ActivityLoader>();
         }
 
+        /// <summary>
+        /// Se suscribe al evento OnTopologyChanged del TopologyManager
+        /// para refrescar automaticamente el panel de dispositivos.
+        /// </summary>
         public void SubscribeToTopologyEvents()
         {
             if (topology != null)
@@ -292,6 +340,11 @@ namespace SimRedes
             Debug.Log("[SceneSetup] Menu principal destruido (navigator conservado)");
         }
 
+        /// <summary>
+        /// Crea el menu principal limpiando paneles previos y delegando en
+        /// <see cref="UIPanelFactory.CreateMainMenu"/> con sus callbacks.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde se instancia el menu.</param>
         private void CreateMainMenu(Transform ct)
         {
             // Limpiar cualquier panel que haya quedado abierto antes de crear el menu
@@ -337,11 +390,19 @@ namespace SimRedes
             // NO destruir MenuNavigator — se reutiliza para animaciones del nuevo menu
         }
 
+        /// <summary>
+        /// Punto de entrada publico para recrear el menu principal desde otros componentes.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde se instancia el menu.</param>
         public void CreateMainMenuPublic(Transform ct)
         {
             CreateMainMenu(ct);
         }
 
+        /// <summary>
+        /// Inicia la simulacion: destruye el menu, configura managers,
+        /// crea el visualizador, se suscribe a eventos y notifica al ActivityLoader.
+        /// </summary>
         private void StartSimulation()
         {
             DestroyMainMenu();
@@ -352,6 +413,11 @@ namespace SimRedes
             if (activityLoader != null) activityLoader.StartSimulation(canvasTransform);
         }
 
+        /// <summary>
+        /// Muestra el panel de seleccion de actividades. Al elegir una,
+        /// configura managers y delega en <see cref="ActivityLoader.SelectActivity"/>.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde instanciar el panel.</param>
         private void ShowActivities(Transform ct)
         {
             DestroyMainMenu();
@@ -367,6 +433,11 @@ namespace SimRedes
                 () => { CreateMainMenu(ct); });
         }
 
+        /// <summary>
+        /// Muestra el panel de prueba de conectividad. Inicializa managers
+        /// y visualizador si aun no estan listos.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde instanciar el panel.</param>
         private void ShowConnectivity(Transform ct)
         {
             DestroyMainMenu();
@@ -377,6 +448,10 @@ namespace SimRedes
             if (activityLoader != null) activityLoader.ShowConnectivityPanel(ct);
         }
 
+        /// <summary>
+        /// Muestra el panel de instrucciones de uso del simulador.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde instanciar el panel.</param>
         private void ShowInstructions(Transform ct)
         {
             DestroyMainMenu();
@@ -384,6 +459,10 @@ namespace SimRedes
                 () => { CreateMainMenu(ct); });
         }
 
+        /// <summary>
+        /// Muestra la leyenda de discos fisicos y virtuales con sus tipos y colores.
+        /// </summary>
+        /// <param name="ct">Transform del Canvas donde instanciar el panel.</param>
         private void ShowDiscLegend(Transform ct)
         {
             DestroyMainMenu();
@@ -391,6 +470,9 @@ namespace SimRedes
                 () => { DestroyPreviousPanels(); CreateMainMenu(ct); });
         }
 
+        /// <summary>
+        /// Cierra la aplicacion. En el Editor de Unity detiene el modo Play.
+        /// </summary>
         public void ExitApplication()
         {
 #if UNITY_EDITOR
@@ -400,6 +482,10 @@ namespace SimRedes
 #endif
         }
 
+        /// <summary>
+        /// Selecciona y carga una actividad por su indice, delegando en <see cref="ActivityLoader.SelectActivity"/>.
+        /// </summary>
+        /// <param name="index">Indice de la actividad (0-based) a cargar.</param>
         public void SelectActivity(int index)
         {
             if (activityLoader != null)
@@ -408,6 +494,10 @@ namespace SimRedes
 
         // ==================== PUBLIC FORWARDS ====================
 
+        /// <summary>
+        /// Activa o desactiva el modo de conexion manual de enlaces.
+        /// </summary>
+        /// <param name="mode">"CONNECT" para crear enlaces, "DISCONNECT" para eliminarlos.</param>
         // LinkMode
         public void ToggleLinkMode(string mode)
         {
@@ -415,62 +505,98 @@ namespace SimRedes
             if (lm != null) lm.ToggleLinkMode(mode);
         }
 
+        /// <summary>
+        /// Indica si el modo de conexion de enlaces esta activo.
+        /// </summary>
         public bool IsLinkModeActive()
         {
             var lm = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
             return lm != null && lm.IsLinkModeActive();
         }
 
+        /// <summary>
+        /// Indica si el modo de ping esta activo.
+        /// </summary>
         public bool IsPingModeActive()
         {
             var pm = UnityEngine.Object.FindAnyObjectByType<PingModeController>();
             return pm != null && pm.IsPingModeActive();
         }
 
+        /// <summary>
+        /// Indica si el panel de configuracion IP esta abierto actualmente.
+        /// </summary>
         public bool IsIPConfigPanelOpen()
         {
             var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             return ip != null && ip.IsIPConfigPanelOpen();
         }
 
+        /// <summary>
+        /// Devuelve el DiscId del nodo cuyo panel IP esta abierto, o -1 si no hay ninguno.
+        /// </summary>
         public int GetCurrentIPConfigNodeDiscId()
         {
             var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             return ip != null ? ip.GetCurrentIPConfigNodeDiscId() : -1;
         }
 
+        /// <summary>
+        /// Cierra el panel de configuracion IP si esta abierto.
+        /// </summary>
         public void CloseIPConfigPanelPublic()
         {
             var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
             if (ip != null) ip.CloseIPConfigPanelPublic();
         }
 
+        /// <summary>
+        /// Maneja el clic sobre un nodo, delegando en <see cref="NodeInteractionController.HandleNodeClick"/>.
+        /// </summary>
+        /// <param name="discId">Identificador unico del disco/nodo clickeado.</param>
         public void HandleNodeClick(int discId)
         {
             if (nodeInteraction != null) nodeInteraction.HandleNodeClick(discId);
         }
 
+        /// <summary>
+        /// Muestra el panel de configuracion IP para un nodo especifico.
+        /// </summary>
+        /// <param name="node">Nodo de red a configurar.</param>
+        /// <param name="discId">Identificador del disco asociado al nodo.</param>
         public void ShowIPConfigPanel(NetworkNode node, int discId)
         {
             if (nodeInteraction != null) nodeInteraction.ShowIPConfigPanel(node, discId);
         }
 
+        /// <summary>
+        /// Elimina el nodo actualmente seleccionado en el panel de dispositivos.
+        /// </summary>
         // DevicePanel
         public void RemoveSelectedNodePublic()
         {
             if (devicePanel != null) devicePanel.RemoveSelectedNodePublic();
         }
 
+        /// <summary>
+        /// Limpia la seleccion actual de nodo en el panel de dispositivos.
+        /// </summary>
         public void ClearSelectedNode()
         {
             if (devicePanel != null) devicePanel.ClearSelectedNode();
         }
 
+        /// <summary>
+        /// Refresca la lista de dispositivos mostrada en el panel de dispositivos.
+        /// </summary>
         public void RefreshDevicesPanel()
         {
             if (devicePanel != null) devicePanel.RefreshDevicesPanel();
         }
 
+        /// <summary>
+        /// Actualiza la visualizacion del puntaje en el panel de dispositivos.
+        /// </summary>
         // Score
         public void UpdateScoreDisplay()
         {

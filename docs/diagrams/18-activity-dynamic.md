@@ -1,6 +1,6 @@
 # DA-05: Diagrama de Actividad — Enrutamiento Dinámico
 
-> **Propósito**: Mostrar el flujo de la Actividad 5 donde el estudiante selecciona un protocolo (RIP/OSPF) y observa la convergencia automática de las tablas de enrutamiento.
+> **Propósito**: Mostrar el flujo de la Actividad 5 donde el estudiante selecciona un protocolo (RIP/OSPF/EIGRP) y observa la convergencia automática de las tablas de enrutamiento.
 
 ```mermaid
 graph TB

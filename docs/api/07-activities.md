@@ -19,7 +19,7 @@ Carga la actividad según el índice:
 - `2` → `RoutingTablesActivity` — Visualizar tablas de enrutamiento
 - `3` → `BestRouteActivity` — Seleccionar mejor ruta (quiz)
 - `4` → `StaticRoutingActivity` — Configurar rutas estáticas
-- `5` → `DynamicRoutingActivity` — Enrutamiento dinámico (RIP/OSPF)
+- `5` → `DynamicRoutingActivity` — Enrutamiento dinámico (RIP/OSPF/EIGRP)
 - `6` → `PredefinedScenarios` — 5 escenarios preconfigurados
 
 ```csharp
@@ -212,7 +212,7 @@ Interfaz de usuario para el protocolo de enrutamiento dinámico.
 ```csharp
 public void SetProtocol(DynamicRoutingProtocol.ProtocolType type)
 ```
-Selecciona RIP u OSPF.
+Selecciona RIP, OSPF o EIGRP.
 
 ```csharp
 public void SimulateAdvertisement()

@@ -6,6 +6,10 @@ using SimRedes.Network;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Actividad que muestra las tablas de enrutamiento de todos los routers en la topologia actual.
+    /// Permite refrescar las tablas y visualizar rutas por defecto y estaticas de ejemplo.
+    /// </summary>
     public class RoutingTablesActivity : MonoBehaviour
     {
         [Header("UI References")]
@@ -17,6 +21,9 @@ namespace SimRedes.Simulation
         private TopologyManager topologyManager;
         private List<NetworkNode> routers = new List<NetworkNode>();
 
+        /// <summary>
+        /// Inicializa la actividad: localiza o crea TopologyManager y actualiza la UI inicial.
+        /// </summary>
         private void Start()
         {
             topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -29,15 +36,22 @@ namespace SimRedes.Simulation
             UpdateUI();
         }
 
+        /// <summary>
+        /// Escucha la tecla R para refrescar las tablas de enrutamiento si el texto de tabla esta visible.
+        /// </summary>
         private void Update()
         {
             var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
+            if (keyboard != null && keyboard.rKey.wasPressedThisFrame
+                && tableText != null && tableText.gameObject.activeInHierarchy)
             {
                 RefreshRoutingTables();
             }
         }
 
+        /// <summary>
+        /// Refresca la lista de routers desde TopologyManager, genera rutas de ejemplo para los que no tengan y actualiza la visualizacion.
+        /// </summary>
         public void RefreshRoutingTables()
         {
             routers.Clear();
@@ -56,14 +70,23 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log("[RoutingTables] Tablas actualizadas. Routers: " + routers.Count);
         }
 
+        /// <summary>
+        /// Agrega rutas de ejemplo al router solo si su tabla de enrutamiento esta vacia (ruta por defecto, 10.0.0.0/8 y 172.16.0.0/12).
+        /// </summary>
+        /// <param name="router">Router al que se le agregaran las rutas de ejemplo.</param>
         private void GenerateSampleRoutes(NetworkNode router)
         {
-            router.RoutingTable.Clear();
-            router.RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "192.168.1.254", "G0/0");
-            router.RoutingTable.AddStaticRoute("10.0.0.0", "255.0.0.0", "10.1.1.1", "G0/1");
-            router.RoutingTable.AddStaticRoute("172.16.0.0", "255.240.0.0", "172.16.0.1", "G0/2");
+            if (router.RoutingTable.GetAllEntries().Count == 0)
+            {
+                router.RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "192.168.1.254", "G0/0");
+                router.RoutingTable.AddStaticRoute("10.0.0.0", "255.0.0.0", "10.1.1.1", "G0/1");
+                router.RoutingTable.AddStaticRoute("172.16.0.0", "255.240.0.0", "172.16.0.1", "G0/2");
+            }
         }
 
+        /// <summary>
+        /// Actualiza el texto de informacion y la visualizacion de las tablas de enrutamiento.
+        /// </summary>
         private void UpdateUI()
         {
             if (infoText != null)
@@ -81,6 +104,9 @@ namespace SimRedes.Simulation
             UpdateTableDisplay();
         }
 
+        /// <summary>
+        /// Construye y asigna el texto formateado con todas las tablas de enrutamiento de los routers detectados.
+        /// </summary>
         private void UpdateTableDisplay()
         {
             if (tableText == null) return;
@@ -97,7 +123,7 @@ namespace SimRedes.Simulation
             {
                 content += $"Router {router.DiscId} ({router.Name}):\n";
                 content += "------------------------------------------------------------\n";
-                content += "Red Destino/Mascara | Siguiente Salto | Interfaz | Métrica | Protocolo\n";
+                content += "Red Destino/Prefijo | Siguiente Salto | Interfaz | Métrica | Protocolo\n";
                 content += "------------------------------------------------------------\n";
 
                 var entries = router.RoutingTable.GetAllEntries();
@@ -121,15 +147,13 @@ namespace SimRedes.Simulation
             tableText.text = content;
         }
 
+        /// <summary>
+        /// Retorna una copia de la lista interna de routers detectados.
+        /// </summary>
+        /// <returns>Nueva lista con los routers actuales.</returns>
         public List<NetworkNode> GetRouters()
         {
-            return routers;
-        }
-
-        public string GetRouterTableSummary(int routerDiscId)
-        {
-            var router = topologyManager?.GetNode(routerDiscId);
-            return RoutingSimulator.GetRoutingTableSummary(router);
+            return new List<NetworkNode>(routers);
         }
     }
 }

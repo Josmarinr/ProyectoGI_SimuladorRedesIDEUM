@@ -24,7 +24,7 @@ stateDiagram-v2
 
     note right of Applied: router.RoutingTable.AddStaticRoute()<br/>ejecutado con los 4 campos
 
-    Empty --> ModoRouting: Disco ModoEnrutamiento (ID 10)<br/>Toggle Static ↔ RIP/OSPF
+    Empty --> ModoRouting: Disco ModoEnrutamiento (ID 10)<br/>Toggle Static ↔ RIP ↔ OSPF ↔ EIGRP
     ModoRouting --> Empty: Siguiente disco
 
     state Empty {
@@ -51,8 +51,8 @@ stateDiagram-v2
 
 1. **IsComplete** = `true` cuando los 4 campos (Dest, Mask, NextHop, IF) son non-null y no vacíos
 2. **ApplyToRouter** llama `router.RoutingTable.AddStaticRoute(dest, mask, nextHop, iface)` y luego asigna el Protocol
-3. **Reset** limpia los 4 campos pero preserva `Protocol` (para mantener RIP/OSPF entre ciclos)
-4. **Protocol** default es `"Static"`, modificable con disco ModoEnrutamiento (ID 10)
+3. **Reset** limpia los 4 campos pero preserva `Protocol` (para mantener RIP/OSPF/EIGRP entre ciclos)
+4. **Protocol** default es `"Static"`, modificable con disco ModoEnrutamiento (ID 10) o seleccionando RIP/OSPF/EIGRP
 
 ## Archivos Relacionados
 

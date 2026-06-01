@@ -22,7 +22,7 @@ graph TB
         TM[TopologyManager<br/>Singleton<br/>Nodos + Enlaces + Pathfinding]
         NN[NetworkNode<br/>Router/Switch/PC<br/>RoutingTable + ARPTable]
         NL[NetworkLink<br/>Conexiones<br/>Faults]
-        RT[RoutingTable<br/>FindBestRoute<br/>Static/RIP/OSPF]
+        RT[RoutingTable<br/>FindBestRoute<br/>Static/RIP/OSPF/EIGRP]
         IPV[IPValidation<br/>Estático<br/>Validación + Cálculo]
         VLAN[VLANManager<br/>Redes Virtuales<br/>Aislamiento]
         ACL[ACLManager<br/>Listas de Acceso<br/>Permit/Deny]
@@ -34,7 +34,7 @@ graph TB
         AL[ActivityLoader<br/>Dispatcher<br/>~800L]
         SCS[SceneCleanupService<br/>Singleton DontDestroyOnLoad]
         ACT[7 Actividades<br/>Topologia/Fallos/Rutas/Estatico/Dinamico/MejorRuta/Escenarios]
-        DRP[DynamicRoutingProtocol<br/>RIP/OSPF<br/>Coroutine convergence]
+        DRP[DynamicRoutingProtocol<br/>RIP/OSPF/EIGRP<br/>Coroutine convergence]
         SC[ScoringSystem<br/>Singleton<br/>Puntajes + Notas]
         PRED[PredefinedScenarios<br/>5 escenarios]
     end

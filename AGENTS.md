@@ -11,19 +11,21 @@ Assets/
     Simulation/ SceneSetup(~480L), ActivityLoader(~800L), SceneCleanupService, 7 actividades (BuildTopology, FindFault, RoutingTables, BestRoute, StaticRouting, DynamicRouting), PredefinedScenarios, ScoringSystem, SimulationControls, GameManager
     UI/        UIPanelFactory(~830L), ActivityPanelFactory(~690L), ConfigPanelFactory(~790L), UIComponents(~680L), NodeVisualizer, PingVisualizer, ConnectivityTestPanel, 5 controllers (LinkMode, PingMode, IPConfig, DevicePanel, NodeInteraction)
     Core/      AppLogger (EnableLogging=false)
-  Editor/Tests/ (209 tests EditMode, 14 suites)
+  Editor/Tests/ (316+ tests EditMode, 18 suites)
 
-### Tests Unitarios (209 EditMode)
+### Tests Unitarios (316+ EditMode)
 
 | Suite | Tests | Suite | Tests |
 |-------|:-----:|-------|:-----:|
-| TestIPValidation | 18 | TestRoutingTable | 14 |
+| TestIPValidation | 18 | TestRoutingTable | 18 |
 | TestRouteBuilderState | 15 | TestRoutePersistence | 3 |
 | TestDiscToRouteIntegration | 10 | TestTopologyManager | 32 |
-| TestDynamicRoutingProtocol | 16 | TestActivityLoader | 20 |
+| TestDynamicRoutingProtocol | 24 | TestActivityLoader | 20 |
 | TestDiscEventHandler | 18 | TestTangibleBridge | 15 |
 | TestScoringSystem | 19 | TestBestRouteActivity | 12 |
 | TestSceneCleanupService | 4 | TestPredefinedScenarios | 13 |
+| TestARPTable | 13 | TestVLANManager | 18 |
+| TestACLManager | 29 | TestNATManager | 25 |
 
 ### Comandos Debug (Keyboard)
 
@@ -40,7 +42,7 @@ Assets/
 - **Discos**: Solo 3 fisicos (Router=1, Switch=2, PC=3). IDs 4-18 virtuales (actividades). Routing config (7-18) via botones en StaticRoutingActivity/DynamicRoutingActivity.
 - **DebugDiscSimulator**: `enableSimulation=false` (produccion). Activar para testing por teclado.
 - **TangibleBridge**: Mapea tangibleId->uniqueId (Dictionary). Coordenadas TE (1920x1080) -> Canvas (4096x2160). Fallback silencioso si no hay servicio TE.
-- **Input System**: Package 1.19.0, modo Both. Migracion completa -- 0 usos `Input.GetKeyDown()`.
+- **Input System**: Package 1.19.0. Migracion completa -- 0 usos del API viejo (`Input.GetKeyDown`, `Input.GetMouseButton`, `Input.mousePosition`). Se puede cambiar a "Input System Package" solo en Project Settings.
 - **RouteBuilderState**: Estado transitorio (DestNetwork, SubnetMask, NextHop, OutInterface, Protocol) por router. IsComplete(4 campos) -> ApplyToRouter() -> AddStaticRoute.
 - **Paneles UI**: TopologyInfo (top-right), Devices (top-left), Score (bottom-right). Centrales: Scenarios/VLAN/ACL/NAT/DiscLegend.
 - **Escena principal**: Assets/Main.unity. NO usar GetStarted_Scene.unity (sin SceneSetup).
@@ -60,9 +62,21 @@ Assets/
 | `reviewer` | Revisa codigo (read-only) | edit: deny |
 | `tester` | Ejecuta tests | bash |
 | `builder` | Build & deploy | edit, bash |
+| `documenter` | Documenta codigo (/// XML comments) | edit, bash (ask) |
 
-Flujo: main -> architect -> programmer -> reviewer -> tester (tareas complejas).
+Flujo: main -> architect -> programmer -> reviewer -> documenter -> tester (tareas complejas con documentacion).
 main tiene iniciativa propia: lee ROADMAP.md al iniciar, propone trabajo.
+
+### Documentacion Automatica (OBLIGATORIO)
+
+Todo cambio de codigo debe incluir actualizacion de documentacion XML (`/// <summary>`):
+1. **Metodos nuevos**: documentar que hace, parametros y retorno.
+2. **Metodos modificados**: actualizar la documentacion si cambio su comportamiento.
+3. **Clases nuevas**: documentar proposito y uso.
+4. **Clases modificadas**: actualizar documentacion si cambio su responsabilidad.
+
+El agente `documenter` se encarga de esto. En tareas de 1-2 tool calls, el `main` actualiza la doc directamente.
+No cerrar una tarea sin verificar que la documentacion refleje el estado actual del codigo.
 
 ### Contexto de Propuesta (bajo demanda)
 `docs/proposal-context.md` contiene el texto completo de la propuesta academica.

@@ -12,33 +12,39 @@
   "agent": {
     "architect": {
       "model": "opencode/deepseek-v4-flash-free",
-      "description": "Diseña soluciones para SimuladorRedes IDEUM. Analiza archivos, lee skills relevantes, produce planes detallados de implementación. Solo lectura.",
+      "description": "Arquitecto solo-lectura: analiza archivos, carga skills, produce planes detallados de implementacion. Nunca escribe codigo.",
       "mode": "subagent",
       "permission": { "edit": "deny", "bash": "ask" }
     },
     "programmer": {
       "model": "opencode/deepseek-v4-flash-free",
-      "description": "Implementa código en SimuladorRedes IDEUM. Ejecuta planes del arquitecto o instrucciones directas. Edita archivos, respeta convenciones, verifica compilación.",
+      "description": "Programador: ejecuta planes, edita archivos C#, verifica compilacion. Sigue el plan al pie de la letra.",
       "mode": "subagent",
       "permission": { "edit": "allow", "bash": "allow" }
     },
     "reviewer": {
       "model": "opencode/deepseek-v4-flash-free",
-      "description": "Revisa código de SimuladorRedes IDEUM buscando bugs, estilo, y violaciones de convenciones. Solo lectura.",
+      "description": "Revisor solo-lectura: busca bugs, violaciones de estilo, null safety, problemas Unity. Reporta clasificado.",
       "mode": "subagent",
       "permission": { "edit": "deny", "bash": "ask" }
     },
     "tester": {
       "model": "opencode/deepseek-v4-flash-free",
-      "description": "Ejecuta tests de Unity para SimuladorRedes IDEUM. Corre EditMode tests, reporta resultados detallados.",
+      "description": "Tester: ejecuta tests EditMode (209), reporta resultados detallados. Solo bash y lectura.",
       "mode": "subagent",
       "permission": { "edit": "deny", "bash": "allow" }
     },
     "builder": {
       "model": "opencode/deepseek-v4-flash-free",
-      "description": "Construye y despliega SimuladorRedes IDEUM. Genera builds para IDEUM (Windows) y PC normal. Verifica compilación.",
+      "description": "Builder: genera builds Windows x86_64 para IDEUM o macOS para testing. Verifica prerrequisitos.",
       "mode": "subagent",
       "permission": { "edit": "allow", "bash": "allow" }
+    },
+    "documenter": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "description": "Documentador: anade/completa documentacion XML (///) en archivos C#. Lee el archivo completo, entiende su logica, y escribe summary/param/returns en espanol. Solo lectura inicial, luego escritura de documentacion. NO modifica logica del codigo.",
+      "mode": "subagent",
+      "permission": { "edit": "allow", "bash": "ask" }
     }
   }
 }

@@ -25,7 +25,7 @@
 | [`diagrams/10-sequence-routing-config.md`](diagrams/10-sequence-routing-config.md) | Configurar ruta con discos 7-18 |
 | [`diagrams/11-sequence-connectivity.md`](diagrams/11-sequence-connectivity.md) | CheckConnectivity (BFS + VLAN + ACL + NAT) |
 | [`diagrams/12-sequence-menu-navigation.md`](diagrams/12-sequence-menu-navigation.md) | Navegación de menús (ciclo completo) |
-| [`diagrams/13-sequence-dynamic-routing.md`](diagrams/13-sequence-dynamic-routing.md) | Enrutamiento dinámico RIP/OSPF |
+| [`diagrams/13-sequence-dynamic-routing.md`](diagrams/13-sequence-dynamic-routing.md) | Enrutamiento dinámico RIP/OSPF/EIGRP |
 
 ### Diagramas de Actividad
 | Archivo | Descripción |

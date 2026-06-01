@@ -2,36 +2,71 @@ using UnityEngine;
 
 namespace SimRedes.Network
 {
+    /// <summary>
+    /// Tipos de disco fisico o virtual disponibles en la mesa IDEUM.
+    /// Los IDs 1-3 son fisicos; 4-18 son virtuales para actividades.
+    /// </summary>
     public enum DiscType
     {
+        /// <summary>Dispositivo de enrutamiento (ID 1, fisico).</summary>
         Router,
+        /// <summary>Dispositivo de conmutacion (ID 2, fisico).</summary>
         Switch,
+        /// <summary>Host final (ID 3, fisico).</summary>
         PC,
+        /// <summary>Conexion entre dispositivos (ID 4).</summary>
         Enlace,
+        /// <summary>Simulacion de errores (ID 5).</summary>
         Fallo,
+        /// <summary>Protocolo de enrutamiento (ID 6).</summary>
         Protocolo,
+        /// <summary>Red de destino para ruta (ID 7).</summary>
         RedDestino,
+        /// <summary>Valor de metrica (ID 8).</summary>
         Metrica,
+        /// <summary>Interfaz de salida (ID 9).</summary>
         InterfazSalida,
+        /// <summary>Modo de enrutamiento (ID 10).</summary>
         ModoEnrutamiento,
+        /// <summary>Comando ip route (ID 11).</summary>
         IpRoute,
+        /// <summary>IP de destino (ID 12).</summary>
         Destino,
+        /// <summary>Mascara de subred (ID 13).</summary>
         Mascara,
+        /// <summary>Siguiente salto (ID 14).</summary>
         ProximoSalto,
+        /// <summary>Router vecino para protocolos dinamicos (ID 15).</summary>
         Vecino,
+        /// <summary>Red a anunciar en protocolos dinamicos (ID 16).</summary>
         AnunciarRed,
+        /// <summary>Costo del enlace (ID 17).</summary>
         Costo,
+        /// <summary>Ancho de banda del enlace (ID 18).</summary>
         BW
     }
 
+    /// <summary>
+    /// Configuracion de discos tangible-virtuales. Define ID, tipo, etiqueta, color y descripcion
+    /// para cada disco de la mesa IDEUM (IDs 1-18).
+    /// </summary>
     public class DiscConfiguration
     {
+        /// <summary>Identificador unico del disco (1-18).</summary>
         public int DiscId { get; set; }
+        /// <summary>Tipo de disco (Router, Switch, PC, etc.).</summary>
         public DiscType Type { get; set; }
+        /// <summary>Etiqueta visible del disco.</summary>
         public string Label { get; set; }
+        /// <summary>Color representativo del disco en la UI.</summary>
         public Color DisplayColor { get; set; }
+        /// <summary>Descripcion textual del proposito del disco.</summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Configuracion predeterminada para los 18 discos del sistema.
+        /// Los IDs 1-3 son fisicos; IDs 4-18 son virtuales.
+        /// </summary>
         public static DiscConfiguration[] DefaultConfiguration = new DiscConfiguration[]
         {
             new DiscConfiguration { DiscId = 1, Type = DiscType.Router, Label = "Router", DisplayColor = Color.blue, Description = "Dispositivo de enrutamiento" },
@@ -54,6 +89,12 @@ namespace SimRedes.Network
             new DiscConfiguration { DiscId = 18, Type = DiscType.BW, Label = "Ancho Banda", DisplayColor = new Color(0.5f, 0.7f, 1), Description = "Ancho de banda" }
         };
 
+        /// <summary>
+        /// Obtiene la configuracion de un disco por su ID.
+        /// Si no existe, devuelve una configuracion generica por defecto.
+        /// </summary>
+        /// <param name="discId">Identificador del disco (1-18).</param>
+        /// <returns>Configuracion del disco encontrada, o una generica si no existe.</returns>
         public static DiscConfiguration GetConfiguration(int discId)
         {
             foreach (var config in DefaultConfiguration)

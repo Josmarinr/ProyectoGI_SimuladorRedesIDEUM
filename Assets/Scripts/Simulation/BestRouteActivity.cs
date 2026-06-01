@@ -4,6 +4,10 @@ using UnityEngine.UI;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Actividad de seleccion de la mejor ruta usando longest prefix match.
+    /// Presenta escenarios con multiples rutas candidatas y evalua la respuesta del usuario.
+    /// </summary>
     public class BestRouteActivity : MonoBehaviour
     {
         [Header("UI References")]
@@ -12,6 +16,9 @@ namespace SimRedes.Simulation
         public Text scoreText;
         public Button nextButton;
 
+        /// <summary>
+        /// Escenario individual con una IP destino, opciones de ruta y la respuesta correcta.
+        /// </summary>
         private class RouteScenario
         {
             public string DestinationIP;
@@ -20,6 +27,9 @@ namespace SimRedes.Simulation
             public string Explanation;
         }
 
+        /// <summary>
+        /// Representa una entrada de ruta candidata con red destino, mascara, siguiente salto, interfaz, metrica y protocolo.
+        /// </summary>
         private class RouteOption
         {
             public string DestinationNetwork;
@@ -45,6 +55,9 @@ namespace SimRedes.Simulation
             NextScenario();
         }
 
+        /// <summary>
+        /// Inicializa la lista de escenarios predefinidos con IPs destino, opciones de ruta y la respuesta correcta.
+        /// </summary>
         private void InitializeScenarios()
         {
             scenarios = new List<RouteScenario>
@@ -102,6 +115,9 @@ namespace SimRedes.Simulation
             };
         }
 
+        /// <summary>
+        /// Avanza al siguiente escenario de ruta. Incrementa el indice y reinicia el estado de seleccion.
+        /// </summary>
         public void NextScenario()
         {
             currentScenarioIndex = (currentScenarioIndex + 1) % scenarios.Count;
@@ -111,6 +127,10 @@ namespace SimRedes.Simulation
             ShowScenario(currentScenarioIndex);
         }
 
+        /// <summary>
+        /// Muestra el escenario en el indice dado: actualiza textos, limpia botones previos y crea botones para cada opcion de ruta.
+        /// </summary>
+        /// <param name="index">Indice del escenario a mostrar.</param>
         private void ShowScenario(int index)
         {
             var scenario = scenarios[index];
@@ -206,6 +226,10 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Maneja la seleccion de una opcion de ruta. Evalua si es correcta, actualiza puntaje, colorea los botones y habilita el boton siguiente.
+        /// </summary>
+        /// <param name="optionIndex">Indice de la opcion seleccionada por el usuario.</param>
         private void OnRouteSelected(int optionIndex)
         {
             if (answered) return;
@@ -268,6 +292,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Destruye los botones de opcion de ruta creados en el panel y limpia la lista de botones.
+        /// </summary>
         private void ClearOptionButtons()
         {
             GameObject panelObj = FindBestRoutePanel();

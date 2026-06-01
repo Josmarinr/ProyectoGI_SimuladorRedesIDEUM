@@ -166,7 +166,7 @@ Assets/
 │   │   ├── StaticRoutingActivity.cs    # Actividad 4
 │   │   ├── DynamicRoutingActivity.cs   # Actividad 5
 │   │   ├── PredefinedScenarios.cs      # Actividad 6
-│   │   ├── DynamicRoutingProtocol.cs   # Motor RIP/OSPF
+│   │   ├── DynamicRoutingProtocol.cs   # Motor RIP/OSPF/EIGRP
 │   │   ├── ScoringSystem.cs            # Puntajes
 │   │   ├── SimulationControls.cs       # ESC, P, R
 │   │   └── RoutingProtocols.cs         # RoutingSimulator estático + enum
@@ -759,7 +759,7 @@ Los skills están en `.opencode/skills/` y proveen guías de referencia para tar
 | `testing-guide` | Escribir o ejecutar tests |
 | `build-and-deploy` | Buildear o desplegar |
 | `ideum-integration` | Trabajar con discos o TangibleEngine |
-| `dynamic-routing` | Implementar RIP/OSPF |
+| `dynamic-routing` | Implementar RIP/OSPF/EIGRP |
 | `network-tables` | IP, routing, conectividad |
 | `menu-navigation` | Menús, ESC, navegación |
 | `unity-ui-buttons` | Botones, paneles, colores |
@@ -772,7 +772,7 @@ Los skills están en `.opencode/skills/` y proveen guías de referencia para tar
 | `best-practices` | Patrones de diseño y anti-patrones |
 | `build-and-deploy` | Build para IDEUM/PC, pantalla negra fix |
 | `debugging` | Logging, profiling, errores comunes |
-| `dynamic-routing` | RIP/OSPF, convergencia |
+| `dynamic-routing` | RIP/OSPF/EIGRP, convergencia |
 | `ideum-integration` | TangibleEngine, discos, bridge |
 | `manual-links` | CONECTAR/DESCONECTAR |
 | `menu-navigation` | MenuNavigator, ESC, flechas |

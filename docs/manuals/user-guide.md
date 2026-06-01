@@ -30,7 +30,7 @@ Los estudiantes pueden:
 
 - **Construir topologías de red** colocando discos físicos sobre la mesa
 - **Configurar direcciones IP** mediante un teclado numérico en pantalla
-- **Crear rutas estáticas y dinámicas** (RIP/OSPF)
+- **Crear rutas estáticas y dinámicas** (RIP/OSPF/EIGRP)
 - **Diagnosticar y reparar fallos** de red
 - **Visualizar el tráfico** con animaciones de ping
 - **Configurar VLANs, ACLs y NAT**
@@ -148,7 +148,7 @@ Panel con 7 actividades académicas numeradas (0-6):
 | 2 | **Tabla de Enrutamiento Tangible** | Visualiza las tablas de routing de todos los routers |
 | 3 | **Simulación de Mejor Ruta** | Elige la mejor ruta entre varias opciones (quiz de 4 escenarios) |
 | 4 | **Enrutamiento Estático Tangible** | Configura rutas estáticas en los routers |
-| 5 | **Protocolo de Enrutamiento Dinámico Tangible** | Simula RIP u OSPF y observa la convergencia |
+| 5 | **Protocolo de Enrutamiento Dinámico Tangible** | Simula RIP, OSPF o EIGRP y observa la convergencia |
 | 6 | **Escenarios** | Carga escenarios preconfigurados con diferentes niveles |
 
 ### Opción 3: PRUEBAS Y CONEXIONES
@@ -213,13 +213,13 @@ Estos discos **no existen físicamente** en la mesa IDEUM. Se configuran desde l
 | 7 | **RedDestino** 🟧 | Define la red de destino de la ruta |
 | 8 | **Métrica** 🟨 | Ajusta la métrica a 10 en la última ruta |
 | 9 | **InterfazSalida** 🟦 | Define la interfaz de salida (G0/0-G0/3) |
-| 10 | **ModoEnrutamiento** 🩷 | Cambia entre Static, RIP y OSPF |
+| 10 | **ModoEnrutamiento** 🩷 | Cambia entre Static, RIP, OSPF y EIGRP |
 | 11 | **IpRoute** 🟩 | Agrega ruta por defecto (0.0.0.0/0) |
 | 12 | **Destino** 🟣 | Define la red de destino (alias de RedDestino) |
 | 13 | **Máscara** 🟦 | Define la máscara de subred |
 | 14 | **PróximoSalto** 🟦 | Define el next hop |
 | 15 | **Vecino** 🟧 | Router vecino para enrutamiento dinámico (config. desde Actividad 5) |
-| 16 | **AnunciarRed** 🟥 | Red personalizada a anunciar en RIP/OSPF (config. desde Actividad 5) |
+| 16 | **AnunciarRed** 🟥 | Red personalizada a anunciar en RIP/OSPF/EIGRP (config. desde Actividad 5) |
 | 17 | **Costo** 🟩 | Costo OSPF personalizado (config. desde Actividad 5, default=calculado por BW) |
 | 18 | **BW** 🟦 | Ancho de banda para cálculo de costo OSPF (config. desde Actividad 5) |
 
@@ -321,7 +321,7 @@ Configura rutas estáticas en los routers de la topología. Dos métodos disponi
 2. El sistema busca una ruta hacia una IP aleatoria
 3. Muestra éxito o fallo según la configuración
 
-### 6.5 Enrutamiento Dinámico (RIP/OSPF)
+### 6.5 Enrutamiento Dinámico (RIP/OSPF/EIGRP)
 
 Simula el intercambio de rutas entre routers:
 
@@ -339,7 +339,7 @@ En la sección inferior del panel de Enrutamiento Dinámico encontrarás la secc
 | Opción | Disco | Descripción |
 |--------|:-----:|-------------|
 | **Vecino** | 15 | Limita la propagación a un router vecino específico |
-| **Anunciar Red** | 16 | Agrega una red personalizada a los anuncios RIP/OSPF |
+| **Anunciar Red** | 16 | Agrega una red personalizada a los anuncios RIP/OSPF/EIGRP |
 | **Costo OSPF** | 17 | Sobrescribe el costo calculado por BW (default: 10) |
 | **Ancho Banda** | 18 | Valor en Mbps para el cálculo de costo OSPF (fórmula: 100,000 / BW en Kbps) |
 

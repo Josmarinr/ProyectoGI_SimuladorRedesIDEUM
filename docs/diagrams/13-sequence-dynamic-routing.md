@@ -1,4 +1,4 @@
-# DS-05: Secuencia — Enrutamiento Dinámico RIP/OSPF
+# DS-05: Secuencia — Enrutamiento Dinámico RIP/OSPF/EIGRP
 
 > **Propósito**: Mostrar cómo funciona el protocolo de enrutamiento dinámico: inicio, anuncios periódicos, convergencia y visualización.
 

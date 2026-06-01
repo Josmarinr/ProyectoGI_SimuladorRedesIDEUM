@@ -102,7 +102,7 @@ Mesa IDEUM → TE Service → TangibleEngine → TangibleBridge → TangibleDisc
 | 7 | RedDestino | `builder.DestinationNetwork = "192.168.1.0"` |
 | 8 | Métrica | Métrica = 10 en última ruta del router |
 | 9 | InterfazSalida | `builder.OutInterface = "G0/0"-"G0/3"` |
-| 10 | ModoEnrutamiento | Toggle Static ↔ RIP/OSPF |
+| 10 | ModoEnrutamiento | Toggle Static ↔ RIP ↔ OSPF ↔ EIGRP |
 | 11 | IpRoute | `AddStaticRoute(0.0.0.0/0 → 192.168.1.254)` |
 | 12 | Destino | Mismo que RedDestino |
 | 13 | Mascara | `builder.SubnetMask = "255.255.255.0"` |

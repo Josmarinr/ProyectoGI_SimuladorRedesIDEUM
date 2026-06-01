@@ -53,15 +53,15 @@ public enum DiscType
 | `RedDestino` | 7 | Red de destino para ruta |
 | `Metrica` | 8 | Valor de métrica |
 | `InterfazSalida` | 9 | Interfaz de salida |
-| `ModoEnrutamiento` | 10 | Modo de enrutamiento (Static/RIP/OSPF) |
+| `ModoEnrutamiento` | 10 | Modo de enrutamiento (Static/RIP/OSPF/EIGRP) |
 | `IpRoute` | 11 | Comando ip route (ruta por defecto) |
 | `Destino` | 12 | IP de destino (sinónimo de RedDestino) |
 | `Mascara` | 13 | Máscara de subred |
 | `ProximoSalto` | 14 | Siguiente salto |
-| `Vecino` | 15 | Router vecino (soporte próximamente) |
-| `AnunciarRed` | 16 | Red a anunciar (soporte próximamente) |
-| `Costo` | 17 | Costo del enlace (soporte próximamente) |
-| `BW` | 18 | Ancho de banda (soporte próximamente) |
+| `Vecino` | 15 | Router vecino (config. desde Actividad 5) |
+| `AnunciarRed` | 16 | Red a anunciar en RIP/OSPF/EIGRP (config. desde Actividad 5) |
+| `Costo` | 17 | Costo OSPF o Delay EIGRP (config. desde Actividad 5) |
+| `BW` | 18 | Ancho de banda en Mbps (config. desde Actividad 5) |
 
 ---
 

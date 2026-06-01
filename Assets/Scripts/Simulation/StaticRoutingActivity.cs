@@ -7,6 +7,9 @@ using SimRedes.UI;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Actividad de configuracion de rutas estaticas en routers. Permite anadir rutas manuales o de ejemplo y probar el enrutamiento.
+    /// </summary>
     public class StaticRoutingActivity : MonoBehaviour
     {
         [Header("UI References")]
@@ -18,6 +21,9 @@ namespace SimRedes.Simulation
         private NetworkNode selectedRouter;
         private Canvas canvasRef;
 
+        /// <summary>
+        /// Inicializa la actividad: localiza o crea TopologyManager, obtiene referencia al Canvas y actualiza la UI.
+        /// </summary>
         private void Start()
         {
             topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -31,6 +37,9 @@ namespace SimRedes.Simulation
             UpdateUI();
         }
 
+        /// <summary>
+        /// Escucha las teclas A (anadir ruta de ejemplo) y T (probar enrutamiento) mediante el nuevo Input System.
+        /// </summary>
         private void Update()
         {
             var keyboard = Keyboard.current;
@@ -44,6 +53,13 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Anade una ruta estatica al router seleccionado. Si no hay router seleccionado, toma el primero disponible.
+        /// </summary>
+        /// <param name="destNetwork">Red destino en formato IPv4 (ej: "10.0.0.0").</param>
+        /// <param name="mask">Mascara de subred en formato IPv4 (ej: "255.0.0.0").</param>
+        /// <param name="nextHop">Direccion IPv4 del siguiente salto.</param>
+        /// <param name="outInterface">Nombre de la interfaz de salida (por defecto "G0/0").</param>
         public void AddRoute(string destNetwork, string mask, string nextHop, string outInterface = "G0/0")
         {
             if (selectedRouter == null)
@@ -61,6 +77,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Muestra el panel de configuracion para anadir una ruta personalizada mediante ConfigPanelFactory.
+        /// </summary>
         public void ShowAddRoutePanel()
         {
             if (canvasRef == null)
@@ -92,6 +111,9 @@ namespace SimRedes.Simulation
             ShowFeedback($"Configurando ruta para Router {selectedRouter.DiscId}");
         }
 
+        /// <summary>
+        /// Anade una ruta estatica de ejemplo con red destino aleatoria 10.x.0.0/8 al router seleccionado.
+        /// </summary>
         public void AddSampleRoute()
         {
             if (selectedRouter == null)
@@ -116,6 +138,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Prueba el enrutamiento simulando el reenvio de un paquete hacia una IP aleatoria 10.x.x.1.
+        /// </summary>
         public void TestRouting()
         {
             if (selectedRouter == null)
@@ -137,6 +162,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Actualiza el texto de informacion y la lista de rutas mostradas en pantalla.
+        /// </summary>
         private void UpdateUI()
         {
             if (infoText != null)
@@ -155,6 +183,9 @@ namespace SimRedes.Simulation
             UpdateRoutesDisplay();
         }
 
+        /// <summary>
+        /// Construye y asigna el texto con todas las rutas estaticas de todos los routers en la topologia.
+        /// </summary>
         private void UpdateRoutesDisplay()
         {
             if (routesText == null) return;
@@ -198,6 +229,10 @@ namespace SimRedes.Simulation
             routesText.text = content;
         }
 
+        /// <summary>
+        /// Muestra un mensaje de retroalimentacion en el texto feedbackText y lo registra en la consola.
+        /// </summary>
+        /// <param name="message">Mensaje a mostrar al usuario.</param>
         private void ShowFeedback(string message)
         {
             if (feedbackText != null)

@@ -5,6 +5,11 @@ using SimRedes.Simulation;
 
 namespace SimRedes.Tangible
 {
+    /// <summary>
+    /// Maneja los eventos de TangibleDiscManager (OnDiscPlaced, OnDiscMoved, OnDiscRemoved)
+    /// y los traduce a operaciones de topologia: crear/actualizar/eliminar nodos,
+    /// crear enlaces automaticos por proximidad y gestionar discos de configuracion de rutas.
+    /// </summary>
     public class DiscEventHandler : MonoBehaviour
     {
         [Header("Configuration")]
@@ -14,6 +19,9 @@ namespace SimRedes.Tangible
 
         private Dictionary<int, RouteBuilderState> routeBuilders = new Dictionary<int, RouteBuilderState>();
 
+        /// <summary>
+        /// Busca TangibleDiscManager y se suscribe a sus eventos de ciclo de vida de discos.
+        /// </summary>
         private void Start()
         {
             var tangibleManager = Object.FindAnyObjectByType<TangibleDiscManager>();
@@ -25,6 +33,13 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Procesa la colocacion de un disco: crea el nodo en TopologyManager si es
+        /// Router/Switch/PC, y opcionalmente crea enlaces automaticos por proximidad.
+        /// Los discos de configuracion de routing se delegan a HandleRoutingConfigDisc.
+        /// </summary>
+        /// <param name="discId">Identificador unico del disco colocado.</param>
+        /// <param name="position">Posicion en coordenadas Canvas.</param>
         private void HandleDiscPlaced(int discId, Vector2 position)
         {
             var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -55,6 +70,15 @@ namespace SimRedes.Tangible
             UnityEngine.Debug.Log($"[DiscEvent] Disco colocado: {config.Label} (uniqueId={discId}) en posicion {position}");
         }
 
+        /// <summary>
+        /// Procesa discos de configuracion de routing (IDs 7-18): asocia valores
+        /// al RouteBuilderState del router mas cercano, y cuando el builder esta completo
+        /// aplica la ruta estatica o delega a DynamicRoutingActivity segun el tipo de disco.
+        /// </summary>
+        /// <param name="discId">Identificador unico del disco de configuracion.</param>
+        /// <param name="position">Posicion del disco en coordenadas Canvas.</param>
+        /// <param name="config">Configuracion del disco (tipo, etiqueta).</param>
+        /// <param name="topology">Instancia de TopologyManager para operaciones de red.</param>
         private void HandleRoutingConfigDisc(int discId, Vector2 position, DiscConfiguration config, TopologyManager topology)
         {
             var nearbyRouters = topology.FindNodesNear(position, routerProximityRadius);
@@ -184,9 +208,27 @@ namespace SimRedes.Tangible
                     }
                     break;
                 }
+                case DiscType.Protocolo:
+                {
+                    var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
+                    if (dynAct != null)
+                    {
+                        dynAct.SetProtocol(RoutingProtocol.EIGRP);
+                        UnityEngine.Debug.Log($"[DiscEvent] Protocolo EIGRP seleccionado via disco virtual");
+                    }
+                    break;
+                }
             }
         }
 
+        /// <summary>
+        /// Si el RouteBuilderState del router esta completo (destino, mascara, nextHop,
+        /// interfaz), aplica la ruta estatica al router y resetea el builder.
+        /// En caso contrario, registra el estado parcial en consola.
+        /// </summary>
+        /// <param name="router">Nodo router al que asociar la ruta.</param>
+        /// <param name="builder">Estado transitorio de construccion de ruta.</param>
+        /// <param name="topology">Instancia de TopologyManager.</param>
         private void TryAddRoute(NetworkNode router, RouteBuilderState builder, TopologyManager topology)
         {
             if (builder.IsComplete)
@@ -202,12 +244,24 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Agrega una ruta por defecto (0.0.0.0/0 -> 192.168.1.254) al router.
+        /// Corresponde al disco de tipo IpRoute.
+        /// </summary>
+        /// <param name="router">Router destino de la ruta por defecto.</param>
+        /// <param name="topology">Instancia de TopologyManager.</param>
         private void HandleIpRouteDisc(NetworkNode router, TopologyManager topology)
         {
             router.RoutingTable.AddStaticRoute("0.0.0.0", "0.0.0.0", "192.168.1.254", "G0/0");
             UnityEngine.Debug.Log($"[DiscEvent] Ruta por defecto agregada a {router.Name}: 0.0.0.0/0 -> 192.168.1.254");
         }
 
+        /// <summary>
+        /// Obtiene la siguiente interfaz disponible para un router basado en
+        /// las entradas de ruta existentes, rotando entre las interfaces disponibles.
+        /// </summary>
+        /// <param name="router">Router del cual obtener la interfaz.</param>
+        /// <returns>Nombre de la interfaz (ej: "G0/0", "G0/1").</returns>
         private string GetNextInterface(NetworkNode router)
         {
             var interfaces = router.Interfaces;
@@ -224,6 +278,12 @@ namespace SimRedes.Tangible
             return interfaces[ifaceIndex];
         }
 
+        /// <summary>
+        /// Determina si un tipo de disco corresponde a un disco de configuracion
+        /// de enrutamiento (IDs 7-18) vs un disco fisico (1-3).
+        /// </summary>
+        /// <param name="type">Tipo de disco a evaluar.</param>
+        /// <returns>True si es un disco de configuracion de routing.</returns>
         private bool IsRoutingConfigDisc(DiscType type)
         {
             switch (type)
@@ -240,12 +300,19 @@ namespace SimRedes.Tangible
                 case DiscType.AnunciarRed:
                 case DiscType.Costo:
                 case DiscType.BW:
+                case DiscType.Protocolo:
                     return true;
                 default:
                     return false;
             }
         }
 
+        /// <summary>
+        /// Actualiza la posicion de un nodo en TopologyManager y recrea enlaces
+        /// automaticos si autoConnectLinks esta activado.
+        /// </summary>
+        /// <param name="discId">Identificador unico del disco movido.</param>
+        /// <param name="position">Nueva posicion en coordenadas Canvas.</param>
         private void HandleDiscMoved(int discId, Vector2 position)
         {
             var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -260,6 +327,10 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Elimina el nodo asociado al disco de TopologyManager.
+        /// </summary>
+        /// <param name="discId">Identificador unico del disco removido.</param>
         private void HandleDiscRemoved(int discId)
         {
             var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -271,6 +342,12 @@ namespace SimRedes.Tangible
             UnityEngine.Debug.Log($"[DiscEvent] Disco eliminado: {discId}");
         }
 
+        /// <summary>
+        /// Convierte un DiscType (Router/Switch/PC) al DeviceType correspondiente
+        /// del namespace SimRedes.Network.
+        /// </summary>
+        /// <param name="discType">Tipo de disco desde DiscConfiguration.</param>
+        /// <returns>DeviceType equivalente, o Unknown si no hay mapeo.</returns>
         private SimRedes.Network.DeviceType ConvertToDeviceType(DiscType discType)
         {
             switch (discType)
@@ -286,6 +363,12 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Busca discos activos dentro del umbral de distancia (linkDistanceThreshold)
+        /// y crea enlaces automaticos entre ellos en TopologyManager.
+        /// </summary>
+        /// <param name="discId">Disco de referencia para medir distancias.</param>
+        /// <param name="position">Posicion del disco de referencia.</param>
         private void CheckAndCreateLinks(int discId, Vector2 position)
         {
             var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -307,6 +390,9 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Desuscribe los eventos de TangibleDiscManager para evitar fugas de memoria.
+        /// </summary>
         private void OnDestroy()
         {
             var tangibleManager = Object.FindAnyObjectByType<TangibleDiscManager>();

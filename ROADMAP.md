@@ -4,9 +4,23 @@
 
 ---
 
-## Estado Actual: 231 tests pasando, textos alineados con propuesta, anteproyecto de grado creado
+## Estado Actual: 328 tests, codigo 100% documentado, VLANManager bugfix
 
-> SceneSetup ~480L, **231 tests pasando** (209 originales + 22 nuevos de UI factories). Textos de actividades alineados con propuesta academica. Anteproyecto de Trabajo de Grado generado. Bug corregido en ConfigPanelFactory (NRE en InputFields de VLAN/ACL/NAT). **Pendiente A2** (pruebas en mesa IDEUM real con discos fisicos).
+> Tras 21 sesiones previas: **316+ tests**, EIGRP, Input migration, SUS. En sesion 22:
+> - **D6**: Fix layout DynamicRoutingPanel — campos config superpuestos con botones principales
+> - **D7**: Fix feedbackText — mensaje emergente superpuesto con botones OSPF/EIGRP
+> - **D8**: Fix feedbackText StaticRouting — mensaje superpuesto con botones AÑADIR MANUAL/RUTA/TEST
+> - **D9**: Fix RoutingTablesActivity — Clear eliminado, header corregido, 3 mejoras menores
+> - **E1**: Documentar TopologyManager.cs (29 metodos) — Completada (40 miembros documentados)
+> - **E2**: Documentar SceneSetup.cs (19 metodos) — Completada (33/38 metodos documentados)
+> - **E3**: Documentar 3 factories UI — Completada (45 miembros en 3 archivos)
+> - **E4**: Documentar UIComponents.cs — Completada (42 miembros)
+> - **E5**: Documentar ActivityLoader.cs — Completada (17 miembros)
+> - **E6**: Documentar clases de red — Completada (114 miembros en 6 archivos)
+> - **E7**: Documentar actividades — Completada (49 miembros en 5 archivos)
+> - **E8**: Documentar modulo Tangible — Completada (44 miembros en 4 archivos)
+> - **E9**: Documentar resto — Completada (89 miembros en 5 archivos)
+> - **Pendiente A2**: Pruebas en mesa IDEUM real con discos fisicos
 
 ---
 
@@ -28,6 +42,24 @@
 | **C4** | Animacion de conexion en enlaces | Completada | Ninguna |
 | **C5** | Documentacion API TopologyManager | Completada | Ninguna |
 | **C6** | Documentacion completa (diagramas + manuales) | Completada | Ninguna |
+| **D1** | Migrar ultimos usos Input Manager (Mouse) | Completada | C1 |
+| **D2** | Eliminar CreateStatusPanel obsoleto | Completada | Ninguna |
+| **D3** | Tests ACLManager, NATManager, VLANManager, ARPTable | Completada | Ninguna |
+| **D4** | Implementar protocolo EIGRP | Completada | Ninguna |
+| **D5** | Instrumentos evaluacion usabilidad (SUS + pre/post-test) | Completada | Ninguna |
+| **D6** | Fix layout DynamicRoutingPanel — campos config superpuestos | Completada | Ninguna |
+| **D7** | Fix feedbackText — mensaje superpuesto con botones OSPF/EIGRP | Completada | Ninguna |
+| **D8** | Fix feedbackText StaticRouting — mensaje superpuesto con botones AÑADIR MANUAL/RUTA/TEST | Completada | Ninguna |
+| **D9** | Fix RoutingTablesActivity — Clear eliminado, header corregido, 3 mejoras menores | Completada | Ninguna |
+| **E1** | Documentar codigo: TopologyManager.cs (29 metodos) | Completada | Ninguna |
+| **E2** | Documentar codigo: SceneSetup.cs (19 metodos) | Completada | Ninguna |
+| **E3** | Documentar codigo: 3 factories UI (UIPanel, ActivityPanel, ConfigPanel) | Completada | Ninguna |
+| **E4** | Documentar codigo: UIComponents.cs | Completada | Ninguna |
+| **E5** | Documentar codigo: ActivityLoader.cs | Completada | Ninguna |
+| **E6** | Documentar codigo: clases de red (RoutingTable, IPValidation, NetworkNode, ACL, NAT, VLAN) | Completada | Ninguna |
+| **E7** | Documentar codigo: actividades (BestRoute, BuildTopology, FindFault, StaticRouting, RoutingTables) | Completada | Ninguna |
+| **E8** | Documentar codigo: modulo Tangible (TangibleBridge, DiscManager, DebugSimulator, DiscEventHandler) | Completada | Ninguna |
+| **E9** | Documentar codigo: resto (ScoringSystem, SceneCleanup, MenuNavigator, RoutingProtocols) | Completada | Ninguna |
 
 ---
 

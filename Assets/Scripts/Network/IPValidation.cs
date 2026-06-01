@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SimRedes.Network
 {
+    /// <summary>Métodos de validación para direcciones IP, máscaras de subred y cálculos de red.</summary>
     public static class IPValidation
     {
         private static readonly string[] ValidMasks = new[]
@@ -19,6 +20,9 @@ namespace SimRedes.Network
             "255.255.255.248", "255.255.255.252", "255.255.255.254", "255.255.255.255"
         };
 
+        /// <summary>Verifica si una cadena tiene el formato de una dirección IP IPv4 válida.</summary>
+        /// <param name="ip">Dirección IP a validar.</param>
+        /// <returns>True si la IP tiene 4 octetos entre 0 y 255.</returns>
         public static bool IsValidIP(string ip)
         {
             if (string.IsNullOrEmpty(ip)) return false;
@@ -37,6 +41,9 @@ namespace SimRedes.Network
             return true;
         }
 
+        /// <summary>Verifica si una cadena es una máscara de subred válida.</summary>
+        /// <param name="mask">Máscara de subred a validar.</param>
+        /// <returns>True si la máscara está en la lista de máscaras válidas.</returns>
         public static bool IsValidSubnetMask(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return false;
@@ -46,6 +53,9 @@ namespace SimRedes.Network
             return ValidMasks.Contains(mask);
         }
 
+        /// <summary>Valida un campo de dirección IP y retorna un mensaje de error si es inválido.</summary>
+        /// <param name="ip">Dirección IP a validar.</param>
+        /// <returns>Mensaje de error o null si es válida.</returns>
         public static string ValidateIPField(string ip)
         {
             if (string.IsNullOrEmpty(ip))
@@ -57,6 +67,9 @@ namespace SimRedes.Network
             return null;
         }
 
+        /// <summary>Valida un campo de máscara de subred y retorna un mensaje de error si es inválido.</summary>
+        /// <param name="mask">Máscara de subred a validar.</param>
+        /// <returns>Mensaje de error o null si es válida.</returns>
         public static string ValidateMaskField(string mask)
         {
             if (string.IsNullOrEmpty(mask))
@@ -68,6 +81,9 @@ namespace SimRedes.Network
             return null;
         }
 
+        /// <summary>Calcula la longitud del prefijo CIDR a partir de una máscara de subred.</summary>
+        /// <param name="mask">Máscara de subred.</param>
+        /// <returns>Longitud del prefijo (0-32).</returns>
         public static int GetPrefixLength(string mask)
         {
             if (!IsValidSubnetMask(mask)) return 0;
@@ -88,6 +104,11 @@ namespace SimRedes.Network
             return prefix;
         }
 
+        /// <summary>Verifica si dos direcciones IP están en la misma red aplicando la máscara indicada.</summary>
+        /// <param name="ip1">Primera dirección IP.</param>
+        /// <param name="mask1">Máscara de subred.</param>
+        /// <param name="ip2">Segunda dirección IP.</param>
+        /// <returns>True si ambas IPs pertenecen a la misma red.</returns>
         public static bool IsInSameNetwork(string ip1, string mask1, string ip2)
         {
             if (!IsValidIP(ip1) || !IsValidIP(ip2) || !IsValidSubnetMask(mask1))
@@ -105,6 +126,10 @@ namespace SimRedes.Network
             return true;
         }
 
+        /// <summary>Calcula la dirección de red aplicando la máscara a una IP.</summary>
+        /// <param name="ip">Dirección IP.</param>
+        /// <param name="mask">Máscara de subred.</param>
+        /// <returns>Dirección de red o null si los parámetros son inválidos.</returns>
         public static string GetNetworkAddress(string ip, string mask)
         {
             if (!IsValidIP(ip) || !IsValidSubnetMask(mask))
@@ -116,6 +141,10 @@ namespace SimRedes.Network
             return string.Join(".", ipParts.Select((p, i) => p & maskParts[i]).ToArray());
         }
 
+        /// <summary>Calcula la dirección de broadcast a partir de una IP y su máscara.</summary>
+        /// <param name="ip">Dirección IP.</param>
+        /// <param name="mask">Máscara de subred.</param>
+        /// <returns>Dirección de broadcast o null si los parámetros son inválidos.</returns>
         public static string GetBroadcastAddress(string ip, string mask)
         {
             if (!IsValidIP(ip) || !IsValidSubnetMask(mask))
@@ -127,6 +156,10 @@ namespace SimRedes.Network
             return string.Join(".", ipParts.Select((p, i) => (p & maskParts[i]) | (~maskParts[i] & 255)).ToArray());
         }
 
+        /// <summary>Obtiene la dirección del gateway por defecto a partir de una IP y máscara opcional.</summary>
+        /// <param name="ip">Dirección IP.</param>
+        /// <param name="mask">Máscara de subred (opcional, por defecto /24).</param>
+        /// <returns>Dirección del gateway (primera IP usable de la red).</returns>
         public static string GetGatewayFromIP(string ip, string mask = null)
         {
             if (!IsValidIP(ip)) return null;

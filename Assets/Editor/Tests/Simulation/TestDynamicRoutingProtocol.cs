@@ -159,6 +159,125 @@ namespace Tests.EditMode.Simulation
         // Router Routes Summary
         // ================================================================
 
+        // ================================================================
+        // EIGRP Protocol Support
+        // ================================================================
+
+        [Test]
+        public void ProtocolType_SetToEIGRP_ReturnsCorrectType()
+        {
+            protocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
+            Assert.AreEqual(DynamicRoutingProtocol.ProtocolType.EIGRP, protocol.protocol);
+        }
+
+        [Test]
+        public void CalculateEIGRPMetric_DefaultKValues_ReturnsPositiveMetric()
+        {
+            CreateTwoRoutersWithLink();
+            var router1 = topology.GetNode(1);
+            var router2 = topology.GetNode(2);
+
+            var method = typeof(DynamicRoutingProtocol).GetMethod("CalculateEIGRPMetric",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(method, "CalculateEIGRPMetric method not found");
+
+            int metric = (int)method.Invoke(protocol, new object[] { router1, router2 });
+            Assert.GreaterOrEqual(metric, 1, "EIGRP metric should be >= 1");
+            // Default: k1=1, k3=1, BW=1000Mbps, delay=10
+            // bwComponent = (10000000 / 1000000) * 256 = 10 * 256 = 2560
+            // delayComponent = 10 * 256 = 2560
+            // metric = 2560 + 2560 = 5120
+            Assert.AreEqual(5120, metric, "Default EIGRP metric should be 5120");
+        }
+
+        [Test]
+        public void CalculateEIGRPMetric_CustomBW_ReflectsInMetric()
+        {
+            CreateTwoRoutersWithLink();
+            var router1 = topology.GetNode(1);
+            var router2 = topology.GetNode(2);
+
+            protocol.SetCustomBandwidth(500); // 500 Mbps
+
+            var method = typeof(DynamicRoutingProtocol).GetMethod("CalculateEIGRPMetric",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(method);
+
+            int metric = (int)method.Invoke(protocol, new object[] { router1, router2 });
+            // BW=500Mbps: bwComponent = (10000000 / 500000) * 256 = 20 * 256 = 5120
+            // delayComponent = 10 * 256 = 2560
+            // metric = 5120 + 2560 = 7680
+            Assert.AreEqual(7680, metric, "Metric with 500Mbps BW should be 7680");
+        }
+
+        [Test]
+        public void CalculateEIGRPMetric_CustomDelay_ReflectsInMetric()
+        {
+            CreateTwoRoutersWithLink();
+            var router1 = topology.GetNode(1);
+            var router2 = topology.GetNode(2);
+
+            protocol.SetCustomCost(20); // delay = 20
+
+            var method = typeof(DynamicRoutingProtocol).GetMethod("CalculateEIGRPMetric",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(method);
+
+            int metric = (int)method.Invoke(protocol, new object[] { router1, router2 });
+            // BW=1000Mbps: bwComponent = (10000000 / 1000000) * 256 = 10 * 256 = 2560
+            // delayComponent = 20 * 256 = 5120
+            // metric = 2560 + 5120 = 7680
+            Assert.AreEqual(7680, metric, "Metric with delay=20 should be 7680");
+        }
+
+        [Test]
+        public void SetKValue_ValidIndices_UpdatesCorrectField()
+        {
+            protocol.SetKValue(1, 5);
+            protocol.SetKValue(2, 3);
+            protocol.SetKValue(3, 7);
+            protocol.SetKValue(4, 2);
+            protocol.SetKValue(5, 1);
+
+            Assert.AreEqual(5, GetField<int>("k1"));
+            Assert.AreEqual(3, GetField<int>("k2"));
+            Assert.AreEqual(7, GetField<int>("k3"));
+            Assert.AreEqual(2, GetField<int>("k4"));
+            Assert.AreEqual(1, GetField<int>("k5"));
+        }
+
+        [Test]
+        public void SetAllKValues_SetsAllFiveValues()
+        {
+            protocol.SetAllKValues(2, 1, 3, 1, 0);
+
+            Assert.AreEqual(2, GetField<int>("k1"));
+            Assert.AreEqual(1, GetField<int>("k2"));
+            Assert.AreEqual(3, GetField<int>("k3"));
+            Assert.AreEqual(1, GetField<int>("k4"));
+            Assert.AreEqual(0, GetField<int>("k5"));
+        }
+
+        [Test]
+        public void StartProtocol_EIGRPWithTwoRouters_SetsRunningState()
+        {
+            CreateTwoRoutersWithLink();
+            protocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
+            protocol.StartProtocol();
+
+            Assert.IsTrue(GetField<bool>("isRunning"));
+        }
+
+        [Test]
+        public void GetProtocolStatus_EIGRPNotRunning_ShowsStopped()
+        {
+            protocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
+            string status = protocol.GetProtocolStatus();
+            Assert.IsTrue(status.Contains("EIGRP"), $"Expected EIGRP in status, got: {status}");
+            Assert.IsTrue(status.Contains("Detenido") || status.Contains("detenido"),
+                $"Expected stopped status, got: {status}");
+        }
+
         [Test]
         public void GetRouterRoutesSummary_WithRoutes_ReturnsFormattedSummary()
         {

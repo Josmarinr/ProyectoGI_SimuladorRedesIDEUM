@@ -5,21 +5,40 @@ using SimRedes.UI;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Servicio de limpieza de escena. Destruye managers, paneles y resetea el canvas
+    /// al volver al menu principal o al limpiar la simulacion.
+    /// </summary>
     public class SceneCleanupService : MonoBehaviour
     {
+        /// <summary>
+        /// Instancia singleton del servicio de limpieza.
+        /// </summary>
         public static SceneCleanupService Instance { get; private set; }
 
+        /// <summary>
+        /// Inicializa el singleton. Si ya existe otra instancia, la destruye.
+        /// </summary>
         private void Awake()
         {
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
         }
 
+        /// <summary>
+        /// Limpia la referencia al singleton al destruirse.
+        /// </summary>
         private void OnDestroy()
         {
             if (Instance == this) Instance = null;
         }
 
+        /// <summary>
+        /// Limpia la simulacion actual: discos, topologia y elementos visuales.
+        /// </summary>
+        /// <param name="topology">Gestor de topologia a limpiar.</param>
+        /// <param name="visualizer">Visualizador de nodos y enlaces a destruir.</param>
+        /// <param name="discSim">Simulador de discos a forzar limpieza.</param>
         public void ClearSimulation(TopologyManager topology, NodeVisualizer visualizer, DebugDiscSimulator discSim)
         {
             if (discSim != null) discSim.ForceClearAll();
@@ -35,9 +54,15 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Limpia todos los managers, paneles y el canvas, y luego invoca el callback
+        /// para reconstruir el menu principal. Asegura el CanvasScaler con resolucion 4096x2160.
+        /// </summary>
+        /// <param name="canvasTransform">Transform del canvas (no se usa directamente, se busca por Find).</param>
+        /// <param name="createMainMenuCallback">Callback para recrear el menu principal.</param>
         public void GoBackToMainMenu(Transform canvasTransform, System.Action createMainMenuCallback)
         {
-            var managers = Object.FindObjectsByType<MonoBehaviour>();
+            var managers = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
             foreach (var m in managers)
             {
                 if (m is TopologyManager || m is TangibleDiscManager ||
@@ -75,6 +100,9 @@ namespace SimRedes.Simulation
             createMainMenuCallback?.Invoke();
         }
 
+        /// <summary>
+        /// Cierra la aplicacion. En el Editor de Unity detiene el modo Play.
+        /// </summary>
         public void ExitApplication()
         {
 #if UNITY_EDITOR

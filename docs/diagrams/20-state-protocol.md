@@ -1,13 +1,13 @@
 # DE-02: Diagrama de Estados — DynamicRoutingProtocol
 
-> **Propósito**: Mostrar los estados del motor de enrutamiento dinámico (RIP/OSPF) durante su ciclo de vida: desde la creación hasta la convergencia o detención.
+> **Propósito**: Mostrar los estados del motor de enrutamiento dinámico (RIP/OSPF/EIGRP) durante su ciclo de vida: desde la creación hasta la convergencia o detención.
 
 ```mermaid
 stateDiagram-v2
     [*] --> Idle: DynamicRoutingProtocol<br/>creado por ActivityLoader
 
     Idle --> Initializing: StartProtocol()
-    note right of Idle: Protocolo (RIP/OSPF) ya asignado
+    note right of Idle: Protocolo (RIP/OSPF/EIGRP) ya asignado
 
     Initializing --> Running: RouterAdvertState<br/>inicializado para cada router
     note right of Initializing: Cada router calcula su red conocida<br/>a partir de IP + máscara

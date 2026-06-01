@@ -157,7 +157,7 @@ Ejecuta `router.RoutingTable.AddStaticRoute(dest, mask, nextHop, iface)` y asign
 ```csharp
 public void Reset()
 ```
-Limpia campos de ruta pero preserva `Protocol` (para mantener RIP/OSPF entre ciclos).
+Limpia campos de ruta pero preserva `Protocol` (para mantener RIP/OSPF/EIGRP entre ciclos).
 
 ---
 

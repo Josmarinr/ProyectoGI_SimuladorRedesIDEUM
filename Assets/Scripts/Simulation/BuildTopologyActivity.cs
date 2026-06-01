@@ -6,6 +6,9 @@ using SimRedes.Network;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Enumera los tipos de topologia de red detectables: Estrella, Bus, Anillo, Arbol y Malla.
+    /// </summary>
     public enum TopologyType
     {
         Ninguna,
@@ -16,6 +19,10 @@ namespace SimRedes.Simulation
         Malla
     }
 
+    /// <summary>
+    /// Actividad que detecta y muestra la topologia de red actual basada en los nodos y enlaces presentes.
+    /// Se suscribe a eventos de TopologyManager para reaccionar a cambios en tiempo real.
+    /// </summary>
     public class BuildTopologyActivity : MonoBehaviour
     {
         [Header("UI References")]
@@ -32,6 +39,9 @@ namespace SimRedes.Simulation
         private TopologyManager topologyManager;
         private TopologyType currentTopology = TopologyType.Ninguna;
 
+        /// <summary>
+        /// Inicializa la actividad: localiza TopologyManager, se suscribe a eventos de topologia, encuentra los textos UI y realiza la deteccion inicial.
+        /// </summary>
         private void Start()
         {
             topologyManager = Object.FindAnyObjectByType<TopologyManager>();
@@ -48,6 +58,9 @@ namespace SimRedes.Simulation
             UpdateUI();
         }
 
+        /// <summary>
+        /// Busca y asigna las referencias a los textos UI dentro del panel TopologyInfoPanel por nombre de GameObject.
+        /// </summary>
         private void FindUITexts()
         {
             var panel = GameObject.Find("TopologyInfoPanel");
@@ -87,6 +100,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Se invoca cuando la topologia cambia. Redetecta el tipo de topologia y actualiza la UI.
+        /// </summary>
         private void OnTopologyChanged()
         {
             UnityEngine.Debug.Log("[BuildTopology] Topologia cambiada, detectando...");
@@ -97,6 +113,10 @@ namespace SimRedes.Simulation
             UpdateUI();
         }
 
+        /// <summary>
+        /// Detecta el tipo de topologia actual analizando el grado de conexion de cada nodo y la cantidad de enlaces.
+        /// Aplica reglas secuenciales: malla completa, estrella, anillo, bus lineal, arbol y malla parcial.
+        /// </summary>
         private void DetectTopologyType()
         {
             var nodes = topologyManager.GetAllNodes();
@@ -186,6 +206,9 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (por defecto)");
         }
 
+        /// <summary>
+        /// Actualiza todos los textos UI con la topologia detectada, conteo de enlaces y dispositivos por tipo.
+        /// </summary>
         private void UpdateUI()
         {
             if (topologyManager == null)
@@ -235,6 +258,9 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Retorna el texto de instrucciones para el usuario sobre como construir la topologia.
+        /// </summary>
         private string GetInstructions()
         {
             return "Instructions:\n" +
@@ -243,6 +269,11 @@ namespace SimRedes.Simulation
                    "3. Observa la topología detectada";
         }
 
+        /// <summary>
+        /// Convierte el valor del enum TopologyType a su nombre legible en espanol.
+        /// </summary>
+        /// <param name="type">Tipo de topologia a mostrar.</param>
+        /// <returns>Cadena legible con el nombre de la topologia.</returns>
         private string GetTopologyDisplayName(TopologyType type)
         {
             switch (type)
@@ -256,11 +287,19 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Retorna el tipo de topologia actualmente detectado.
+        /// </summary>
+        /// <returns>Tipo de topologia vigente.</returns>
         public TopologyType GetCurrentTopology()
         {
             return currentTopology;
         }
 
+        /// <summary>
+        /// Verifica si todos los enlaces de la topologia son funcionales y existe al menos un enlace.
+        /// </summary>
+        /// <returns>True si todos los enlaces son funcionales y hay al menos uno.</returns>
         public bool IsFullyConnected()
         {
             if (topologyManager == null) return false;
@@ -271,6 +310,9 @@ namespace SimRedes.Simulation
             return links.All(l => l.IsFunctional()) && links.Count > 0;
         }
 
+        /// <summary>
+        /// Limpia la suscripcion al evento OnTopologyChanged al destruirse el componente.
+        /// </summary>
         private void OnDestroy()
         {
             if (topologyManager != null)

@@ -9,7 +9,7 @@ permission:
   bash: allow
 ---
 
-Eres el tester de SimuladorRedes IDEUM. Recibes cambios y ejecutas las pruebas correspondientes para verificar regresion.
+Eres el tester de SimuladorRedes IDEUM. Ejecutas tests y reportas resultados. Se conciso: solo resultados y fallos.
 
 ---
 
@@ -34,25 +34,15 @@ Eres el tester de SimuladorRedes IDEUM. Recibes cambios y ejecutas las pruebas c
 | TestSceneCleanupService | 4 | Simulation/ |
 | TestPredefinedScenarios | 13 | Simulation/ |
 
----
+## Ejecucion
 
-## Como ejecutar tests
-
-1. Detectar Unity: `ls /Applications/Unity/Hub/Editor/6000.4.5f1/Unity.app/Contents/MacOS/Unity` (probando wildcard si no existe).
-2. Ver si Editor abierto: `ps aux | grep Unity | grep -v grep`.
-3. Si cerrado, ejecutar CLI:
 ```bash
-UNITY="/Applications/Unity/Hub/Editor/6000.4.5f1/Unity.app/Contents/MacOS/Unity"
+UNITY=$(ls /Applications/Unity/Hub/Editor/6000.4.5f1/Unity.app/Contents/MacOS/Unity 2>/dev/null || echo "")
 $UNITY -runTests -testPlatform EditMode -projectPath /Users/sebastianmarin/ProyectoSimRedes/SimuladorRedes -testResults /tmp/unity-results.xml -logFile /tmp/unity-log.txt -batchmode -quit
 # Suite especifica: anyadir -testFilter TestFoo
 ```
-4. Leer resultados: `cat /tmp/unity-results.xml`, `grep -i "test\|passed\|failed" /tmp/unity-log.txt`.
 
-Si Unity no disponible, verificar manualmente: usings correctos, sintaxis C#, referencias, sin Input.GetKeyDown residual, sin cambios en TangibleEngine/TouchScript.
-
-Problemas conocidos: Editor abierto bloquea proyecto (-batchmode falla), -quit mata tests en Unity 6000 (ejecutar sin -quit si no genera XML), version incorrecta (buscar wildcard).
-
----
+Problemas conocidos: Editor abierto bloquea, -quit mata tests en Unity 6000. Si falla, probar sin -quit.
 
 ## Formato de respuesta
 
@@ -62,7 +52,7 @@ Problemas conocidos: Editor abierto bloquea proyecto (-batchmode falla), -quit m
 Ejecutados: [suite(s)]
 Pasaron: N/N
 Fallaron: N
-[lista de fallos con mensaje de error]
+[lista de fallos con mensaje]
 
 Resumen: N/N tests pasaron -- [todo bien / N regresiones]
 ```

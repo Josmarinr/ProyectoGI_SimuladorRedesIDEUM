@@ -5,6 +5,11 @@ using SimRedes.UI;
 
 namespace SimRedes.Tangible
 {
+    /// <summary>
+    /// Simula la colocacion de discos fisicos mediante teclado para testing sin hardware IDEUM.
+    /// Asigna teclas (1-5, C, P) para crear routers, switches, PCs, enlaces, fallos,
+    /// limpiar la escena y probar conectividad.
+    /// </summary>
     public class DebugDiscSimulator : MonoBehaviour
     {
         [Header("Simulation Settings")]
@@ -34,6 +39,10 @@ namespace SimRedes.Tangible
         };
         private int positionIndex = 0;
 
+        /// <summary>
+        /// Escucha teclas de acceso rapido para simular discos, alternar modo conexion,
+        /// limpiar escena y ejecutar pruebas de conectividad (solo si enableSimulation=true).
+        /// </summary>
         private void Update()
         {
             if (!enableSimulation) return;
@@ -72,6 +81,11 @@ namespace SimRedes.Tangible
                 TestConnectivity();
         }
 
+        /// <summary>
+        /// Retorna la siguiente posicion predefinida del arreglo spawnPositions,
+        /// avanzando el indice ciclicamente.
+        /// </summary>
+        /// <returns>Vector2 con la siguiente posicion de aparicion.</returns>
         private Vector2 GetNextPosition()
         {
             Vector2 pos = spawnPositions[positionIndex % spawnPositions.Length];
@@ -79,6 +93,12 @@ namespace SimRedes.Tangible
             return pos;
         }
 
+        /// <summary>
+        /// Coloca un disco simulado en la posicion dada a traves de TangibleDiscManager
+        /// y actualiza el texto de estado en la UI.
+        /// </summary>
+        /// <param name="discId">Tipo de disco a simular (1-18).</param>
+        /// <param name="position">Posicion en coordenadas Canvas.</param>
         private void SimulateDiscAt(int discId, Vector2 position)
         {
             var manager = Object.FindAnyObjectByType<TangibleDiscManager>();
@@ -90,13 +110,18 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Busca un texto de UI llamado "StatusText" y lo actualiza con la etiqueta
+        /// del disco recien colocado y el resumen de topologia.
+        /// </summary>
+        /// <param name="discId">Tipo de disco colocado para obtener su configuracion.</param>
         private void UpdateStatusText(int discId)
         {
             var config = DiscConfiguration.GetConfiguration(discId);
             var topology = Object.FindAnyObjectByType<Network.TopologyManager>();
             if (topology != null)
             {
-                var statusTexts = FindObjectsByType<UnityEngine.UI.Text>();
+                var statusTexts = FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None);
                 foreach (var text in statusTexts)
                 {
                     if (text.name == "StatusText")
@@ -107,6 +132,10 @@ namespace SimRedes.Tangible
             }
         }
 
+        /// <summary>
+        /// Elimina todos los discos, nodos, enlaces y reinicia los indices de posicion.
+        /// Operacion completa de limpieza de escena para testing.
+        /// </summary>
         private void ClearAllDiscs()
         {
             var manager = Object.FindAnyObjectByType<TangibleDiscManager>();
@@ -147,11 +176,18 @@ namespace SimRedes.Tangible
             UnityEngine.Debug.Log("[DebugSim] Todo limpiado");
         }
 
+        /// <summary>
+        /// Metodo publico para forzar la limpieza completa de la escena desde otros scripts.
+        /// </summary>
         public void ForceClearAll()
         {
             ClearAllDiscs();
         }
 
+        /// <summary>
+        /// Prueba la conectividad entre los dos primeros nodos de la topologia
+        /// y registra el resultado en la consola.
+        /// </summary>
         private void TestConnectivity()
         {
             var topology = Object.FindAnyObjectByType<Network.TopologyManager>();

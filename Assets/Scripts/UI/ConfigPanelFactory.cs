@@ -8,8 +8,27 @@ using UIColors = SimRedes.UI.UIComponents.Colors;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Fabrica de paneles de configuracion de red: IP, ARP, rutas, VLAN, ACL y NAT.
+    /// Proporciona metodos estaticos para crear cada tipo de panel de configuracion.
+    /// </summary>
     public static class ConfigPanelFactory
     {
+        /// <summary>
+        /// Crea el panel de configuracion IP para un nodo. Incluye campos de IP y mascara,
+        /// teclado numerico virtual, validacion, y botones opcionales de ARP y tabla de rutas.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="nodeName">Nombre del nodo a configurar.</param>
+        /// <param name="nodeIP">IP actual del nodo.</param>
+        /// <param name="nodeMask">Mascara de red actual.</param>
+        /// <param name="onIPChanged">Callback cuando cambia la IP.</param>
+        /// <param name="onMaskChanged">Callback cuando cambia la mascara.</param>
+        /// <param name="onApply">Callback al presionar APLICAR.</param>
+        /// <param name="onARP">Callback para abrir tabla ARP (puede ser null).</param>
+        /// <param name="onRouting">Callback para abrir tabla de rutas (puede ser null).</param>
+        /// <param name="onCancel">Callback al presionar CANCELAR.</param>
+        /// <returns>Texto de estado de validacion.</returns>
         public static Text CreateIPConfigPanel(Transform canvas, string nodeName, string nodeIP, string nodeMask,
             Action<string> onIPChanged, Action<string> onMaskChanged,
             Action onApply, Action onARP, Action onRouting, Action onCancel)
@@ -31,7 +50,6 @@ namespace SimRedes.UI
             panelRect.anchoredPosition = new Vector2(20, 20);
 
             UIComp.CreateMenuTitle(panelObj.transform, "Configurar " + nodeName, 22, new Vector2(0, panelHeight / 2 - 35), bigFont);
-            string networkInfo = "";
             Text validationText = null;
 
             float labelX = -110;
@@ -140,7 +158,7 @@ namespace SimRedes.UI
             vsRect.anchoredPosition = new Vector2(0, fieldY + 20);
             vsRect.sizeDelta = new Vector2(400, 40);
             validationText = vsObj.AddComponent<Text>();
-            validationText.text = networkInfo;
+            validationText.text = "";
             validationText.color = UIColors.textSecondary;
             validationText.fontSize = 12;
             validationText.alignment = TextAnchor.MiddleCenter;
@@ -173,6 +191,14 @@ namespace SimRedes.UI
             return validationText;
         }
 
+        /// <summary>
+        /// Crea el panel de visualizacion de la tabla ARP de un nodo.
+        /// Muestra direcciones IP, MAC e interfaz de cada entrada.
+        /// Si la tabla esta vacia, agrega entradas de ejemplo.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="node">Nodo cuya tabla ARP se mostrara.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateARPPanel(Transform canvas, NetworkNode node)
         {
             Font font = UIPanelFactory.GetFont();
@@ -214,6 +240,16 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de la tabla de enrutamiento de un nodo.
+        /// Muestra las entradas con opciones para eliminar, anadir rutas y cerrar.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="node">Nodo cuya tabla de enrutamiento se mostrara.</param>
+        /// <param name="onDeleteRoute">Callback con el indice de la ruta a eliminar.</param>
+        /// <param name="onAddRoute">Callback con el indice donde anadir ruta (-1 = nueva).</param>
+        /// <param name="onClose">Callback al cerrar el panel.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateRoutingPanel(Transform canvas, NetworkNode node,
             Action<int> onDeleteRoute, Action<int> onAddRoute, Action onClose)
         {
@@ -275,6 +311,15 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel para agregar una nueva ruta estatica a un nodo.
+        /// Incluye campos para red destino, mascara, next hop, y botones de interfaz.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="node">Nodo al que se agregara la ruta.</param>
+        /// <param name="onAddRoute">Callback con (destino, mascara, nextHop, interfaz).</param>
+        /// <param name="onCancel">Callback al cancelar.</param>
+        /// <returns>Objeto del panel creado.</returns>
         public static GameObject CreateAddRoutePanel(Transform canvas, NetworkNode node,
             Action<string, string, string, string> onAddRoute, Action onCancel)
         {
@@ -338,6 +383,12 @@ namespace SimRedes.UI
             return panelObj;
         }
 
+        /// <summary>
+        /// Crea el panel de configuracion VLAN. Permite crear VLANs, asignar nodos
+        /// y visualizar la lista de VLANs configuradas.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="topology">Topologia activa con el gestor VLAN.</param>
         public static void CreateVLANPanel(Transform canvas, TopologyManager topology)
         {
             var existingPanel = GameObject.Find("VLANPanel");
@@ -435,6 +486,14 @@ namespace SimRedes.UI
             });
         }
 
+        /// <summary>
+        /// Crea el componente Text hijo de un InputField con la fuente, tamano y color especificados.
+        /// </summary>
+        /// <param name="field">InputField padre.</param>
+        /// <param name="font">Fuente a utilizar.</param>
+        /// <param name="fontSize">Tamano de la fuente.</param>
+        /// <param name="color">Color del texto.</param>
+        /// <returns>Componente Text creado.</returns>
         private static Text CreateInputFieldText(InputField field, Font font, int fontSize, Color color)
         {
             var textObj = new GameObject("Text");
@@ -453,6 +512,13 @@ namespace SimRedes.UI
             return textComp;
         }
 
+        /// <summary>
+        /// Actualiza la visualizacion de la lista de VLANs configuradas en el panel.
+        /// Destruye el contenido anterior y recrea el texto con las VLANs actuales.
+        /// </summary>
+        /// <param name="parent">Transform padre donde se muestra la lista.</param>
+        /// <param name="topology">Topologia activa con el gestor VLAN.</param>
+        /// <param name="font">Fuente a utilizar.</param>
         private static void UpdateVLANListDisplay(Transform parent, TopologyManager topology, Font font)
         {
             var existingList = parent.Find("VLANListContent");
@@ -491,6 +557,12 @@ namespace SimRedes.UI
             textComp.alignment = TextAnchor.UpperLeft;
         }
 
+        /// <summary>
+        /// Crea el panel de configuracion ACL. Permite crear listas de control de acceso,
+        /// agregar reglas PERMIT/DENY con IP origen y destino, y visualizar las reglas.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="topology">Topologia activa con el gestor ACL.</param>
         public static void CreateACLPanel(Transform canvas, TopologyManager topology)
         {
             var existingPanel = GameObject.Find("ACLPanel");
@@ -589,6 +661,13 @@ namespace SimRedes.UI
             });
         }
 
+        /// <summary>
+        /// Actualiza la visualizacion de la lista de ACLs y sus reglas en el panel.
+        /// Destruye el contenido anterior y recrea el texto con las ACLs actuales.
+        /// </summary>
+        /// <param name="parent">Transform padre donde se muestra la lista.</param>
+        /// <param name="topology">Topologia activa con el gestor ACL.</param>
+        /// <param name="font">Fuente a utilizar.</param>
         private static void UpdateACLListDisplay(Transform parent, TopologyManager topology, Font font)
         {
             var existing = parent.Find("ACLListContent");
@@ -622,6 +701,12 @@ namespace SimRedes.UI
             comp.alignment = TextAnchor.UpperLeft;
         }
 
+        /// <summary>
+        /// Crea el panel de configuracion NAT. Permite configurar NAT estatica, dinamica
+        /// y PAT, con campos para IP publica, IP interna, IP externa y puerto.
+        /// </summary>
+        /// <param name="canvas">Canvas raiz.</param>
+        /// <param name="topology">Topologia activa con el gestor NAT.</param>
         public static void CreateNATPanel(Transform canvas, TopologyManager topology)
         {
             var existingPanel = GameObject.Find("NATPanel");
@@ -758,6 +843,13 @@ namespace SimRedes.UI
             });
         }
 
+        /// <summary>
+        /// Actualiza la visualizacion de la tabla NAT en el panel.
+        /// Destruye el contenido anterior y recrea el texto con las entradas NAT actuales.
+        /// </summary>
+        /// <param name="parent">Transform padre donde se muestra la tabla.</param>
+        /// <param name="topology">Topologia activa con el gestor NAT.</param>
+        /// <param name="font">Fuente a utilizar.</param>
         private static void UpdateNATListDisplay(Transform parent, TopologyManager topology, Font font)
         {
             var existing = parent.Find("NATListContent");

@@ -68,7 +68,7 @@
 - **Discos**: RIP/OSPF/EIGRP, Vecino, Anunciar Red, Costo (OSPF), Bandwidth (EIGRP)
 - **Dinámica**: Seleccionar protocolo → agregar redes a anunciar → mesa simula intercambio de rutas → aparecen rutas aprendidas
 - **Competencias**: Protocolos dinámicos, anuncios, cálculo de métricas, convergencia
-- ✅ **Estado**: Implementado en `DynamicRoutingActivity` (actividad 5). Nota: EIGRP no implementado, solo RIP y OSPF.
+- ✅ **Estado**: Implementado en `DynamicRoutingActivity` (actividad 5). RIP, OSPF y EIGRP disponibles.
 
 ---
 
@@ -90,10 +90,10 @@
 | 2a. Tabla de Enrutamiento Tangible | ✅ Implementado | RoutingTablesActivity |
 | 2b. Simulación de Mejor Ruta | ✅ Implementado | BestRouteActivity |
 | 2c. Enrutamiento Estático Tangible | ✅ Implementado | StaticRoutingActivity |
-| 2d. Protocolo de Enrutamiento Dinámico Tangible | ✅ Implementado | RIP/OSPF, falta EIGRP |
+| 2d. Protocolo de Enrutamiento Dinámico Tangible | ✅ Implementado | RIP/OSPF/EIGRP |
 | 3. Trabajo de Grado | ✅ Anteproyecto listo | docs/anteproyecto-grado.md |
 | Pruebas en mesa IDEUM (A2) | 🟡 Pendiente | Build listo, falta probar físicamente |
-| Evaluación de usabilidad (SUS + pre/post-test) | 📄 Pendiente | Instrumentos por diseñar en F4 |
+| Evaluación de usabilidad (SUS + pre/post-test) | ✅ Instrumentos creados | docs/instrumentos-evaluacion-usabilidad.md |
 
 ---
 

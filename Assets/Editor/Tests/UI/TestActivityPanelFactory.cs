@@ -58,13 +58,15 @@ namespace Tests.EditMode.UI
         {
             GameObject panel = ActivityPanelFactory.CreateFindFaultPanel(
                 canvas.transform,
-                onSolve: null,
+                onDiscClick: null,
+                onNext: null,
+                onPrev: null,
                 onBack: null
             );
 
             Assert.IsNotNull(panel);
             Assert.AreEqual("FindFaultPanel", panel.name);
-            Assert.IsNotNull(panel.transform.Find("SolveBtn"));
+            Assert.IsNotNull(panel.transform.Find("TactileDiscBtn"));
             Assert.IsNotNull(panel.transform.Find("BackBtn"));
         }
 
