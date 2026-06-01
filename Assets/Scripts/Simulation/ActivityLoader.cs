@@ -403,7 +403,7 @@ namespace SimRedes.Simulation
                 linkCtrl.StoreLinkButtons(connectBtn, disconnectBtn);
             }
 
-            float devBtnY = -180f;
+            float devBtnY = -195f;
             float devSpacing = 75f;
 
             Button routerBtn = UIComp.CreateMenuButton(panelObj.transform, "RouterBtn", "ROUTER",
@@ -418,7 +418,7 @@ namespace SimRedes.Simulation
                 new Vector2(devSpacing, devBtnY), new Vector2(80, 35), font, 12);
             pcBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.PC));
 
-            float advBtnY = -210f;
+            float advBtnY = -230f;
             float advSpacing = 100f;
 
             Button vlanBtn = UIComp.CreateMenuButton(panelObj.transform, "VLANBtn", "VLAN",
