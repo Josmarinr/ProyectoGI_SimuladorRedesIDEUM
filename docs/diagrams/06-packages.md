@@ -10,14 +10,14 @@
 
 ```mermaid
 graph TB
-    subgraph SimRedes
+    subgraph S1["SimRedes"]
         SceneSetup
         GameManager
         PointerClickHandler
         TouchScriptDisabler
     end
 
-    subgraph SimRedes.Network
+    subgraph S2["SimRedes.Network"]
         TopologyManager
         NetworkNode
         NetworkLink
@@ -30,7 +30,7 @@ graph TB
         NATManager
     end
 
-    subgraph SimRedes.Tangible
+    subgraph S3["SimRedes.Tangible"]
         TangibleDiscManager
         TangibleBridge
         DiscEventHandler
@@ -38,7 +38,7 @@ graph TB
         DebugDiscSimulator
     end
 
-    subgraph SimRedes.Simulation
+    subgraph S4["SimRedes.Simulation"]
         ActivityLoader
         SceneCleanupService
         BuildTopologyActivity
@@ -55,7 +55,7 @@ graph TB
         PathCalculation
     end
 
-    subgraph SimRedes.UI
+    subgraph S5["SimRedes.UI"]
         UIPanelFactory
         UIComponents
         NodeVisualizer
@@ -72,42 +72,42 @@ graph TB
         IDEUMConfigurator
     end
 
-    subgraph SimRedes.Core
+    subgraph S6["SimRedes.Core"]
         AppLogger
     end
 
-    subgraph "External"
+    subgraph S7["External"]
         TE[TangibleEngine SDK]
         NUnit[NUnit 3.x]
     end
 
-    subgraph "Tests.EditMode"
+    subgraph S8["Tests.EditMode"]
         TestIPValidation
         TestRoutingTable
         TestRouteBuilderState
         TestRoutePersistence
     end
 
-    SimRedes --> SimRedes.Network
-    SimRedes --> SimRedes.UI
-    SimRedes --> SimRedes.Simulation
-    SimRedes --> SimRedes.Tangible
-    SimRedes --> SimRedes.Core
+    S1 --> S2
+    S1 --> S5
+    S1 --> S4
+    S1 --> S3
+    S1 --> S6
 
-    SimRedes.Tangible --> SimRedes.Network
-    SimRedes.Tangible --> TE
+    S3 --> S2
+    S3 --> TE
 
-    SimRedes.Simulation --> SimRedes.Network
-    SimRedes.Simulation --> SimRedes.UI
-    SimRedes.Simulation --> SimRedes.Tangible
+    S4 --> S2
+    S4 --> S5
+    S4 --> S3
 
-    SimRedes.UI --> SimRedes.Network
+    S5 --> S2
 
-    SimRedes.Core --> SimRedes
+    S6 --> S1
 
-    Tests.EditMode --> SimRedes.Network
-    Tests.EditMode --> SimRedes.Tangible
-    Tests.EditMode --> NUnit
+    S8 --> S2
+    S8 --> S3
+    S8 --> NUnit
 ```
 
 ## Resumen de Namespaces
