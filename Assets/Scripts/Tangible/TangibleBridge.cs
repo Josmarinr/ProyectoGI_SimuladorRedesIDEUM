@@ -17,6 +17,14 @@ namespace SimRedes.Tangible
         // y el uniqueId generado por TangibleDiscManager
         private Dictionary<int, int> tangibleIdToUniqueId = new Dictionary<int, int>();
 
+        // Antirrebote: no remover inmediatamente cuando TangibleEngine reporta la
+        // ausencia de un disco. En su lugar, marcarlo como "pendiente de remocion"
+        // y solo removerlo si permanece ausente por REMOVAL_DELAY segundos.
+        // Esto evita parpadeo cuando el touch frame deja de detectar el disco
+        // por frames sueltos (comun en mesas IDEUM).
+        private Dictionary<int, float> pendingRemovals = new Dictionary<int, float>();
+        private const float REMOVAL_DELAY = 1.0f;
+
         [Header("Canvas Reference Resolution (de SceneSetup)")]
         [SerializeField] private float canvasWidth = 4096f;
         [SerializeField] private float canvasHeight = 2160f;
@@ -71,6 +79,53 @@ namespace SimRedes.Tangible
         }
 
         /// <summary>
+        /// Procesa remociones pendientes: si un disco ha estado ausente por REMOVAL_DELAY
+        /// segundos, lo remueve definitivamente del sistema.
+        /// </summary>
+        private void Update()
+        {
+            float now = Time.unscaledTime;
+            var toRemove = new List<int>();
+            foreach (var kvp in pendingRemovals)
+            {
+                if (now - kvp.Value >= REMOVAL_DELAY)
+                    toRemove.Add(kvp.Key);
+            }
+            foreach (int tangibleId in toRemove)
+            {
+                ActuallyRemoveDisc(tangibleId);
+                pendingRemovals.Remove(tangibleId);
+            }
+        }
+
+        /// <summary>
+        /// Ejecuta la remocion real de un disco: lo elimina de TangibleDiscManager y
+        /// del mapeo tangibleId→uniqueId.
+        /// </summary>
+        private void ActuallyRemoveDisc(int tangibleId)
+        {
+            try
+            {
+                var manager = UnityEngine.Object.FindAnyObjectByType<TangibleDiscManager>();
+                if (manager == null) return;
+
+                if (!tangibleIdToUniqueId.TryGetValue(tangibleId, out int uniqueId))
+                {
+                    Log("WARN", $"Remove fallido: TE.Id={tangibleId} no estaba mapeado");
+                    return;
+                }
+
+                manager.SimulateDiscRemoved(uniqueId);
+                tangibleIdToUniqueId.Remove(tangibleId);
+                Log("INFO", $"Disco removido (tras antirrebote): TE.Id={tangibleId} -> uniqueId={uniqueId}");
+            }
+            catch (System.Exception ex)
+            {
+                Log("ERROR", $"ActuallyRemoveDisc fallo: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Procesa la deteccion de un nuevo disco fisico: mapea su PatternId a tipo,
         /// convierte coordenadas y lo registra en TangibleDiscManager.
         /// </summary>
@@ -79,6 +134,12 @@ namespace SimRedes.Tangible
         {
             try
             {
+                // Si estaba pendiente de remocion, cancelar (el disco sigue presente)
+                if (pendingRemovals.Remove(tangible.Id))
+                {
+                    Log("INFO", $"Antirrebote: cancelada remocion pendiente de TE.Id={tangible.Id}");
+                }
+
                 if (tangibleIdToUniqueId.ContainsKey(tangible.Id))
                 {
                     HandleTangibleUpdated(tangible);
@@ -109,26 +170,24 @@ namespace SimRedes.Tangible
         }
 
         /// <summary>
-        /// Procesa la remocion de un disco fisico: lo elimina de TangibleDiscManager
-        /// y del mapeo interno.
+        /// Procesa la ausencia reportada de un disco fisico: en lugar de removerlo
+        /// inmediatamente, lo marca como "pendiente de remocion". Solo se remueve
+        /// si permanece ausente por REMOVAL_DELAY segundos (ver Update()).
         /// </summary>
-        /// <param name="tangible">Dato del disco removido por TangibleEngine.</param>
+        /// <param name="tangible">Dato del disco reportado como ausente por TangibleEngine.</param>
         private void HandleTangibleRemoved(TE.Tangible tangible)
         {
             try
             {
-                var manager = UnityEngine.Object.FindAnyObjectByType<TangibleDiscManager>();
-                if (manager == null) return;
-
-                if (!tangibleIdToUniqueId.TryGetValue(tangible.Id, out int uniqueId))
+                if (!tangibleIdToUniqueId.ContainsKey(tangible.Id))
                 {
                     Log("WARN", $"Tangible removido pero no estaba mapeado: TE.Id={tangible.Id}");
                     return;
                 }
 
-                manager.SimulateDiscRemoved(uniqueId);
-                tangibleIdToUniqueId.Remove(tangible.Id);
-                Log("INFO", $"Disco removido: TE.Id={tangible.Id} -> uniqueId={uniqueId}");
+                // Marcar como pendiente de remocion (no remover aun)
+                pendingRemovals[tangible.Id] = Time.unscaledTime;
+                Log("INFO", $"Disco marcado para remocion pendiente: TE.Id={tangible.Id}");
             }
             catch (System.Exception ex)
             {
@@ -170,29 +229,21 @@ namespace SimRedes.Tangible
         }
 
         /// <summary>
-        /// Convierte coordenadas de pantalla (TangibleEngine) a coordenadas del Canvas,
-        /// usando la resolucion de referencia configurada (4096x2160).
+        /// Convierte coordenadas TUIO (TangibleEngine) a coordenadas del Canvas (4096x2160).
+        /// TangibleEngine siempre reporta en coordenadas del touch frame IDEUM (1920x1080),
+        /// independientemente de la resolucion de pantalla.
         /// </summary>
-        /// <param name="screenPosition">Posicion en pixeles del TangibleEngine.</param>
-        /// <returns>Posicion escalada al espacio del Canvas.</returns>
+        /// <param name="screenPosition">Posicion en pixeles TUIO (1920x1080).</param>
+        /// <returns>Posicion escalada al espacio del Canvas (4096x2160).</returns>
         private Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
         {
-            float displayWidth = Display.main.systemWidth;
-            float displayHeight = Display.main.systemHeight;
-
-            if (displayWidth <= 0 || displayHeight <= 0)
-            {
-                Log("WARN", $"Display.main invalido ({displayWidth}x{displayHeight}), usando Screen.currentResolution");
-                displayWidth = Screen.currentResolution.width;
-                displayHeight = Screen.currentResolution.height;
-            }
-
-            if (displayWidth <= 0) { displayWidth = 1920; Log("WARN", "displayWidth forzado a 1920"); }
-            if (displayHeight <= 0) { displayHeight = 1080; Log("WARN", "displayHeight forzado a 1080"); }
+            // TE/TUIO siempre reporta en 1920x1080 (resolucion del touch frame IDEUM)
+            const float TUIO_WIDTH = 1920f;
+            const float TUIO_HEIGHT = 1080f;
 
             return new Vector2(
-                screenPosition.x * (canvasWidth / displayWidth),
-                screenPosition.y * (canvasHeight / displayHeight)
+                screenPosition.x * (canvasWidth / TUIO_WIDTH),
+                screenPosition.y * (canvasHeight / TUIO_HEIGHT)
             );
         }
 

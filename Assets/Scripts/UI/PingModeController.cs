@@ -151,10 +151,7 @@ namespace SimRedes.UI
 
         private Font GetFont()
         {
-            Font font = Font.CreateDynamicFontFromOSFont("Arial", 14);
-            if (font == null)
-                font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            return font;
+            return UIComp.GetFont();
         }
 
         private void ShowPingSelectionPanel()

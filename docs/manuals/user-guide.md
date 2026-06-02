@@ -1,7 +1,7 @@
 # Manual de Usuario — SimuladorRedes IDEUM
 
 > Simulador de redes académicas para mesas táctiles **IDEUM 55"**  
-> Versión: Mayo 2026 · Plataforma: Windows 10
+> Versión: Junio 2026 · Plataforma: Windows 10 · Resolución: 4096x2160
 
 ---
 
@@ -12,6 +12,8 @@
 3. [Primeros Pasos](#3-primeros-pasos)
 4. [Menú Principal](#4-menú-principal)
 5. [Discos Físicos (PUCs)](#5-discos-físicos-pucs)
+   - [Agregar Dispositivos sin Discos Físicos (Botones Táctiles)](#agregar-dispositivos-sin-discos-físicos-botones-táctiles)
+   - [Panel de Dispositivos (Esquina Superior Izquierda)](#panel-de-dispositivos-esquina-superior-izquierda)
 6. [Actividades Académicas](#6-actividades-académicas)
 7. [Panel de Simulación](#7-panel-de-simulación)
 8. [Configuración de IP](#8-configuración-de-ip)
@@ -47,7 +49,7 @@ Los estudiantes pueden:
 | Componente | Especificación |
 |------------|----------------|
 | Mesa | IDEUM 55" con pantalla táctil |
-| PC embebido | Windows 10, 1920x1080 |
+| PC embebido | Windows 10, 4096x2160 |
 | Servicio | TangibleEngine Service corriendo (TCP puerto 4949) |
 | Discos | 3 PUCs físicos (Router, Switch, PC) + actividades para enlaces, fallos y routing |
 
@@ -56,7 +58,7 @@ Los estudiantes pueden:
 | Componente | Especificación |
 |------------|----------------|
 | SO | Windows 10 |
-| Resolución | 1920x1080 (Full HD) |
+| Resolución | 4096x2160 (4K) |
 | Teclado | Para simular discos (teclas 1-6) |
 | Mouse/Táctil | Para interactuar con la UI |
 
@@ -199,6 +201,26 @@ Cierra la aplicación.
 | 6 | - | **Protocolo** 🟪 Magenta | **Virtual**: seleccionado en Actividad 5 (Protocolo de Enrutamiento Dinámico Tangible) |
 
 > 💡 En modo Debug (PC sin mesa IDEUM), las teclas 1-6 simulan todos los discos. En producción, solo los 3 físicos existen en la mesa.
+
+### Agregar Dispositivos sin Discos Físicos (Botones Táctiles)
+
+En el panel superior derecho (HUD de simulación), hay botones para agregar dispositivos sin necesidad de discos físicos:
+
+| Botón | Qué hace |
+|-------|----------|
+| **ROUTER** | Agrega un router en una posición predefinida |
+| **SWITCH** | Agrega un switch en una posición predefinida |
+| **PC** | Agrega un PC en una posición predefinida |
+
+> 💡 Útil cuando no tienes todos los discos físicos disponibles o para pruebas rápidas.
+
+### Panel de Dispositivos (Esquina Superior Izquierda)
+
+Muestra todos los dispositivos activos en la simulación:
+- **Icono de color** según el tipo (Router, Switch, PC)
+- **Nombre** del dispositivo
+- **Click** en un dispositivo: abre configuración IP o inicia conexión
+- **Click repetido**: elimina el dispositivo
 
 ### Auto-Conexión
 
@@ -402,11 +424,15 @@ Cuando estás en una simulación, verás varios paneles:
 
 ### DevicesPanel (Esquina superior izquierda)
 
-Lista todos los dispositivos con su tipo y color:
+Lista todos los dispositivos activos con su tipo, icono de color y nombre:
 
-- Click en un dispositivo → se selecciona (se marca en rojo)
-- Click de nuevo → se elimina
-- Muestra el puntaje actual en la parte inferior
+- **Click** en un dispositivo → abre configuración IP
+- **Click repetido** en el mismo dispositivo → lo elimina (se marca en rojo)
+- **Click fuera del panel** → deselecciona
+- Cuando el modo **CONECTAR/DESCONECTAR** está activo:
+  - El primer dispositivo seleccionado se marca en **verde** en el panel
+  - En la escena, se resalta con un **borde amarillo**
+  - Click en un segundo dispositivo completa la acción
 
 ### ScorePanel (Esquina inferior derecha)
 
@@ -577,12 +603,17 @@ El puntaje aparece en:
 | **Pantalla negra al abrir** | Escena incorrecta en build | Asegurar que `Main.unity` es la escena principal |
 | **No puedo colocar discos** | Modo debug desactivado | En PC: activar `enableSimulation = true` en DebugDiscSimulator |
 | **Los nodos no se conectan** | Distancia > 300px | Usar modo CONEXIÓN manual con botón CONECTAR |
+| **No se ven las líneas de conexión** | Problema de renderizado conocido (P2) | En desarrollo — usar modo CONEXIÓN, la línea aparece pero puede no ser visible |
+| **La app se cierra tras uso prolongado** | Fuga de memoria (P1) | En desarrollo — reiniciar la app si ocurre |
+| **Textos sin letras/palabras incompletas** | Múltiples instancias de fuente | Ya corregido: las fuentes ahora se comparten (font cache) |
 | **Ping siempre falla** | Sin ruta de retorno | Configurar rutas estáticas en ambos sentidos |
 | **No veo el panel de IP** | Click en enlace (no en nodo) | Hacer click en Router, Switch o PC |
 | **No aparecen TABLA ARP/RUTAS** | El nodo no es un router | Solo los routers tienen tablas |
 | **Actividad no responde** | Panel bloqueado | Presionar ESC para volver y reintentar |
 | **Error de compilación** | Library corrupta | Cerrar Unity, eliminar carpeta Library, reabrir |
-| **UI borrosa** | Canvas Scaler incorrecto | Usar modo Expand, resolución 1920x1080 |
+| **UI borrosa** | Canvas Scaler incorrecto | Usar modo Expand, resolución referencia 4096x2160 |
+| **Botones no responden al tacto** | Sin EventSystem en escena | Ya corregido en versión actual |
+| **Discos parpadean al colocarlos** | Touch frame envía datos intermitentes | Ya corregido: antirrebote de 1s en TangibleBridge |
 
 ### Contacto y Soporte
 
@@ -590,5 +621,5 @@ Para reportar bugs o solicitar ayuda técnica, contacta al equipo de desarrollo.
 
 ---
 
-> **Documentación generada:** Mayo 2026  
+> **Documentación generada:** Junio 2026  
 > **Proyecto:** SimuladorRedes IDEUM · Unity 6000.4.5f1

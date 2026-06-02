@@ -1,6 +1,11 @@
 # DC-02: Diagrama de Clases — Network Layer
 
-> **Propósito**: Mostrar la estructura del núcleo de networking: nodos, enlaces, tablas de enrutamiento, y managers de red.
+> **Propósito**: Mostrar la estructura del núcleo de networking del simulador.
+> Dividido en 3 sub-diagramas: Núcleo de Red, Tablas de Enrutamiento/ARP, y Gestión Avanzada.
+
+---
+
+## DC-02a: Núcleo de Red (TopologyManager, Nodos, Enlaces)
 
 ```mermaid
 classDiagram
@@ -8,9 +13,6 @@ classDiagram
         +static TopologyManager Instance
         -List~NetworkNode~ nodes
         -List~NetworkLink~ links
-        +VLANManager VLAN
-        +ACLManager ACL
-        +NATManager NAT
         +event OnNodeAdded(NetworkNode)
         +event OnNodeRemoved(NetworkNode)
         +event OnLinkAdded(NetworkLink)
@@ -20,179 +22,162 @@ classDiagram
         +RemoveNode(node) void
         +AddLink(node1, node2) NetworkLink
         +RemoveLink(link) void
-        +FindNodesNear(pos, radius) List~NetworkNode~
         +FindPath(src, dst) List~NetworkNode~
         +CheckConnectivity(src, dst) bool
         +GetAllNodes() List~NetworkNode~
-        +GetAllLinks() List~NetworkLink~
         +ClearTopology() void
     }
 
     class NetworkNode {
-        +int Id
+        +int DiscId
         +string Name
         +DeviceType Type
-        +string IpAddress
-        +string SubnetMask
         +Vector2 Position
-        +int DiscId
-        +bool IsActive
-        +bool IsAdminDown
-        +string ConfiguredFault
-        +int VlanId
         +RoutingTable RoutingTable
-        +ARPTable ArpTable
-        +SetInterfaceIP(ip, mask) void
-        +GetDefaultGateway() string
-        +GetNetworkAddress() string
-        +HasFault() bool
-        +IsValidConfiguration() bool
+        +ARPTable ARPTable
+        +ConfigureIP(ip, mask) void
     }
 
     class NetworkLink {
-        +int Id
         +NetworkNode SourceNode
         +NetworkNode DestinationNode
         +string SourceInterface
-        +string DestinationInterface
-        +LinkType Type
-        +int Bandwidth
-        +int Delay
-        +int Cost
-        +bool IsActive
-        +bool IsConnected
-        +SetFault(type) void
-        +ClearFault() void
+        +string DestInterface
         +IsFunctional() bool
     }
 
+    TopologyManager --> NetworkNode : contiene
+    TopologyManager --> NetworkLink : contiene
+    NetworkLink --> NetworkNode : origen
+    NetworkLink --> NetworkNode : destino
+```
+
+---
+
+## DC-02b: Tablas de Enrutamiento, ARP y Validación IP
+
+```mermaid
+classDiagram
     class RoutingTable {
         -List~RoutingEntry~ entries
-        +AddStaticRoute(dest, mask, nextHop, iface) void
-        +AddRipRoute(dest, nextHop, iface, hops) void
-        +AddOspfRoute(dest, nextHop, iface, cost) void
-        +FindBestRoute(destIP) RoutingEntry
+        +string RouterIP
+        +string SubnetMask
+        +AddEntry(destNet, mask, nextHop, interface, protocol) void
+        +RemoveEntry(index) void
         +GetAllEntries() List~RoutingEntry~
+        +FindLongestPrefixMatch(ip) RoutingEntry
         +Clear() void
-        +GetTableSummary() string
     }
 
     class RoutingEntry {
-        +string DestinationNetwork
+        +string DestNetwork
         +string SubnetMask
         +string NextHop
         +string OutInterface
-        +int Metric
         +string Protocol
-        +GetPrefixLength() int
     }
 
     class ARPTable {
-        -List~ARPEntry~ entries
-        +AddEntry(ip, mac, iface) void
-        +FindEntry(ip) ARPEntry
-        +GetAllEntries() List~ARPEntry~
+        -Dictionary~string,string~ entries
+        +AddEntry(ip, mac) void
+        +RemoveEntry(ip) void
+        +Resolve(ip) string
+        +GetAllEntries() Dictionary
         +Clear() void
     }
 
     class ARPEntry {
         +string IPAddress
         +string MACAddress
-        +string Interface
-        +float Age
     }
 
     class IPValidation {
-        +static IsValidIP(ip) bool
-        +static IsValidSubnetMask(mask) bool
-        +static GetPrefixLength(mask) int
-        +static ValidateIPField(ip) string
-        +static IsInSameNetwork(ip1, mask1, ip2) bool
-        +static GetNetworkAddress(ip, mask) string
-        +static GetBroadcastAddress(ip, mask) string
-        +static GetGatewayFromIP(ip) string
+        +IsValidIP(ip) bool
+        +IsValidMask(mask) bool
+        +GetNetworkAddress(ip, mask) string
+        +GetBroadcastAddress(ip, mask) string
+        +IsSameSubnet(ip1, mask1, ip2, mask2) bool
     }
 
+    RoutingTable --> RoutingEntry : contiene
+    ARPTable --> ARPEntry : contiene
+```
+
+---
+
+## DC-02c: Gestión Avanzada (VLAN, ACL, NAT)
+
+```mermaid
+classDiagram
     class DiscConfiguration {
         +int DiscId
-        +DiscType Type
-        +string Label
-        +Color DisplayColor
-        +string Description
-        +static GetConfiguration(discId) DiscConfiguration
+        +string Type
+        +Dictionary~string,string~ Config
+        +SetConfig(key, value) void
+        +GetConfig(key) string
     }
 
     class VLANManager {
-        +CreateVLAN(id) void
-        +DeleteVLAN(id) void
-        +AssignToVLAN(node, vlanId) void
-        +GetNodeVLAN(node) int
-        +CanCommunicate(src, dst) bool
-        +GetAllVLANs() List~int~
+        +int VlanId
+        +string VlanName
+        +List~int~ MemberPorts
+        +CreateVLAN(id, name) void
+        +AssignPort(vlanId, port) void
+        +RemoveVLAN(id) void
+        +GetVLANMembers(id) List~int~
     }
 
     class ACLManager {
-        +CreateACL(name) void
-        +AddRule(acl, rule) void
-        +RemoveRule(acl, seq) void
-        +CheckPacket(acl, src, dst) bool
-        +GetRules(acl) List~ACLRule~
+        -List~ACLRule~ rules
+        +AddRule(aclRule) void
+        +RemoveRule(index) void
+        +CheckTraffic(ip, port) bool
+        +GetAllRules() List~ACLRule~
+        +Clear() void
     }
 
     class ACLRule {
-        +int Sequence
-        +ACLAction Action
-        +ACLProtocol Protocol
+        +int RuleId
+        +string Action
         +string SourceIP
         +string DestIP
-        +int SourcePort
-        +int DestPort
-        +bool IsEnabled
+        +int Port
+        +string Protocol
     }
 
     class NATManager {
-        +bool IsEnabled
-        +SetPublicIP(ip) void
-        +AddStaticNAT(inIP, outIP) void
-        +AddDynamicNAT(inIP, pool) void
-        +AddPAT(inIP, port) void
-        +TranslatePacket(inIP) string
-        +GetNATTable() List~NATEntry~
+        -List~NATEntry~ translations
+        +string InsideLocal
+        +string InsideGlobal
+        +string OutsideLocal
+        +string OutsideGlobal
+        +AddTranslation(entry) void
+        +RemoveTranslation(index) void
+        +Translate(ip, type) string
     }
 
     class NATEntry {
-        +string InternalIP
-        +string ExternalIP
-        +int InternalPort
-        +int ExternalPort
-        +NATType Type
+        +string InsideLocal
+        +string InsideGlobal
+        +string Type
     }
 
-    TopologyManager "1" *-- "many" NetworkNode : contiene
-    TopologyManager "1" *-- "many" NetworkLink : contiene
-    TopologyManager "1" *-- "1" VLANManager
-    TopologyManager "1" *-- "1" ACLManager
-    TopologyManager "1" *-- "1" NATManager
-    NetworkNode "1" *-- "1" RoutingTable
-    NetworkNode "1" *-- "1" ARPTable
-    RoutingTable "1" *-- "many" RoutingEntry
-    ARPTable "1" *-- "many" ARPEntry
-    NetworkLink "2" --> "1" NetworkNode : conecta
-    ACLManager "1" *-- "many" ACLRule
-    NATManager "1" *-- "many" NATEntry
+    DiscConfiguration --> VLANManager
+    ACLManager --> ACLRule : contiene
+    NATManager --> NATEntry : contiene
 ```
+
+---
 
 ## Archivos Relacionados
 
-| Archivo | Namespace |
-|---------|-----------|
-| `Assets/Scripts/Network/TopologyManager.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/NetworkNode.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/NetworkLink.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/RoutingTable.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/ARPTable.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/IPValidation.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/DiscConfiguration.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/VLANManager.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/ACLManager.cs` | `SimRedes.Network` |
-| `Assets/Scripts/Network/NATManager.cs` | `SimRedes.Network` |
+- `Assets/Scripts/Network/TopologyManager.cs` — Gestor de topología
+- `Assets/Scripts/Network/NetworkNode.cs` — Nodo de red
+- `Assets/Scripts/Network/NetworkLink.cs` — Enlace entre nodos
+- `Assets/Scripts/Network/RoutingTable.cs` — Tabla de enrutamiento
+- `Assets/Scripts/Network/ARPTable.cs` — Tabla ARP
+- `Assets/Scripts/Network/IPValidation.cs` — Validación de direcciones IP
+- `Assets/Scripts/Network/DiscConfiguration.cs` — Configuración de discos virtuales
+- `Assets/Scripts/Network/VLANManager.cs` — Gestión de VLANs
+- `Assets/Scripts/Network/ACLManager.cs` — Gestión de ACLs
+- `Assets/Scripts/Network/NATManager.cs` — Gestión de NAT

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -52,6 +53,7 @@ namespace SimRedes
             SetupResolution();
             SetupCamera();
             canvas = SetupCanvas();
+            SetupEventSystem();
             canvasTransform = canvas.transform;
             font = UIComp.GetFont();
             bigFont = UIComp.GetFont(16);
@@ -117,7 +119,7 @@ namespace SimRedes
 
         private void SetupResolution()
         {
-            Screen.SetResolution(1920, 1080, false);
+            Screen.SetResolution(4096, 2160, FullScreenMode.FullScreenWindow);
         }
 
         /// <summary>
@@ -169,6 +171,20 @@ namespace SimRedes
             scalerComp.matchWidthOrHeight = 0.5f;
 
             return canvasComp;
+        }
+
+        /// <summary>
+        /// Crea el EventSystem con InputSystemUIInputModule para que los clicks
+        /// y el tactil funcionen con el nuevo Input System (activeInputHandler=2).
+        /// Sin esto, los botones UI nunca reciben eventos de puntero.
+        /// </summary>
+        private void SetupEventSystem()
+        {
+            if (UnityEngine.Object.FindAnyObjectByType<EventSystem>() != null) return;
+            var go = new GameObject("EventSystem");
+            go.AddComponent<EventSystem>();
+            go.AddComponent<InputSystemUIInputModule>();
+            Debug.Log("[SceneSetup] EventSystem + InputSystemUIInputModule creados");
         }
 
         /// <summary>
@@ -244,6 +260,7 @@ namespace SimRedes
             {
                 var visObj = new GameObject("NodeVisualizer");
                 visObj.transform.SetParent(ct, false);
+                visObj.transform.SetAsLastSibling(); // Renderizar encima de otros paneles
                 var vis = visObj.AddComponent<NodeVisualizer>();
                 vis.nodeContainer = new GameObject("NodeContainer").transform;
                 vis.nodeContainer.SetParent(visObj.transform, false);
@@ -266,6 +283,7 @@ namespace SimRedes
             SetupResolution();
             SetupCamera();
             canvas = SetupCanvas();
+            SetupEventSystem();
             canvasTransform = canvas.transform;
             font = UIComp.GetFont();
             bigFont = UIComp.GetFont(16);

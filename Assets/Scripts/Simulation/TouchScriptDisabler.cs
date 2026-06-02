@@ -5,8 +5,10 @@ namespace SimRedes
 {
     public class TouchScriptDisabler : MonoBehaviour
     {
+#if UNITY_EDITOR
         [Header("Deshabilitar cursores en Editor")]
         [SerializeField] private bool disableCursorsInEditor = true;
+#endif
 
         private void Awake()
         {

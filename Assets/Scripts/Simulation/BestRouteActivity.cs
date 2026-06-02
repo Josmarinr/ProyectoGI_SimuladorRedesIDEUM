@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SimRedes.UI;
 
 namespace SimRedes.Simulation
 {
@@ -158,9 +159,7 @@ namespace SimRedes.Simulation
 
             ClearOptionButtons();
 
-            Font arialFont = Font.CreateDynamicFontFromOSFont("Arial", 13);
-            if (arialFont == null)
-                arialFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            Font arialFont = UIComponents.GetFont();
 
             GameObject panelObj = FindBestRoutePanel();
             if (panelObj == null) return;

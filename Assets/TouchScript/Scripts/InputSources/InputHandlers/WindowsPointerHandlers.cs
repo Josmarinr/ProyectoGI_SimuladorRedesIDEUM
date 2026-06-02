@@ -447,16 +447,11 @@ namespace TouchScript.InputSources.InputHandlers
             var screenWidth = Screen.width;
             var screenHeight = Screen.height;
 
-            if (!Screen.fullScreen)
-            {
-                SetScreenParams(screenWidth, screenHeight, 0, 0, 1, 1);
-                return;
-            }
-
-            int width, height;
-            WindowsUtils.GetNativeMonitorResolution(out width, out height);
-            float scale = Mathf.Max(screenWidth / ((float) width), screenHeight / ((float) height));
-            SetScreenParams(screenWidth, screenHeight, (width - screenWidth / scale) * .5f, (height - screenHeight / scale) * .5f, scale, scale);
+            // Fix IDEUM: Always use simple 1:1 scaling regardless of fullscreen mode.
+            // The native display resolution (4096x2160) matches the render resolution,
+            // so the complex FullScreen scaling path is unnecessary and breaks touch
+            // input on the IDEUM touch frame (TouchScript issue with WS_POPUP windows).
+            SetScreenParams(screenWidth, screenHeight, 0, 0, 1, 1);
         }
 
         #endregion

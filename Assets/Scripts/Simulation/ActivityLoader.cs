@@ -306,7 +306,7 @@ namespace SimRedes.Simulation
 
             font = UIComp.GetFont();
 
-            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(420, 560), 20,
+            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(520, 680), 20,
                 UIColors.surfaceElevated, UIColors.borderAccent);
             panelObj.name = "TopologyInfoPanel";
 
@@ -316,53 +316,53 @@ namespace SimRedes.Simulation
             panelRect.pivot = new Vector2(1f, 1f);
             panelRect.anchoredPosition = new Vector2(-20, -20);
 
-            UIComp.CreateMenuTitle(panelObj.transform, "Topologia", 26, new Vector2(0, 210), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Topologia", 32, new Vector2(0, 260), font);
 
-            Button infoBtn = UIComp.CreateSmallInfoButton(panelObj.transform, new Vector2(165, 210), font);
+            Button infoBtn = UIComp.CreateSmallInfoButton(panelObj.transform, new Vector2(200, 260), font);
             infoBtn.onClick.AddListener(() => UIPanelFactory.ToggleTopologyExamplePanel(ct, font));
 
-            float infoY = 155f;
-            float lineHeight = 32f;
+            float infoY = 190f;
+            float lineHeight = 38f;
 
             var topologyTypeText = UIComp.CreateInfoText(panelObj.transform, "Topologia: Sin topologia",
-                new Vector2(0, infoY), font, 19, UIColors.textAccent, true);
+                new Vector2(0, infoY), font, 23, UIColors.textAccent, true);
             topologyTypeText.gameObject.name = "TopologyTypeText";
 
             infoY -= lineHeight;
             var linkText = UIComp.CreateInfoText(panelObj.transform, "Enlaces: 0",
-                new Vector2(0, infoY), font, 18, UIColors.textPrimary, true);
+                new Vector2(0, infoY), font, 22, UIColors.textPrimary, true);
             linkText.gameObject.name = "LinkCountText";
 
             infoY -= lineHeight + 12;
             var devicesTitle = UIComp.CreateInfoText(panelObj.transform, "Dispositivos:",
-                new Vector2(0, infoY), font, 17, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
             UIComp.ApplyTitleStyle(devicesTitle);
 
-            infoY -= 28;
+            infoY -= 34;
             var routerText = UIComp.CreateInfoText(panelObj.transform, "  Routers: 0",
-                new Vector2(0, infoY), font, 17, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
             routerText.gameObject.name = "RouterCountText";
 
-            infoY -= 26;
+            infoY -= 32;
             var switchText = UIComp.CreateInfoText(panelObj.transform, "  Switches: 0",
-                new Vector2(0, infoY), font, 17, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
             switchText.gameObject.name = "SwitchCountText";
 
-            infoY -= 26;
+            infoY -= 32;
             var pcText = UIComp.CreateInfoText(panelObj.transform, "  PCs: 0",
-                new Vector2(0, infoY), font, 17, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
             pcText.gameObject.name = "PCCountText";
 
             infoY -= lineHeight + 10;
             var pingResultText = UIComp.CreateInfoText(panelObj.transform, "Ping: Seleccionar origen",
-                new Vector2(0, infoY), font, 18, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 22, UIColors.textSecondary, false);
             pingResultText.gameObject.name = "PingResultText";
 
-            float btnY = -95f;
-            float btnSpacing = 115f;
+            float btnY = -115f;
+            float btnSpacing = 135f;
 
             Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR",
-                new Vector2(-btnSpacing, btnY), new Vector2(105, 44), font, 16);
+                new Vector2(-btnSpacing, btnY), new Vector2(130, 52), font, 19);
             clearBtn.onClick.AddListener(() => {
                 var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
                 if (cleanup != null)
@@ -372,7 +372,7 @@ namespace SimRedes.Simulation
             });
 
             Button pingBtn = UIComp.CreateMenuButton(panelObj.transform, "PingBtn", "PING",
-                new Vector2(0, btnY), new Vector2(105, 44), font, 16);
+                new Vector2(0, btnY), new Vector2(130, 52), font, 19);
             var pingCtrl = UnityEngine.Object.FindAnyObjectByType<PingModeController>();
             if (pingCtrl != null)
             {
@@ -381,14 +381,14 @@ namespace SimRedes.Simulation
             }
 
             Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER",
-                new Vector2(btnSpacing, btnY), new Vector2(105, 44), font, 16);
+                new Vector2(btnSpacing, btnY), new Vector2(130, 52), font, 19);
             backBtn.onClick.AddListener(() => GoBackToMainMenu());
 
-            float linkBtnY = -150f;
-            float linkBtnSpacing = 120f;
+            float linkBtnY = -180f;
+            float linkBtnSpacing = 145f;
 
             Button connectBtn = UIComp.CreateMenuButton(panelObj.transform, "ConnectBtn", "CONECTAR",
-                new Vector2(-linkBtnSpacing, linkBtnY), new Vector2(105, 44), font, 15);
+                new Vector2(-linkBtnSpacing, linkBtnY), new Vector2(130, 52), font, 18);
             var linkCtrl = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
             if (linkCtrl != null)
             {
@@ -396,41 +396,41 @@ namespace SimRedes.Simulation
             }
 
             Button disconnectBtn = UIComp.CreateMenuButton(panelObj.transform, "DisconnectBtn", "DESCONECTAR",
-                new Vector2(linkBtnSpacing, linkBtnY), new Vector2(105, 44), font, 13);
+                new Vector2(linkBtnSpacing, linkBtnY), new Vector2(130, 52), font, 16);
             if (linkCtrl != null)
             {
                 disconnectBtn.onClick.AddListener(() => linkCtrl.ToggleLinkMode("disconnect"));
                 linkCtrl.StoreLinkButtons(connectBtn, disconnectBtn);
             }
 
-            float devBtnY = -200f;
-            float devSpacing = 75f;
+            float devBtnY = -245f;
+            float devSpacing = 90f;
 
             Button routerBtn = UIComp.CreateMenuButton(panelObj.transform, "RouterBtn", "ROUTER",
-                new Vector2(-devSpacing, devBtnY), new Vector2(80, 35), font, 12);
+                new Vector2(-devSpacing, devBtnY), new Vector2(100, 42), font, 15);
             routerBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Router));
 
             Button switchBtn = UIComp.CreateMenuButton(panelObj.transform, "SwitchBtn", "SWITCH",
-                new Vector2(0, devBtnY), new Vector2(80, 35), font, 12);
+                new Vector2(0, devBtnY), new Vector2(100, 42), font, 15);
             switchBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Switch));
 
             Button pcBtn = UIComp.CreateMenuButton(panelObj.transform, "PCBtn", "PC",
-                new Vector2(devSpacing, devBtnY), new Vector2(80, 35), font, 12);
+                new Vector2(devSpacing, devBtnY), new Vector2(100, 42), font, 15);
             pcBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.PC));
 
-            float advBtnY = -250f;
-            float advSpacing = 100f;
+            float advBtnY = -305f;
+            float advSpacing = 120f;
 
             Button vlanBtn = UIComp.CreateMenuButton(panelObj.transform, "VLANBtn", "VLAN",
-                new Vector2(-advSpacing, advBtnY), new Vector2(90, 35), font, 14);
+                new Vector2(-advSpacing, advBtnY), new Vector2(110, 42), font, 17);
             vlanBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("VLAN"));
 
             Button aclBtn = UIComp.CreateMenuButton(panelObj.transform, "ACLBtn", "ACL",
-                new Vector2(0, advBtnY), new Vector2(90, 35), font, 14);
+                new Vector2(0, advBtnY), new Vector2(110, 42), font, 17);
             aclBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("ACL"));
 
             Button natBtn = UIComp.CreateMenuButton(panelObj.transform, "NATBtn", "NAT",
-                new Vector2(advSpacing, advBtnY), new Vector2(90, 35), font, 14);
+                new Vector2(advSpacing, advBtnY), new Vector2(110, 42), font, 17);
             natBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("NAT"));
 
             // Create DevicesPanel and ScorePanel via controllers
@@ -705,6 +705,17 @@ namespace SimRedes.Simulation
                 var gm = GameObject.Find("GameManager");
                 if (gm == null) gm = new GameObject("GameManager");
                 topology = gm.AddComponent<TopologyManager>();
+                // Asegurar que DevicePanelController exista (se destruye con GameManager al limpiar)
+                if (gm.GetComponent<DevicePanelController>() == null)
+                    gm.AddComponent<DevicePanelController>();
+            }
+            else
+            {
+                // Si TopologyManager ya existe pero DevicePanelController no (ej: tras limpiar),
+                // crearlo en el GameManager
+                var gm = GameObject.Find("GameManager");
+                if (gm != null && gm.GetComponent<DevicePanelController>() == null)
+                    gm.AddComponent<DevicePanelController>();
             }
             Vector2 pos = spawnPositions[spawnIndex % spawnPositions.Length];
             spawnIndex++;

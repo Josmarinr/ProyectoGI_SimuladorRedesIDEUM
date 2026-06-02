@@ -59,6 +59,11 @@ namespace SimRedes.UI
         private void CreateNodeVisual(NetworkNode node)
         {
             if (nodeObjects.ContainsKey(node.DiscId)) return;
+            if (nodeContainer == null)
+            {
+                Debug.LogError("[NodeVisualizer] nodeContainer es null, no se puede crear nodo visual");
+                return;
+            }
 
             Color nodeColor = UIComponents.Colors.GetColorForDeviceType(node.Type);
             string labelText = GetLabelForDeviceType(node.Type);
@@ -100,7 +105,7 @@ namespace SimRedes.UI
             text.fontSize = 14;
             text.fontStyle = FontStyle.Bold;
             text.alignment = TextAnchor.MiddleCenter;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = UIComponents.GetFont();
 
             nodeObjects[node.DiscId] = nodeObj;
 
@@ -122,25 +127,45 @@ namespace SimRedes.UI
             }
         }
 
-        private void DrawLinks()
+        public void DrawLinks()
         {
+            if (linkContainer == null)
+            {
+                Debug.LogWarning("[NodeVisualizer] linkContainer es null, no se pueden dibujar enlaces");
+                return;
+            }
             foreach (Transform child in linkContainer)
             {
                 if (child != null) Destroy(child.gameObject);
             }
 
-            if (topology == null) return;
-
-            foreach (var link in topology.GetAllLinks())
+            if (topology == null)
             {
-                if (link.SourceNode == null || link.DestinationNode == null) continue;
+                Debug.LogWarning("[NodeVisualizer] topology es null en DrawLinks");
+                return;
+            }
+
+            var allLinks = topology.GetAllLinks();
+            Debug.Log($"[NodeVisualizer] DrawLinks: {allLinks.Count} enlaces, {nodeObjects.Count} nodos en diccionario");
+
+            foreach (var link in allLinks)
+            {
+                if (link.SourceNode == null || link.DestinationNode == null)
+                {
+                    Debug.LogWarning("[NodeVisualizer] Enlace con nodo nulo detectado");
+                    continue;
+                }
 
                 if (!nodeObjects.TryGetValue(link.SourceNode.DiscId, out var srcObj) ||
                     !nodeObjects.TryGetValue(link.DestinationNode.DiscId, out var dstObj))
+                {
+                    Debug.LogWarning($"[NodeVisualizer] No se encontraron nodos visuales para enlace: {link.SourceNode.DiscId} -> {link.DestinationNode.DiscId}");
                     continue;
+                }
 
                 if (srcObj == null || dstObj == null) continue;
 
+                Debug.Log($"[NodeVisualizer] Creando linea de enlace entre nodo {link.SourceNode.DiscId} y {link.DestinationNode.DiscId}");
                 CreateLinkLine(srcObj.GetComponent<RectTransform>(),
                               dstObj.GetComponent<RectTransform>(),
                               link.IsFunctional());
@@ -152,10 +177,19 @@ namespace SimRedes.UI
             GameObject lineObj = new GameObject("Link");
             lineObj.transform.SetParent(linkContainer, false);
 
-            Image lineImage = lineObj.AddComponent<Image>();
+            // Asegurar que la linea se renderice encima de otros elementos
+            lineObj.transform.SetAsLastSibling();
+
+            // Usar RawImage en lugar de Image - no necesita sprite y siempre renderiza
+            RawImage lineImage = lineObj.AddComponent<RawImage>();
             Color lineColor = isActive ? Color.green : Color.red;
-            lineColor.a = 0f;  // empezar invisible
             lineImage.color = lineColor;
+
+            // Crear textura de color 1x1 para RawImage
+            Texture2D tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            lineImage.texture = tex;
 
             RectTransform rect = lineObj.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -165,33 +199,11 @@ namespace SimRedes.UI
             float distance = direction.magnitude;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            rect.sizeDelta = new Vector2(distance, 4);
+            rect.sizeDelta = new Vector2(Mathf.Max(distance, 2f), 10);
             rect.anchoredPosition = from.anchoredPosition + direction / 2f;
             rect.localEulerAngles = new Vector3(0, 0, angle);
 
-            // Animación de fade-in
-            StartCoroutine(AnimateLinkFadeIn(lineImage));
-        }
-
-        private System.Collections.IEnumerator AnimateLinkFadeIn(Image lineImage)
-        {
-            float duration = 0.3f;
-            float elapsed = 0f;
-
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
-                float alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
-                Color c = lineImage.color;
-                c.a = alpha;
-                lineImage.color = c;
-                yield return null;
-            }
-
-            // Asegurar alpha=1 al final
-            Color final = lineImage.color;
-            final.a = 1f;
-            lineImage.color = final;
+            Debug.Log($"[NodeVisualizer] Linea creada: desde=({from.anchoredPosition.x:F0},{from.anchoredPosition.y:F0}) hasta=({to.anchoredPosition.x:F0},{to.anchoredPosition.y:F0}) distancia={distance:F0}, active={isActive}");
         }
 
         private void AddClickEvent(EventTrigger trigger, UnityEngine.Events.UnityAction action)

@@ -6,17 +6,21 @@
 
 ## 📐 Diagramas UML
 
-### Diagramas de Clases
-| Archivo | Descripción |
-|---------|-------------|
-| [`diagrams/01-use-case.md`](diagrams/01-use-case.md) | Casos de Uso — actores y funcionalidades |
-| [`diagrams/02-class-network.md`](diagrams/02-class-network.md) | Clases — Network Layer (TopologyManager, RoutingTable, VLAN, ACL, NAT) |
-| [`diagrams/03-class-tangible.md`](diagrams/03-class-tangible.md) | Clases — Tangible Layer (discos, bridge, routing config) |
-| [`diagrams/04-class-simulation.md`](diagrams/04-class-simulation.md) | Clases — Simulation Layer (SceneSetup, Activities, Scoring) |
-| [`diagrams/05-class-ui.md`](diagrams/05-class-ui.md) | Clases — UI Layer (paneles, controladores, visualizadores) |
-| [`diagrams/06-packages.md`](diagrams/06-packages.md) | Paquetes/Namespaces — organización del código |
-| [`diagrams/07-component-architecture.md`](diagrams/07-component-architecture.md) | Componentes — capas y dependencias |
-| [`diagrams/08-deployment.md`](diagrams/08-deployment.md) | Despliegue — mesa IDEUM, builds, desarrollo |
+### Diagramas de Casos de Uso (5 sub-diagramas)
+| Archivo | Sub-diagramas |
+|---------|--------------|
+| [`diagrams/01-use-case.md`](diagrams/01-use-case.md) | 01a: Gestión Simulación · 01b: Actividades · 01c: Enrutamiento · 01d: Config. Avanzada · 01e: Evaluación |
+
+### Diagramas de Clases (13 sub-diagramas)
+| Archivo | Sub-diagramas |
+|---------|--------------|
+| [`diagrams/02-class-network.md`](diagrams/02-class-network.md) | 02a: Núcleo Red · 02b: Tablas/ARP/IP · 02c: VLAN/ACL/NAT |
+| [`diagrams/03-class-tangible.md`](diagrams/03-class-tangible.md) | Tangible Layer (managers, bridge, debug) |
+| [`diagrams/04-class-simulation.md`](diagrams/04-class-simulation.md) | 04a: Núcleo Simulación · 04b: Actividades · 04c: Protocolo Dinámico · 04d: Puntajes |
+| [`diagrams/05-class-ui.md`](diagrams/05-class-ui.md) | 05a: Factories · 05b: Controladores · 05c: Visualización · 05d: Navegación |
+| [`diagrams/06-packages.md`](diagrams/06-packages.md) | Paquetes/Namespaces |
+| [`diagrams/07-component-architecture.md`](diagrams/07-component-architecture.md) | Componentes y capas |
+| [`diagrams/08-deployment.md`](diagrams/08-deployment.md) | Despliegue IDEUM |
 
 ### Diagramas de Secuencia
 | Archivo | Descripción |

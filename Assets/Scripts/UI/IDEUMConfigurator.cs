@@ -20,7 +20,7 @@ namespace SimRedes.UI
 
         private void ConfigureForIDEUM()
         {
-            Screen.SetResolution(screenWidth, screenHeight, FullScreenMode.Windowed);
+            Screen.SetResolution(screenWidth, screenHeight, FullScreenMode.FullScreenWindow);
 
             if (mainCamera != null)
             {

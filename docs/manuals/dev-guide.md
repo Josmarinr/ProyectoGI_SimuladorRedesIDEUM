@@ -1,7 +1,7 @@
 # Manual de Desarrollador — SimuladorRedes IDEUM
 
 > Guía técnica para contribuir, modificar y extender el proyecto.
-> Unity 6000.4.5f1 · Target: Windows 10 · Input System Both
+> Unity 6000.4.5f1 · Target: Windows 10 · Input System Package (activeInputHandler=2)
 
 ---
 
@@ -52,9 +52,9 @@ cd SimuladorRedes
 Al abrir el proyecto por primera vez:
 
 1. **Escena principal**: Abre `Assets/Main.unity` (NO `GetStarted_Scene.unity`)
-2. **Input System**: Project Settings → Player → Active Input Handling → **Both**
+2. **Input System**: Project Settings → Player → Active Input Handling → **Input System Package (New)**
 3. **Build Target**: File → Build Settings → **Windows x86_64**
-4. **Resolución**: Game View → 1920x1080 (16:9)
+4. **Resolución**: Game View → 4096x2160 (canvas reference) o 1920x1080 para testing
 
 ### Solución a Problemas de Compilación
 
@@ -156,8 +156,8 @@ Assets/
 │   │   └── DebugDiscSimulator.cs     # Simulación por teclado
 │   │
 │   ├── Simulation/           # ~15 archivos — Actividades y orquestación
-│   │   ├── SceneSetup.cs           # Orquestador (~480L, refactorizado desde ~4,246L)
-│   │   ├── ActivityLoader.cs       # Dispatcher (~800L)
+│   │   ├── SceneSetup.cs           # Orquestador (~623L, refactorizado desde ~4,246L)
+│   │   ├── ActivityLoader.cs       # Dispatcher (~900L)
 │   │   ├── SceneCleanupService.cs  # Singleton de limpieza
 │   │   ├── BuildTopologyActivity.cs    # Actividad 0
 │   │   ├── FindFaultActivity.cs        # Actividad 1
@@ -230,7 +230,7 @@ Assets/
 ### Reglas Específicas
 
 - **Idioma**: Clases/métodos en **inglés**. Strings de UI en **español**.
-- **Input**: `activeInputHandler=2` (Both). Migración completa a `Keyboard.current.wasPressedThisFrame` — 0 usos de `Input.GetKeyDown()` restantes.
+- **Input**: `activeInputHandler=2` (Input System Package). Migración completa — 0 usos del API viejo (`Input.GetKeyDown`, `Input.GetMouseButton`, `Input.mousePosition`).
 - **UI**: Todo code-only (sin prefabs). Canvas modo Expand.
 - **Destrucción**: Usar `UnityEngine.Object.Destroy` (calificar con namespace para evitar ambigüedad).
 - **Tipos ambiguos**: `DeviceType` → usar `SimRedes.Network.DeviceType` (no `UnityEngine.DeviceType`).
@@ -548,16 +548,16 @@ if (tangibleIdToUniqueId.TryGetValue(tangible.Id, out int uniqueId)) {
 ### Conversión de Coordenadas
 
 ```csharp
-public Vector2 ConvertToCanvasPosition(Vector2 screenPosition) {
-    float canvasWidth = 4096f;
-    float canvasHeight = 2160f;
-    float screenW = Display.main.systemWidth;   // 1920 en IDEUM
-    float screenH = Display.main.systemHeight;  // 1080 en IDEUM
-    float scaleX = canvasWidth / screenW;
-    float scaleY = canvasHeight / screenH;
-    return new Vector2(screenPosition.x * scaleX, screenPosition.y * scaleY);
-}
+// TE/TUIO siempre reporta en 1920x1080 (resolucion del touch frame IDEUM)
+const float TUIO_WIDTH = 1920f;
+const float TUIO_HEIGHT = 1080f;
+return new Vector2(
+    screenPosition.x * (canvasWidth / TUIO_WIDTH),
+    screenPosition.y * (canvasHeight / TUIO_HEIGHT)
+);
 ```
+
+> **Nota**: Anteriormente se usaba `Display.main.systemWidth/Height`, pero esto devolvía la resolución de pantalla (4096x2160) en lugar de la resolución TUIO (1920x1080), causando que los discos virtuales aparecieran en posiciones incorrectas al usar pantalla completa.
 
 ### Debug sin Hardware
 
@@ -580,19 +580,19 @@ Para testing en PC:
 
 ### Estructura
 
-Los tests están en `Assets/Editor/Tests/` y son **142 tests EditMode** (11 suites):
+Los tests están en `Assets/Editor/Tests/` y son **328 tests EditMode** (18 suites):
 
-| Suite | Archivo | Tests | Categoría |
-|-------|---------|:-----:|:---------:|
-| IPValidation | `Network/TestIPValidation.cs` | 18 | Network |
-| RoutingTable | `Network/TestRoutingTable.cs` | 14 | Network |
-| RoutePersistence | `Network/TestRoutePersistence.cs` | 3 | Network |
-| DiscToRouteIntegration | `Network/TestDiscToRouteIntegration.cs` | 10 | Network |
-| RouteBuilderState | `Tangible/TestRouteBuilderState.cs` | 15 | Tangible |
-| ScoringSystem | `Simulation/TestScoringSystem.cs` | 19 | Simulation |
-| BestRouteActivity | `Simulation/TestBestRouteActivity.cs` | 12 | Simulation |
-| SceneCleanupService | `Simulation/TestSceneCleanupService.cs` | 4 | Simulation |
-| PredefinedScenarios | `Simulation/TestPredefinedScenarios.cs` | 13 | Simulation |
+| Suite | Tests | Suite | Tests |
+|-------|:-----:|-------|:-----:|
+| TestIPValidation | 18 | TestRoutingTable | 18 |
+| TestRouteBuilderState | 15 | TestRoutePersistence | 3 |
+| TestDiscToRouteIntegration | 10 | TestTopologyManager | 32 |
+| TestDynamicRoutingProtocol | 24 | TestActivityLoader | 20 |
+| TestDiscEventHandler | 18 | TestTangibleBridge | 15 |
+| TestScoringSystem | 19 | TestBestRouteActivity | 12 |
+| TestSceneCleanupService | 4 | TestPredefinedScenarios | 13 |
+| TestARPTable | 13 | TestVLANManager | 18 |
+| TestACLManager | 29 | TestNATManager | 25 |
 
 ### Cómo Ejecutar
 
@@ -639,26 +639,12 @@ namespace Tests.EditMode.Network {
 }
 ```
 
-### Cobertura Actual vs. Pendiente
+### Cobertura Actual (328 tests, 18 suites)
 
-| Clase | Prioridad | Tests Actuales | Estado |
-|-------|:---------:|:--------------:|:------:|
-| `IPValidation` | Completada | 18 | ✅ |
-| `RoutingTable` | Completada | 14 | ✅ |
-| `RouteBuilderState` | Completada | 15 | ✅ |
-| `RoutePersistence` | Completada | 3 | ✅ |
-| `DiscToRouteIntegration` | Completada | 10 | ✅ |
-| `ScoringSystem` | Completada | 19 | ✅ |
-| `BestRouteActivity` | Completada | 12 | ✅ |
-| `SceneCleanupService` | Completada | 4 | ✅ |
-| `PredefinedScenarios` | Completada | 13 | ✅ |
-| `TopologyManager` | 🔴 Alta | 0 | ❌ |
-| `DiscEventHandler` | 🔴 Alta | 0 | ❌ |
-| `TangibleBridge` | 🔴 Alta | 0 | ❌ |
-| `ActivityLoader` | 🔴 Alta | 0 | ❌ |
-| `NetworkNode` | 🟡 Media | 0 | ❌ |
-| `VLANManager` | 🟡 Media | 0 | ❌ |
-
+Todas las suites principales tienen cobertura completa. Las 18 suites cubren:
+- **Network**: IPValidation, RoutingTable, RoutePersistence, DiscToRouteIntegration, TopologyManager, ARPTable, VLANManager, ACLManager, NATManager
+- **Tangible**: RouteBuilderState, DiscEventHandler, TangibleBridge
+- **Simulation**: ScoringSystem, BestRouteActivity, SceneCleanupService, PredefinedScenarios, DynamicRoutingProtocol, ActivityLoader
 ---
 
 ## 11. Build y Despliegue
@@ -725,6 +711,7 @@ AppLogger.LogError("DiscEventHandler", "No se encontró router cerca");
 | `MissingReferenceException` | GameObject destruido pero referencia viva | Agregar null checks + `CleanupNullReferences()` |
 | `NullReferenceException` en evento | Suscriptor no se desuscribió en OnDestroy | Siempre usar `-=` en OnDestroy |
 | UI borrosa | CanvasScaler mal configurado | Usar modo Expand, resolución referencia 4096x2160 |
+| Sin respuesta en botones UI | EventSystem no existe | SceneSetup.SetupEventSystem() crea EventSystem + InputSystemUIInputModule |
 | Nodos se sobreponen | Mismo uniqueId | TangibleDiscManager genera IDs únicos (100, 101...) |
 | Disco de routing no funciona | Router no encontrado en radio | Aumentar `routerProximityRadius` (default 150) |
 
@@ -828,5 +815,5 @@ UIComponents.Colors.buttonHover      // #2D5066 — Botón hover
 
 ---
 
-> **Documentación generada:** Mayo 2026  
+> **Documentación generada:** Junio 2026  
 > **Proyecto:** SimuladorRedes IDEUM · Unity 6000.4.5f1

@@ -1,152 +1,186 @@
 # DC-05: Diagrama de Clases — UI Layer
 
-> **Propósito**: Mostrar la estructura de la capa de presentación: visualización de nodos, animación de ping, creación de paneles, controladores de interacción y navegación.
+> **Propósito**: Mostrar la estructura de la capa de interfaz de usuario: factories, controladores, visualizadores y navegación.
+> Dividido en 4 sub-diagramas: Factories, Controladores, Visualización, y Navegación/Utilidades.
+
+---
+
+## DC-05a: Factories UI
 
 ```mermaid
 classDiagram
     class UIPanelFactory {
-        +static CreateMainMenu(parent) GameObject
-        +static CreateActivitiesPanel(parent) GameObject
-        +static CreateInstructionsPanel(parent) GameObject
-        +static CreateConnectivityPanel(parent) ConnectivityPanelRefs
-        +static CreateScorePanel(parent) GameObject
-        +static CreateDevicesPanel(parent) GameObject
-        +static CreateBuildTopologyInfoPanel(parent) GameObject
-        +static CreateFindFaultPanel(parent) GameObject
-        +static CreateBestRoutePanel(parent) GameObject
-        +static CreateRoutingTablesPanel(parent) GameObject
-        +static CreateStaticRoutingPanel(parent) GameObject
-        +static CreateDynamicRoutingPanel(parent) GameObject
-        +static CreateScenariosPanel(parent) GameObject
-        +static CreateScenarioInfoPanel(parent) GameObject
-        +static CreateIPConfigPanel(parent, node) GameObject
-        +static CreateARPPanel(parent, node) GameObject
-        +static CreateRoutingPanel(parent, node) GameObject
-        +static CreateVLANPanel(parent) GameObject
-        +static CreateACLPanel(parent) GameObject
-        +static CreateNATPanel(parent) GameObject
+        +CreateMainMenu() GameObject
+        +CreateActivitiesPanel() GameObject
+        +CreateScorePanel() GameObject
+        +CreateDevicesPanel() GameObject
+        +CreateConnectivityPanel() ConnectivityPanelRefs
+        +CreateInstructionsPanel() GameObject
+        +CreateDiscLegendPanel() GameObject
+        +CreateTopologyExamplePanel() GameObject
+    }
+
+    class ActivityPanelFactory {
+        +CreateBuildTopologyInfoPanel() GameObject
+        +CreateBestRoutePanel() GameObject
+        +CreateFindFaultPanel() GameObject
+        +CreateRoutingTablesPanel() GameObject
+        +CreateStaticRoutingPanel() GameObject
+        +CreateDynamicRoutingPanel() GameObject
+        +CreateScenariosPanel() GameObject
+    }
+
+    class ConfigPanelFactory {
+        +CreateIPConfigPanel() GameObject
+        +CreateARPPanel() GameObject
+        +CreateRoutingPanel() GameObject
+        +CreateAddRoutePanel() GameObject
+        +CreateVLANPanel() GameObject
+        +CreateACLPanel() GameObject
+        +CreateNATPanel() GameObject
     }
 
     class UIComponents {
-        +static CreateRoundedPanel(parent, w, h, color) RectTransform
-        +static CreateMenuButton(parent, text, w, h) GameObject
-        +static CreateRoundedRectTexture(w, h, color) Texture2D
-        +static CreateDeviceIcon(parent, type, size) GameObject
+        +GetFont() Font
+        +CreateMenuPanel() GameObject
+        +CreateMenuTitle() Text
+        +CreateMenuButton() Button
+        +CreateInfoText() Text
+        +CreateRoundedPanel() GameObject
+        +CreateRoundedRectTexture() Texture2D
         +static class Colors
-            +static Color backgroundBase
-            +static Color surfacePanel
-            +static Color surfaceElevated
-            +static Color borderAccent
-            +static Color textPrimary
-            +static Color textSecondary
-            +static Color buttonNormal
-            +static Color buttonHover
     }
 
-    class NodeVisualizer {
-        -Dictionary~int, GameObject~ nodeObjects
-        -Dictionary~int, GameObject~ linkObjects
-        +CreateNodeVisual(node) void
-        +DrawLinks() void
-        +HighlightSelectedNode(discId) void
-        +UpdateNodeLabel(discId) void
-        +SelectNodeByDiscId(discId) void
-        +CleanupNullReferences() void
-    }
+    UIPanelFactory --> UIComponents
+    ActivityPanelFactory --> UIComponents
+    ConfigPanelFactory --> UIComponents
+```
 
-    class PingVisualizer {
-        +static PingVisualizer Instance
-        +AnimatePing(srcDiscId, dstDiscId, onComplete) void
-        +BuildConnectivityFailReason(src, dst) string
-    }
+---
 
-    class TopologyVisualizer {
-        +CreateLinkVisual(link) void
-        +UpdateLinkVisual(link) void
-        +RemoveLinkVisual(link) void
-    }
+## DC-05b: Controladores de Interacción
 
+```mermaid
+classDiagram
     class LinkModeController {
         +ToggleLinkMode(mode) void
-        +HandleNodeLinkClick(discId) void
         +IsLinkModeActive() bool
+        +HandleNodeLinkClick(discId) void
+        +GetLinkModeFirstNode() int
+        +ClearFirstNode() void
     }
 
     class PingModeController {
         +TogglePingMode() void
-        +HandlePingNodeClick(node) void
         +IsPingModeActive() bool
+        +HandlePingNodeClick(node) void
+        +StorePingReferences(btn, text) void
     }
 
     class IPConfigController {
         +ShowIPConfigPanel(node, discId) void
-        +CloseIPConfigPanelPublic() void
         +IsIPConfigPanelOpen() bool
-        +ShowARPPanel() void
-        +ShowRoutingPanel() void
+        +CloseIPConfigPanelPublic() void
+        +GetCurrentIPConfigNodeDiscId() int
     }
 
     class DevicePanelController {
+        +RefreshDevicesPanel() void
+        +UpdateDevicesList() void
         +OnDeviceItemClicked(index) void
         +RemoveSelectedNode() void
-        +RefreshDevicesPanel() void
-        +UpdateScoreDisplay() void
     }
 
     class NodeInteractionController {
         +HandleNodeClick(discId) void
+        +IsLinkModeActive() bool
+        +IsPingModeActive() bool
     }
 
+    LinkModeController --> DevicePanelController
+    NodeInteractionController --> LinkModeController
+    NodeInteractionController --> PingModeController
+    NodeInteractionController --> IPConfigController
+```
+
+---
+
+## DC-05c: Visualización de Red
+
+```mermaid
+classDiagram
+    class NodeVisualizer {
+        -Dictionary~int,GameObject~ nodeObjects
+        +Transform nodeContainer
+        +Transform linkContainer
+        +DrawLinks() void
+        +SelectNodeByDiscId(discId) void
+        -CreateNodeVisual(node) void
+        -CreateLinkLine(from, to) void
+    }
+
+    class PingVisualizer {
+        +ShowPingAnimation(src, dst) void
+        +ShowPingResult(success) void
+    }
+
+    class TopologyVisualizer {
+        +DrawTopology(type) void
+        +HighlightDevice(discId) void
+    }
+
+    NodeVisualizer --> PingVisualizer
+```
+
+---
+
+## DC-05d: Navegación y Utilidades
+
+```mermaid
+classDiagram
     class MenuNavigator {
-        +static MenuNavigator Instance
-        +SetupPanel(panel, onEscape) void
-        +ClearPanel() void
+        +SetupPanel(panel, onBack) void
+        +NavigateTo(panel) void
     }
 
     class MainMenuManager {
-        +static MainMenuManager Instance
-        +ShowMainMenu() void
+        +GameObject mainMenuPanel
+        +ShowMenu() void
+        +HideMenu() void
     }
 
     class ConnectivityTestPanel {
-        +ExecutePing() void
-        +UpdatePanel() void
+        +Show() void
+        +Hide() void
+        +TestConnectivity(src, dst) void
     }
 
     class IDEUMConfigurator {
-        +ConfigureScreen() void
+        -int screenWidth
+        -int screenHeight
+        +SetResolution(width, height) void
     }
 
-    NodeInteractionController --> LinkModeController : delegar si activo
-    NodeInteractionController --> PingModeController : delegar si activo
-    NodeInteractionController --> IPConfigController : delegar si default
-    DevicePanelController --> PingVisualizer : update score
-    NodeVisualizer --> UIComponents : crear visuales
-    UIPanelFactory --> UIComponents : crear paneles
+    MenuNavigator --> MainMenuManager
+    MainMenuManager --> ConnectivityTestPanel
 ```
 
-## Posicionamiento de Paneles
-
-| Panel | Posición | Anchor |
-|-------|----------|--------|
-| TopologyInfoPanel | Esquina superior derecha | (1,1) |
-| DevicesPanel | Esquina superior izquierda | (0,1) |
-| ScorePanel | Esquina inferior derecha | (1,0) |
-| ScenariosPanel | Centro | (0.5,0.5) |
-| VLAN/ACL/NAT Panels | Centro, auto-close | (0.5,0.5) |
+---
 
 ## Archivos Relacionados
 
-| Archivo | Namespace |
-|---------|-----------|
-| `Assets/Scripts/UI/UIPanelFactory.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/UIComponents.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/NodeVisualizer.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/PingVisualizer.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/LinkModeController.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/PingModeController.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/IPConfigController.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/DevicePanelController.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/NodeInteractionController.cs` | `SimRedes.UI` |
-| `Assets/Scripts/UI/MenuNavigator.cs` | `SimRedes.UI` |
-| Todos en `Assets/Scripts/UI/` | `SimRedes.UI` |
+- `Assets/Scripts/UI/UIPanelFactory.cs` — Factory de paneles de navegación/info
+- `Assets/Scripts/UI/ActivityPanelFactory.cs` — Factory de paneles de actividades
+- `Assets/Scripts/UI/ConfigPanelFactory.cs` — Factory de paneles de configuración
+- `Assets/Scripts/UI/UIComponents.cs` — Componentes UI reutilizables
+- `Assets/Scripts/UI/NodeVisualizer.cs` — Visualizador de nodos
+- `Assets/Scripts/UI/PingVisualizer.cs` — Visualizador de pings
+- `Assets/Scripts/UI/LinkModeController.cs` — Control de modo enlace
+- `Assets/Scripts/UI/PingModeController.cs` — Control de modo ping
+- `Assets/Scripts/UI/IPConfigController.cs` — Control de configuración IP
+- `Assets/Scripts/UI/DevicePanelController.cs` — Panel de dispositivos
+- `Assets/Scripts/UI/NodeInteractionController.cs` — Interacción con nodos
+- `Assets/Scripts/UI/MenuNavigator.cs` — Navegación por menú
+- `Assets/Scripts/UI/MainMenuManager.cs` — Gestor del menú principal
+- `Assets/Scripts/UI/ConnectivityTestPanel.cs` — Panel de prueba de conectividad
+- `Assets/Scripts/UI/IDEUMConfigurator.cs` — Configuración de pantalla IDEUM

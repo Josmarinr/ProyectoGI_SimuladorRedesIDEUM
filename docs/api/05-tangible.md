@@ -70,6 +70,8 @@ Puente entre el SDK de TangibleEngine y el sistema interno. Mantiene un `Diction
 
 Incluye logging mejorado con timestamp/nivel, try-catch en los 3 handlers de eventos, y una coroutine de chequeo periódico (cada 5s por 30s) que detecta si TE no está conectado al servicio IDEUM.
 
+**Sistema de antirrebote**: Cuando TE reporta la ausencia de un disco, no se remueve inmediatamente. Se marca como "pendiente de remoción" y solo se remueve si permanece ausente >1s (procesado en Update()). Si reaparece antes, se cancela la remoción pendiente. Esto evita parpadeo cuando el touch frame deja de detectar el disco por frames sueltos.
+
 ### Métodos
 
 ```csharp
@@ -95,7 +97,8 @@ Mapea PatternId (1-6) a tipos de disco.
 ```csharp
 public Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
 ```
-Convierte coordenadas físicas (1920x1080) a coordenadas del canvas (4096x2160) usando `Display.main.systemWidth/Height`.
+Convierte coordenadas TUIO (1920x1080) a coordenadas del canvas (4096x2160).
+Usa constantes fijas `TUIO_WIDTH=1920`, `TUIO_HEIGHT=1080` en lugar de `Display.main.systemWidth/Height` (que con fullscreen devuelve 4096x2160 en vez de la resolución del touch frame).
 
 ---
 

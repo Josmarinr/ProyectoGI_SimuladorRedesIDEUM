@@ -1,6 +1,11 @@
 # DC-04: Diagrama de Clases — Simulation Layer
 
-> **Propósito**: Mostrar la estructura del orquestador de escena, el cargador de actividades, el sistema de limpieza, las 7 actividades académicas, el sistema de puntajes y el protocolo de enrutamiento dinámico.
+> **Propósito**: Mostrar el orquestador de escena, el cargador de actividades, las actividades académicas, el sistema de puntajes y el protocolo de enrutamiento dinámico.
+> Dividido en 4 sub-diagramas: Núcleo de Simulación, Actividades, Protocolo Dinámico, y Puntajes/Escenarios.
+
+---
+
+## DC-04a: Núcleo de Simulación (SceneSetup, Loader, Cleanup)
 
 ```mermaid
 classDiagram
@@ -12,165 +17,162 @@ classDiagram
         +CreateVisualizer() void
         +CreateMainMenu() void
         +DestroyMainMenu() void
-        +DestroyPreviousPanels() void
-        +StartSimulation() void
-        +ShowActivities() void
-        +ShowConnectivity() void
-        +ShowInstructions() void
-        +ToggleLinkMode(mode) void
-        +HandleNodeClick(discId) void
+        +SetupResolution() void
+        +SetupCamera() void
+        +SetupCanvas() Canvas
+        +SetupEventSystem() void
     }
 
     class ActivityLoader {
+        +StartSimulation(ct) void
         +SelectActivity(index) void
-        +StartSimulation(canvas) void
-        +ShowConnectivityPanel() void
+        +ShowConnectivityPanel(ct) void
         +GoBackToMainMenu() void
-        +LoadScenario(index) void
-        +StartDynamicProtocol(panel) void
-        +StopDynamicProtocol() void
-        +ClearDynamicRoutes() void
+        -AddDeviceAtSpawn(type) void
+        -CreateSimulationHUDPanel(ct) void
+        -EnsureTopology() void
     }
 
     class SceneCleanupService {
-        +static SceneCleanupService Instance
+        +static Instance
         +ClearSimulation(topology, visualizer, discSim) void
-        +GoBackToMainMenu(canvas, callback) void
-        +ExitApplication() void
+        +GoBackToMainMenu(callback) void
     }
 
+    class GameManager {
+    }
+
+    SceneSetup --> ActivityLoader
+    SceneSetup --> SceneCleanupService
+    ActivityLoader --> GameManager
+```
+
+---
+
+## DC-04b: Actividades Académicas (7 actividades)
+
+```mermaid
+classDiagram
     class SimulationControls {
-        +ExecutePing() void
-        +RemoveSelectedNode() void
-        +GoBackToMainMenu() void
+        +RemoveSelectedNodePublic() void
     }
 
     class BuildTopologyActivity {
-        +DetectTopologyType() TopologyType
+        +DetectTopologyType() void
         +UpdateUI() void
-        +IsFullyConnected() bool
     }
 
     class FindFaultActivity {
-        +OnSolveClicked() void
-        +FixFault() void
-        +ValidateSolution() bool
-        +GenerateRandomFault() void
-        +GenerateNewScenario() void
+        +LoadScenario(index) void
+        +CheckSolution() void
+        +OnDiscButtonClicked() void
     }
 
     class RoutingTablesActivity {
-        +RefreshRoutingTables() void
-        +GenerateSampleRoutes(router) void
-        +GetRouterTableSummary() string
+        +RefreshTableUI() void
     }
 
     class BestRouteActivity {
-        +NextScenario() void
-        +OnRouteSelected(index) void
-        +ShowScenario(index) void
+        +LoadScenario(scenarioData) void
+        +SelectBestRoute() void
     }
 
     class StaticRoutingActivity {
-        +AddRoute(dest, mask, nextHop) void
-        +AddSampleRoute() void
+        +AddStaticRoute() void
         +TestRouting() void
     }
 
     class DynamicRoutingActivity {
-        +SetProtocol(type) void
-        +SimulateAdvertisement() void
-        +SimulateConvergence() void
+        +StartProtocol(panel) void
+        +StopProtocol(panel) void
+        +ClearAllRoutes(panel) void
+        +SetNeighborRouter(neighbor) void
     }
 
     class PredefinedScenarios {
-        +static PredefinedScenarios Instance
-        +GetScenarios() List~NetworkScenario~
-        +GetScenario(index) NetworkScenario
+        +LoadScenario(index) void
+        +BuildScenarioTopology(index) void
+        +GetCurrentScenario() ScenarioData
     }
 
+    ActivityLoader --> BuildTopologyActivity
+    ActivityLoader --> FindFaultActivity
+    ActivityLoader --> RoutingTablesActivity
+    ActivityLoader --> BestRouteActivity
+    ActivityLoader --> StaticRoutingActivity
+    ActivityLoader --> DynamicRoutingActivity
+    ActivityLoader --> PredefinedScenarios
+    ActivityLoader --> SimulationControls
+```
+
+---
+
+## DC-04c: Protocolo de Enrutamiento Dinámico
+
+```mermaid
+classDiagram
     class DynamicRoutingProtocol {
-        -ProtocolType protocol
-        -float advertisementInterval
-        -bool isRunning
-        -bool isConverged
-        -int advertisementCount
-        +event OnProtocolLog(string)
-        +event OnConvergence()
-        +StartProtocol() void
-        +StopProtocol() void
-        +IsRunning() bool
-        +IsConverged() bool
-        +ClearAllRoutes() void
-    }
-
-    class ScoringSystem {
-        +static ScoringSystem Instance
-        +StartSession(activityName) void
-        +AddTaskCompleted() void
-        +AddFaultFound() void
-        +AddRouteConfigured() void
-        +AddPingSuccess() void
-        +AddPenalty(reason, pts) void
-        +GetCurrentScore() int
-        +GetSessionSummary() string
-        +GetGrade() int
-        +EndSession() void
+        +StartRIP() void
+        +StartOSPF() void
+        +StartEIGRP() void
+        +Stop() void
+        -ConvergeNetwork() void
+        -BuildRoutingTable() void
+        +GetRoutes() List~RoutingEntry~
     }
 
     class RoutingSimulator {
-        +static SetProtocol(type) void
-        +static SimulateRIPAdvertisement(router) void
-        +static SimulateOSPFAdvertisement(router) void
-        +static SimulatePacketForwarding(router, dst) void
-        +static GetRoutingTableSummary(router) string
+        +SimulatePacket(origin, dest) void
+        +GetPath(origin, dest) List~NetworkNode~
     }
 
     class PathCalculation {
-        +static CalculateShortestPath(graph, start, end) List~NetworkNode~
-        +static IsLongestPrefixMatch() bool
+        +CalculateBestPath(routes, dest) RoutingEntry
+        +LongestPrefixMatch(table, ip) RoutingEntry
+        +CompareMetrics(entry1, entry2) int
     }
 
-    class GameManager {
-        +static GameManager Instance
-        +GetTopologyManager() TopologyManager
-        +ResetSimulation() void
-    }
-
-    SceneSetup --> ActivityLoader : delega
-    SceneSetup --> SceneCleanupService : delega limpieza
-    SceneSetup --> SimulationControls : crea
-    ActivityLoader --> DynamicRoutingProtocol : crea
-    ActivityLoader --> ScoringSystem : inicia sesión
-    ActivityLoader --> BuildTopologyActivity : case 0
-    ActivityLoader --> FindFaultActivity : case 1
-    ActivityLoader --> RoutingTablesActivity : case 2
-    ActivityLoader --> BestRouteActivity : case 3
-    ActivityLoader --> StaticRoutingActivity : case 4
-    ActivityLoader --> DynamicRoutingActivity : case 5
-    ActivityLoader --> PredefinedScenarios : case 6
+    DynamicRoutingProtocol --> RoutingSimulator
+    RoutingSimulator --> PathCalculation
 ```
 
-## Relación SceneSetup → Controladores
+---
 
-Antes del refactor (~4250L), SceneSetup contenía todo. Ahora (~379L) delega en:
+## DC-04d: Sistema de Puntajes
 
-| Responsabilidad | Controlador | Archivo |
-|----------------|-------------|---------|
-| Modo CONEXIÓN/DESCONEXIÓN | `LinkModeController` | `UI/LinkModeController.cs` |
-| Modo ping + selector | `PingModeController` | `UI/PingModeController.cs` |
-| Panel IP + teclado | `IPConfigController` | `UI/IPConfigController.cs` |
-| Panel dispositivos + score | `DevicePanelController` | `UI/DevicePanelController.cs` |
-| Click en nodos (fachada) | `NodeInteractionController` | `UI/NodeInteractionController.cs` |
-| Carga actividades | `ActivityLoader` | `Simulation/ActivityLoader.cs` |
-| Limpieza + GoBack | `SceneCleanupService` | `Simulation/SceneCleanupService.cs` |
+```mermaid
+classDiagram
+    class ScoringSystem {
+        +static Instance
+        +StartSession(activity) void
+        +AddPoints(type, points) void
+        +GetCurrentScore() int
+        +GetGrade() string
+        +GetSessionSummary() SessionSummary
+    }
+
+    class PredefinedScenarios {
+        +LoadScenario(index) void
+        +GetScenarioInfo(index) ScenarioInfo
+    }
+```
+
+---
 
 ## Archivos Relacionados
 
-| Archivo | Namespace | 
-|---------|-----------|
-| `Assets/Scripts/Simulation/SceneSetup.cs` | `SimRedes` |
-| `Assets/Scripts/Simulation/ActivityLoader.cs` | `SimRedes.Simulation` |
-| `Assets/Scripts/Simulation/SceneCleanupService.cs` | `SimRedes.Simulation` |
-| `Assets/Scripts/Simulation/GameManager.cs` | `SimRedes` |
-| Todos en `Assets/Scripts/Simulation/` | `SimRedes.Simulation` |
+- `Assets/Scripts/Simulation/SceneSetup.cs` — Orquestador
+- `Assets/Scripts/Simulation/ActivityLoader.cs` — Carga de actividades
+- `Assets/Scripts/Simulation/SceneCleanupService.cs` — Limpieza de escena
+- `Assets/Scripts/Simulation/BuildTopologyActivity.cs` — Actividad 0
+- `Assets/Scripts/Simulation/FindFaultActivity.cs` — Actividad 1
+- `Assets/Scripts/Simulation/RoutingTablesActivity.cs` — Actividad 2
+- `Assets/Scripts/Simulation/BestRouteActivity.cs` — Actividad 3
+- `Assets/Scripts/Simulation/StaticRoutingActivity.cs` — Actividad 4
+- `Assets/Scripts/Simulation/DynamicRoutingActivity.cs` — Actividad 5
+- `Assets/Scripts/Simulation/DynamicRoutingProtocol.cs` — Protocolo dinámico
+- `Assets/Scripts/Simulation/PredefinedScenarios.cs` — Escenarios
+- `Assets/Scripts/Simulation/ScoringSystem.cs` — Sistema de puntajes
+- `Assets/Scripts/Simulation/SimulationControls.cs` — Controles de simulación
+- `Assets/Scripts/Simulation/RoutingSimulator.cs` — Simulador de enrutamiento
+- `Assets/Scripts/Simulation/PathCalculation.cs` — Cálculo de rutas

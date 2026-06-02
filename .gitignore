@@ -54,3 +54,17 @@ mono_crash.*.json
 
 # Junk
 nul
+
+# AI agent configuration
+.opencode/
+opencode.json
+AGENTS.md
+CODE_INDEX.md
+skills/
+
+# Proposal, evaluation, presentation (research docs not for public repo)
+docs/anteproyecto-grado.md
+docs/proposal-context.md
+docs/instrumentos-evaluacion-usabilidad.md
+docs/presentacion-contenido.md
+docs/presentacion-guion.md

@@ -180,3 +180,51 @@
   - Esc5 (Detectar Fallos): fault.ip y fault.mask ahora se aplican al nodo
     (SetNodeFault solo guardaba etiqueta, no modificaba configuracion real)
 - **328/328 tests pasando****
+
+---
+
+### Sesion 25 — Fix CRITICO: EventSystem faltante + Fullscreen IDEUM
+- **Problema dual**:
+  1. Build se abria en modo ventana chica (1920x1080) y no se podia agrandar.
+  2. Ningun click/tactil funcionaba en la UI (sin importar modo ventana/fullscreen).
+- **Causa raiz #1 (CRITICA)**: `SceneSetup.SetupCanvas()` creaba Canvas + GraphicRaycaster pero **NUNCA creaba el EventSystem**. Sin EventSystem, el InputSystemUIInputModule no existe, los eventos de puntero nunca llegan a los botones UI.
+  - `activeInputHandler=2` (solo Input System nuevo) requiere `InputSystemUIInputModule` en el EventSystem.
+  - TouchScript no puede suplir esto porque `TouchManager`/`StandardInput` nunca se inicializan en builds (no estan en la escena).
+- **Causa raiz #2**: `SceneSetup.SetupResolution()` usaba `Screen.SetResolution(1920, 1080, false)` (ventana chica).
+  - `resizableWindow=0` impedia redimensionar.
+  - `IDEUMConfigurator.cs` tenia `FullScreenMode.Windowed`.
+  - La pantalla IDEUM es 4096x2160 nativa.
+- **Fix EventSystem**: Nuevo metodo `SetupEventSystem()` en SceneSetup:
+  - Crea GameObject "EventSystem" con `EventSystem` + `InputSystemUIInputModule`.
+  - Llamado en Awake() despues de SetupCanvas().
+- **Fix Fullscreen**: 
+  - `SceneSetup.cs:122`: `false` → `FullScreenMode.FullScreenWindow` a 4096x2160
+  - `IDEUMConfigurator.cs:23`: `FullScreenMode.Windowed` → `FullScreenMode.FullScreenWindow`
+  - `PlayerSettings`: `fullscreenMode: 1`, `defaultScreenWidth: 4096`, `defaultScreenHeight: 2160`
+  - `WindowsPointerHandlers.setScaling()`: simplificado a siempre usar escalado 1:1 (el complejo no funciona en touch frame IDEUM).
+- **Estado**: 328 tests, fix aplicado. Requiere rebuild. Pendiente A2 (pruebas en mesa real).
+
+---
+
+### Sesion 26 — Pruebas en mesa IDEUM + Fixes finales
+- **Pruebas A2 completadas**: Se probo el build en la mesa IDEUM con discos fisicos (Router, Switch, PC).
+- **Bugfix FindFaultActivity**: discos tactiles en escenarios 3+ corregido
+  (timing Awake vs Start, NodeVisualizer sync, TangibleDiscManager cleanup)
+- **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
+- **Rediseno FindFaultActivity**: 4 escenarios resolubles con clicks reales:
+  1. Cable Caido → CONECTAR + click routers
+  2. IP Erronea → click router → IPConfig → editar IP
+  3. Mascara Incorrecta → click router → IPConfig → editar mascara
+  4. PC sin IP → click PC → IPConfig → escribir IP+mask
+- **Fix IPConfigPanel**: InputFields eliminados, reemplazados por Text +
+  Button de seleccion + teclado inline (no depende de EventSystem focus)
+- **Botones ROUTER/SWITCH/PC**: agregados al panel HUD para agregar
+  dispositivos sin teclado (BuildTopActivity y modo sim libre)
+- **Escenarios predefinidos corregidos**:
+  - Esc5 (Detectar Fallos): fault.ip/fault.mask ahora se aplican al nodo
+  - Esc4 (Red en Arbol): IPs de Router1/Router2 en misma subred que Router0
+- **328/328 tests pasando****
+- **Problemas detectados en pruebas IDEUM**:
+  - P1 (CRITICO): Error de RAM/colapso por uso prolongado
+  - P2 (ALTO): Lineas de conexion invisibles en discos fisicos
+  - P3 (MEDIO): Ajuste fino de tamanos UI

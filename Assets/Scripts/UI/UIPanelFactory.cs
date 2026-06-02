@@ -39,16 +39,13 @@ namespace SimRedes.UI
 
         /// <summary>
         /// Obtiene una fuente dinamica Arial del tamano especificado.
-        /// Fallback a LegacyRuntime.ttf si Arial no esta disponible.
+        /// Retorna la fuente unica cacheada del proyecto.
         /// </summary>
-        /// <param name="size">Tamano de la fuente en puntos (default 14).</param>
-        /// <returns>Fuente lista para usar en componentes Text.</returns>
+        /// <param name="size">Ignorado (se usa fontSizede cada Text).</param>
+        /// <returns>Fuente unica cacheada.</returns>
         public static Font GetFont(int size = 14)
         {
-            Font font = Font.CreateDynamicFontFromOSFont("Arial", size);
-            if (font == null)
-                font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            return font;
+            return UIComp.GetFont();
         }
 
         /// <summary>
@@ -185,7 +182,7 @@ namespace SimRedes.UI
         {
             Font font = GetFont(14);
 
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(220, 400), 20,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(360, 600), 20,
                 UIColors.surfacePanel, UIColors.borderAccent, "DevicesPanel");
 
             RectTransform panelRect = panelObj.GetComponent<RectTransform>();
@@ -194,7 +191,7 @@ namespace SimRedes.UI
             panelRect.pivot = new Vector2(0f, 1f);
             panelRect.anchoredPosition = new Vector2(10, -10);
 
-            UIComp.CreateMenuTitle(panelObj.transform, "Dispositivos", 18, new Vector2(0, 170), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Dispositivos", 26, new Vector2(0, 270), font);
 
             return panelObj;
         }
@@ -753,27 +750,27 @@ namespace SimRedes.UI
                 menuManager = menuObj.AddComponent<MainMenuManager>();
             }
 
-            GameObject mainMenuPanel = UIComp.CreateMenuPanel(canvas, "MainMenuPanel", new Vector2(800, 720));
-            UIComp.CreateMenuTitle(mainMenuPanel.transform, "Simulador de Redes", 40, new Vector2(0, 250), font);
+            GameObject mainMenuPanel = UIComp.CreateMenuPanel(canvas, "MainMenuPanel", new Vector2(1000, 850));
+            UIComp.CreateMenuTitle(mainMenuPanel.transform, "Simulador de Redes", 48, new Vector2(0, 310), font);
 
-            float buttonWidth = 250, buttonHeight = 60, startY = 140;
+            float buttonWidth = 320, buttonHeight = 72, startY = 190;
 
             Button startBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Iniciar", "INICIAR SIMULACION", new Vector2(0, startY), new Vector2(buttonWidth, buttonHeight), font);
             startBtn.onClick.AddListener(() => onStartSimulation?.Invoke());
 
-            Button activitiesBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Actividades", "ACTIVIDADES", new Vector2(0, startY - 80), new Vector2(buttonWidth, buttonHeight), font);
+            Button activitiesBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Actividades", "ACTIVIDADES", new Vector2(0, startY - 100), new Vector2(buttonWidth, buttonHeight), font);
             activitiesBtn.onClick.AddListener(() => onActivities?.Invoke());
 
-            Button connectivityBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Conectividad", "PRUEBAS Y CONEXIONES", new Vector2(0, startY - 160), new Vector2(buttonWidth, buttonHeight), font);
+            Button connectivityBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Conectividad", "PRUEBAS Y CONEXIONES", new Vector2(0, startY - 200), new Vector2(buttonWidth, buttonHeight), font);
             connectivityBtn.onClick.AddListener(() => onConnectivity?.Invoke());
 
-            Button instructionsBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Instrucciones", "COMO USAR", new Vector2(0, startY - 240), new Vector2(buttonWidth, buttonHeight), font);
+            Button instructionsBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Instrucciones", "COMO USAR", new Vector2(0, startY - 300), new Vector2(buttonWidth, buttonHeight), font);
             instructionsBtn.onClick.AddListener(() => onInstructions?.Invoke());
 
-            Button discLegendBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_DiscLegend", "LEYENDA DE DISCOS", new Vector2(0, startY - 320), new Vector2(buttonWidth, buttonHeight), font);
+            Button discLegendBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_DiscLegend", "LEYENDA DE DISCOS", new Vector2(0, startY - 400), new Vector2(buttonWidth, buttonHeight), font);
             discLegendBtn.onClick.AddListener(() => onDiscLegend?.Invoke());
 
-            Button exitBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Salir", "SALIR", new Vector2(0, startY - 400), new Vector2(buttonWidth, buttonHeight), font);
+            Button exitBtn = UIComp.CreateMenuButton(mainMenuPanel.transform, "Btn_Salir", "SALIR", new Vector2(0, startY - 500), new Vector2(buttonWidth, buttonHeight), font);
             exitBtn.onClick.AddListener(() => onExit?.Invoke());
 
             menuManager.mainMenuPanel = mainMenuPanel;

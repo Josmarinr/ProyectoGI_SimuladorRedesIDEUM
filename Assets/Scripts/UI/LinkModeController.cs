@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SimRedes.Network;
+using SimRedes.UI;
 
 namespace SimRedes.UI
 {
@@ -33,6 +34,7 @@ namespace SimRedes.UI
 
             if (currentLinkMode == mode)
             {
+                UnhighlightAll();
                 currentLinkMode = null;
                 linkModeFirstNode = -1;
                 UpdateLinkButtonColors();
@@ -40,6 +42,7 @@ namespace SimRedes.UI
                 return;
             }
 
+            UnhighlightAll();
             currentLinkMode = mode;
             linkModeFirstNode = -1;
             UpdateLinkButtonColors();
@@ -59,6 +62,39 @@ namespace SimRedes.UI
             return currentLinkMode != null;
         }
 
+        public int GetLinkModeFirstNode()
+        {
+            return linkModeFirstNode;
+        }
+
+        public string GetActiveMode()
+        {
+            return currentLinkMode;
+        }
+
+        public void ClearFirstNode()
+        {
+            UnhighlightAll();
+            linkModeFirstNode = -1;
+        }
+
+        private NodeVisualizer GetVisualizer()
+        {
+            return Object.FindAnyObjectByType<NodeVisualizer>();
+        }
+
+        private void HighlightFirstNode()
+        {
+            var vis = GetVisualizer();
+            if (vis != null) vis.SelectNodeByDiscId(linkModeFirstNode);
+        }
+
+        private void UnhighlightAll()
+        {
+            var vis = GetVisualizer();
+            if (vis != null) vis.SelectNodeByDiscId(-1);
+        }
+
         public void HandleNodeLinkClick(int discId)
         {
             if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
@@ -69,12 +105,17 @@ namespace SimRedes.UI
                 if (linkModeFirstNode == -1)
                 {
                     linkModeFirstNode = discId;
+                    HighlightFirstNode();
                     Debug.Log($"[LinkMode] Primer nodo seleccionado: {discId}");
                 }
                 else if (linkModeFirstNode != discId)
                 {
+                    UnhighlightAll();
                     topology.AddLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace creado entre {linkModeFirstNode} y {discId}");
+                    // Forzar redibujado de enlaces visuales
+                    var visualizer = GetVisualizer();
+                    if (visualizer != null) visualizer.DrawLinks();
                     linkModeFirstNode = -1;
                     currentLinkMode = null;
                     UpdateLinkButtonColors();
@@ -85,12 +126,17 @@ namespace SimRedes.UI
                 if (linkModeFirstNode == -1)
                 {
                     linkModeFirstNode = discId;
+                    HighlightFirstNode();
                     Debug.Log($"[LinkMode] Primer nodo para desconectar: {discId}");
                 }
                 else
                 {
+                    UnhighlightAll();
                     topology.RemoveLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace eliminado entre {linkModeFirstNode} y {discId}");
+                    // Forzar redibujado de enlaces visuales
+                    var visualizer = GetVisualizer();
+                    if (visualizer != null) visualizer.DrawLinks();
                     linkModeFirstNode = -1;
                     currentLinkMode = null;
                     UpdateLinkButtonColors();

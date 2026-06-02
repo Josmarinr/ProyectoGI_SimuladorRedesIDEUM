@@ -80,17 +80,25 @@ namespace SimRedes.UI
 
         private static string TEXT_OBJ = "Text";
 
+        // Fuente unica cacheada para todo el proyecto.
+        // Crea UNA sola instancia de fuente y la reutiliza, evitando agotar
+        // los atlas de textura de fuente con multiples instancias.
+        private static Font cachedFont = null;
+
         /// <summary>
-        /// Obtiene una fuente del sistema. Intenta cargar Arial; si falla, usa LegacyRuntime.ttf.
+        /// Obtiene la fuente del sistema (Arial o LegacyRuntime.ttf como fallback).
+        /// La fuente se crea una sola vez y se reutiliza en todo el proyecto.
+        /// El tamano se controla via <c>text.fontSize</c> en cada componente Text.
         /// </summary>
-        /// <param name="size">Tamano de la fuente (por defecto 14).</param>
-        /// <returns>Fuente cargada valida.</returns>
+        /// <param name="size">Ignorado (se usa fontSizede cada Text).</param>
+        /// <returns>Fuente unica cacheada.</returns>
         public static Font GetFont(int size = 14)
         {
-            Font font = Font.CreateDynamicFontFromOSFont("Arial", size);
-            if (font == null)
-                font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            return font;
+            if (cachedFont != null) return cachedFont;
+            cachedFont = Font.CreateDynamicFontFromOSFont("Arial", 14);
+            if (cachedFont == null)
+                cachedFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            return cachedFont;
         }
 
         /// <summary>
@@ -129,7 +137,7 @@ namespace SimRedes.UI
             textRect.anchorMin = new Vector2(0.5f, 0.5f);
             textRect.anchorMax = new Vector2(0.5f, 0.5f);
             textRect.anchoredPosition = position;
-            textRect.sizeDelta = new Vector2(260, 20);
+            textRect.sizeDelta = new Vector2(300, 28);
 
             var textComponent = textObj.AddComponent<Text>();
             textComponent.text = text;
@@ -296,7 +304,7 @@ namespace SimRedes.UI
             titleRect.anchorMin = new Vector2(0.5f, 0.5f);
             titleRect.anchorMax = new Vector2(0.5f, 0.5f);
             titleRect.anchoredPosition = position;
-            titleRect.sizeDelta = new Vector2(600, 40);
+            titleRect.sizeDelta = new Vector2(700, 55);
 
             var titleText = titleObj.AddComponent<Text>();
             titleText.text = title;
