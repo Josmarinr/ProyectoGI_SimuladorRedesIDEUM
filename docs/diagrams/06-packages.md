@@ -8,107 +8,16 @@
 > **Grupo de Investigación:** Multimedia Interactiva
 > **Universidad:** Universidad Distrital Francisco Jose de Caldas
 
-```mermaid
-graph TB
-    subgraph S1["SimRedes"]
-        SceneSetup
-        GameManager
-        PointerClickHandler
-        TouchScriptDisabler
-    end
+Los diagramas se dividen en archivos individuales para facilitar su lectura:
 
-    subgraph S2["SimRedes.Network"]
-        TopologyManager
-        NetworkNode
-        NetworkLink
-        RoutingTable
-        ARPTable
-        IPValidation
-        DiscConfiguration
-        VLANManager
-        ACLManager
-        NATManager
-    end
-
-    subgraph S3["SimRedes.Tangible"]
-        TangibleDiscManager
-        TangibleBridge
-        DiscEventHandler
-        RouteBuilderState
-        DebugDiscSimulator
-    end
-
-    subgraph S4["SimRedes.Simulation"]
-        ActivityLoader
-        SceneCleanupService
-        BuildTopologyActivity
-        FindFaultActivity
-        RoutingTablesActivity
-        BestRouteActivity
-        StaticRoutingActivity
-        DynamicRoutingActivity
-        DynamicRoutingProtocol
-        PredefinedScenarios
-        ScoringSystem
-        SimulationControls
-        RoutingSimulator
-        PathCalculation
-    end
-
-    subgraph S5["SimRedes.UI"]
-        UIPanelFactory
-        UIComponents
-        NodeVisualizer
-        PingVisualizer
-        TopologyVisualizer
-        MenuNavigator
-        MainMenuManager
-        LinkModeController
-        PingModeController
-        IPConfigController
-        DevicePanelController
-        NodeInteractionController
-        ConnectivityTestPanel
-        IDEUMConfigurator
-    end
-
-    subgraph S6["SimRedes.Core"]
-        AppLogger
-    end
-
-    subgraph S7["External"]
-        TE[TangibleEngine SDK]
-        NUnit[NUnit 3.x]
-    end
-
-    subgraph S8["Tests.EditMode"]
-        TestIPValidation
-        TestRoutingTable
-        TestRouteBuilderState
-        TestRoutePersistence
-    end
-
-    S1 --> S2
-    S1 --> S5
-    S1 --> S4
-    S1 --> S3
-    S1 --> S6
-
-    S3 --> S2
-    S3 --> TE
-
-    S4 --> S2
-    S4 --> S5
-    S4 --> S3
-
-    S5 --> S2
-
-    S6 --> S1
-
-    S8 --> S2
-    S8 --> S3
-    S8 --> NUnit
-```
+| # | Diagrama | Archivo |
+|:-:|----------|---------|
+| 06a | Visión general de namespaces | [packages/06a-overview.md](packages/06a-overview.md) |
+| 06b | Namespace Network | [packages/06b-network.md](packages/06b-network.md) |
+| 06c | Namespace Tangible | [packages/06c-tangible.md](packages/06c-tangible.md) |
+| 06d | Namespace Simulation | [packages/06d-simulation.md](packages/06d-simulation.md) |
+| 06e | Namespace UI | [packages/06e-ui.md](packages/06e-ui.md) |
+| 06f | Dependencias entre namespaces | [packages/06f-dependencies.md](packages/06f-dependencies.md) |
 
 ## Resumen de Namespaces
 
