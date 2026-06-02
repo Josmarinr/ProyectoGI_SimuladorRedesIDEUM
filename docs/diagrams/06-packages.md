@@ -1,6 +1,12 @@
 # DC-06: Diagrama de Paquetes (Namespaces)
 
 > **Propósito**: Mostrar la organización del código en namespaces y sus dependencias.
+>
+> **Proyecto:** Simulador de Redes Tangible IDEUM
+> **Autor:** Johan Sebastian Marin Rojas
+> **Director:** Prof. Paulo Alonso Gaona Garcia
+> **Grupo de Investigación:** Multimedia Interactiva
+> **Universidad:** Universidad Distrital Francisco Jose de Caldas
 
 ```mermaid
 graph TB
