@@ -61,8 +61,8 @@ graph TB
 
 | Escena | SceneSetup | Uso en Build |
 |--------|:----------:|:------------:|
-| `Assets/Main.unity` | ✅ Sí | **Principal** — índice 0 en Build Settings |
-| `Assets/Scenes/GetStarted_Scene.unity` | ❌ No | Backup — **NO incluir en build** |
+| `Assets/Main.unity` | Si | **Principal** — indice 0 en Build Settings |
+| `Assets/Scenes/GetStarted_Scene.unity` | No | Backup — **NO incluir en build** |
 
 ## Build Pipeline
 

@@ -1,10 +1,10 @@
 # Documentación — SimuladorRedes IDEUM
 
-> 📚 Índice completo de documentación técnica, manuales y diagramas del proyecto.
+> Indice completo de documentacion tecnica, manuales y diagramas del proyecto.
 
 ---
 
-## 📐 Diagramas UML
+## Diagramas UML
 
 ### Diagramas de Casos de Uso (5 sub-diagramas)
 | Archivo | Sub-diagramas |
@@ -49,7 +49,7 @@
 
 ---
 
-## 📘 API Reference
+## API Reference
 
 | Archivo | Contenido |
 |---------|-----------|
@@ -65,7 +65,7 @@
 
 ---
 
-## 📗 Manuales
+## Manuales
 
 | Archivo | Audiencia | Contenido |
 |---------|-----------|-----------|
@@ -74,7 +74,7 @@
 
 ---
 
-## 📊 Estadísticas del Proyecto
+## Estadisticas del Proyecto
 
 | Métrica | Valor |
 |---------|:-----:|
@@ -94,7 +94,7 @@
 
 ---
 
-## 🔗 Enlaces Rápidos
+## Enlaces Rapidos
 
 - [README principal](../README.md) — Descripción general del proyecto
 - [ROADMAP](../ROADMAP.md) — Backlog de tareas pendientes y completadas

@@ -38,7 +38,7 @@ Los estudiantes pueden:
 - **Configurar VLANs, ACLs y NAT**
 - **Obtener una calificación** basada en su desempeño
 
-> 💡 **Sin mesa IDEUM**: También funciona en PC normal con teclado, activando el modo Debug (ver Sección 3).
+> **Sin mesa IDEUM**: También funciona en PC normal con teclado, activando el modo Debug (ver Sección 3).
 
 ---
 
@@ -97,7 +97,7 @@ Si no tienes discos físicos, activa el modo de simulación por teclado:
 | **R** | Eliminar dispositivo seleccionado |
 | **ESC** | Volver / Cerrar panel |
 
-> ⚠️ En producción (mesa IDEUM), el modo teclado está desactivado. Usa los discos físicos.
+> En producción (mesa IDEUM), el modo teclado está desactivado. Usa los discos físicos.
 
 ### Navegar por los Menús
 
@@ -193,14 +193,14 @@ Cierra la aplicación.
 
 | Disco | Tecla | Tipo | Color | Cómo usarlo |
 |:-----:|:-----:|------|-------|-------------|
-| 1 | 1 | **Router** 🟦 Azul | Colocar sobre la mesa para crear un router |
-| 2 | 2 | **Switch** 🟩 Cyan | Colocar para crear un switch |
-| 3 | 3 | **PC** 🟩 Verde | Colocar para crear un PC |
-| 4 | 4 | **Enlace** 🟨 Amarillo | **Virtual**: se crean automáticamente al acercar nodos o manualmente en modo CONEXIÓN |
-| 5 | 5 | **Fallo** 🟥 Rojo | **Virtual**: generado por Actividad 1 (Encuentra el Fallo) |
-| 6 | - | **Protocolo** 🟪 Magenta | **Virtual**: seleccionado en Actividad 5 (Protocolo de Enrutamiento Dinámico Tangible) |
+| 1 | 1 | **Router** | Azul | Colocar sobre la mesa para crear un router |
+| 2 | 2 | **Switch** | Cyan | Colocar para crear un switch |
+| 3 | 3 | **PC** | Verde | Colocar para crear un PC |
+| 4 | 4 | **Enlace** | Amarillo | **Virtual**: se crean automáticamente al acercar nodos o manualmente en modo CONEXIÓN |
+| 5 | 5 | **Fallo** | Rojo | **Virtual**: generado por Actividad 1 (Encuentra el Fallo) |
+| 6 | - | **Protocolo** | Magenta | **Virtual**: seleccionado en Actividad 5 (Protocolo de Enrutamiento Dinámico Tangible) |
 
-> 💡 En modo Debug (PC sin mesa IDEUM), las teclas 1-6 simulan todos los discos. En producción, solo los 3 físicos existen en la mesa.
+> En modo Debug (PC sin mesa IDEUM), las teclas 1-6 simulan todos los discos. En producción, solo los 3 físicos existen en la mesa.
 
 ### Agregar Dispositivos sin Discos Físicos (Botones Táctiles)
 
@@ -212,7 +212,7 @@ En el panel superior derecho (HUD de simulación), hay botones para agregar disp
 | **SWITCH** | Agrega un switch en una posición predefinida |
 | **PC** | Agrega un PC en una posición predefinida |
 
-> 💡 Útil cuando no tienes todos los discos físicos disponibles o para pruebas rápidas.
+> Util cuando no tienes todos los discos físicos disponibles o para pruebas rápidas.
 
 ### Panel de Dispositivos (Esquina Superior Izquierda)
 
@@ -230,22 +230,22 @@ Cuando colocas un disco cerca de otro (< 300px de distancia), el sistema los con
 
 Estos discos **no existen físicamente** en la mesa IDEUM. Se configuran desde las actividades académicas mediante botones e inputs en la UI:
 
-| ID | Dispo | Qué hace |
+| ID | Disco | Que hace |
 |:--:|-------|----------|
-| 7 | **RedDestino** 🟧 | Define la red de destino de la ruta |
-| 8 | **Métrica** 🟨 | Ajusta la métrica a 10 en la última ruta |
-| 9 | **InterfazSalida** 🟦 | Define la interfaz de salida (G0/0-G0/3) |
-| 10 | **ModoEnrutamiento** 🩷 | Cambia entre Static, RIP, OSPF y EIGRP |
-| 11 | **IpRoute** 🟩 | Agrega ruta por defecto (0.0.0.0/0) |
-| 12 | **Destino** 🟣 | Define la red de destino (alias de RedDestino) |
-| 13 | **Máscara** 🟦 | Define la máscara de subred |
-| 14 | **PróximoSalto** 🟦 | Define el next hop |
-| 15 | **Vecino** 🟧 | Router vecino para enrutamiento dinámico (config. desde Actividad 5) |
-| 16 | **AnunciarRed** 🟥 | Red personalizada a anunciar en RIP/OSPF/EIGRP (config. desde Actividad 5) |
-| 17 | **Costo** 🟩 | Costo OSPF personalizado (config. desde Actividad 5, default=calculado por BW) |
-| 18 | **BW** 🟦 | Ancho de banda para cálculo de costo OSPF (config. desde Actividad 5) |
+| 7 | RedDestino | Define la red de destino de la ruta |
+| 8 | Metrica | Ajusta la metrica a 10 en la ultima ruta |
+| 9 | InterfazSalida | Define la interfaz de salida (G0/0-G0/3) |
+| 10 | ModoEnrutamiento | Cambia entre Static, RIP, OSPF y EIGRP |
+| 11 | IpRoute | Agrega ruta por defecto (0.0.0.0/0) |
+| 12 | Destino | Define la red de destino (alias de RedDestino) |
+| 13 | Mascara | Define la mascara de subred |
+| 14 | ProximoSalto | Define el next hop |
+| 15 | Vecino | Router vecino para enrutamiento dinamico |
+| 16 | AnunciarRed | Red personalizada a anunciar en RIP/OSPF/EIGRP |
+| 17 | Costo | Costo OSPF personalizado |
+| 18 | BW | Ancho de banda para calculo de costo OSPF |
 
-> 💡 **Discos 15-18**: Son completamente virtuales. Se configuran desde la sección **"Config. Avanzada"** en el panel de Enrutamiento Dinámico (Actividad 5). No existen físicamente en la mesa IDEUM.
+> **Discos 15-18**: Son completamente virtuales. Se configuran desde la seccion **"Config. Avanzada"** en el panel de Enrutamiento Dinamico (Actividad 5). No existen fisicamente en la mesa IDEUM.
 
 #### Cómo Configurar una Ruta (Actividad 4 — Enrutamiento Estático)
 
@@ -268,13 +268,13 @@ Estos discos **no existen físicamente** en la mesa IDEUM. Se configuran desde l
 
 El sistema detecta automáticamente qué tipo de topología estás construyendo:
 
-| Tipo | Cómo identificarlo |
+| Tipo | Como identificarlo |
 |------|--------------------|
-| ⭐ **Estrella** | Un nodo central conectado a varios periféricos |
-| 📏 **Bus** | Nodos en línea recta |
-| ⭕ **Anillo** | Nodos conectados en ciclo cerrado |
-| 🌳 **Árbol** | Estructura jerárquica con routers y switches |
-| 🔁 **Malla** | Todos los nodos conectados entre sí |
+| **Estrella** | Un nodo central conectado a varios perifericos |
+| **Bus** | Nodos en línea recta |
+| **Anillo** | Nodos conectados en ciclo cerrado |
+| **Arbol** | Estructura jerarquica con routers y switches |
+| **Malla** | Todos los nodos conectados entre si |
 
 El tipo aparece en el panel de información (esquina superior derecha).
 
@@ -317,12 +317,12 @@ Tú debes seleccionar la MEJOR ruta según:
 
 **Ejemplo**: Para llegar a `10.1.1.100`:
 
-| Ruta | ¿Gana? | Razón |
-|------|:------:|-------|
-| `10.0.0.0/8` RIP 5 | ✗ | Menos específica |
-| `10.1.0.0/16` OSPF 3 | ✗ | Menos específica |
-| **`10.1.1.0/24` Static 1** | **✅** | **Más específica** |
-| `0.0.0.0/0` Static 1 | ✗ | Default, menos prioridad |
+| Ruta | Gana | Razón |
+|------|:----:|-------|
+| `10.0.0.0/8` RIP 5 | No | Menos especifica |
+| `10.1.0.0/16` OSPF 3 | No | Menos especifica |
+| **`10.1.1.0/24` Static 1** | **Si** | **Mas especifica** |
+| `0.0.0.0/0` Static 1 | No | Default, menos prioridad |
 
 ### 6.4 Enrutamiento Estático
 
@@ -351,7 +351,7 @@ Simula el intercambio de rutas entre routers:
 2. Selecciona **RIP** (conteo de hops) u **OSPF** (costo por enlace)
 3. Presiona "INICIAR PROTOCOLO"
 4. Cada 3 segundos los routers intercambian rutas
-5. Cuando todos los routers conocen todas las redes → **Convergencia alcanzada** ✅
+5. Cuando todos los routers conocen todas las redes → **Convergencia alcanzada**
 6. Prueba conectividad con PING
 
 #### Configuración Avanzada (Discos Virtuales 15-18)
@@ -375,13 +375,13 @@ Para usar:
 
 5 escenarios con niveles de dificultad creciente:
 
-| # | Escenario | Dificultad | Descripción |
+| # | Escenario | Dificultad | Descripcion |
 |:-:|-----------|:----------:|-------------|
-| 0 | Estrella Simple | 🟢 Básico | 1 switch, 3 PCs |
-| 1 | Dos Routers | 🟡 Intermedio | 2 routers, 1 switch, 2 PCs |
-| 2 | Topología en Anillo | 🟡 Intermedio | 4 routers en anillo |
-| 3 | Red en Árbol | 🔴 Avanzado | Router raíz + switches + PCs |
-| 4 | Detectar Fallos | 🟡 Intermedio | Red con fallos preconfigurados |
+| 0 | Estrella Simple | Basico | 1 switch, 3 PCs |
+| 1 | Dos Routers | Intermedio | 2 routers, 1 switch, 2 PCs |
+| 2 | Topologia en Anillo | Intermedio | 4 routers en anillo |
+| 3 | Red en Arbol | Avanzado | Router raiz + switches + PCs |
+| 4 | Detectar Fallos | Intermedio | Red con fallos preconfigurados |
 
 ---
 
@@ -393,7 +393,7 @@ Cuando estás en una simulación, verás varios paneles:
 
 ```
 ┌──────────────────────┐
-│ 🌐 TOPOLOGÍA      [i] │
+│ TOPOLOGIA      [i] │
 │────────────────────────│
 │ Tipo: Estrella         │
 │ Enlaces: 3             │
@@ -547,7 +547,7 @@ Cuando haces ping exitoso:
 
 1. Un **paquete amarillo** aparece en el nodo origen
 2. El paquete viaja por cada enlace siguiendo la ruta
-3. Al llegar: el paquete se vuelve **verde** ✅ (éxito) o **rojo** ❌ (fallo)
+3. Al llegar: el paquete se vuelve **verde** (exito) o **rojo** (fallo)
 4. Se muestra el tiempo de respuesta
 
 ### ¿Por qué Puede Fallar un Ping?
@@ -578,13 +578,13 @@ Cuando haces ping exitoso:
 
 ### Escala de Notas
 
-| Puntaje Mínimo | Nota | Descripción |
+| Puntaje Minimo | Nota | Descripcion |
 |:--------------:|:----:|:-----------:|
-| 500 | 5 | ⭐ Excelente |
-| 400 | 4 | ✅ Bueno |
-| 300 | 3 | 📘 Regular |
-| 200 | 2 | ⚠️ Insuficiente |
-| < 200 | 1 | ❌ Reprobado |
+| 500 | 5 | Excelente |
+| 400 | 4 | Bueno |
+| 300 | 3 | Regular |
+| 200 | 2 | Insuficiente |
+| < 200 | 1 | Reprobado |
 
 ### Dónde Ver tu Puntaje
 

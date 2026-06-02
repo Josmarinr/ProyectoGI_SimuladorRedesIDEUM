@@ -15,7 +15,7 @@ stateDiagram-v2
     Partial_2Fields --> Partial_3Fields: Disco ProximoSalto (ID 14)<br/>→ NextHop set
     Partial_2Fields_IF --> Partial_3Fields: Disco Mascara<br/>→ SubnetMask set
 
-    Partial_3Fields --> Complete: Disco InterfazSalida (ID 9)<br/>→ OutInterface set<br/>IsComplete = true ✅
+    Partial_3Fields --> Complete: Disco InterfazSalida (ID 9)<br/>→ OutInterface set<br/>IsComplete = true
 
     Complete --> Applied: TryAddRoute → IsComplete<br/>→ ApplyToRouter()
     Applied --> Empty: Reset()<br/>(Protocol se conserva)
@@ -41,11 +41,11 @@ stateDiagram-v2
 
 | Campo | Set por disco | Requerido para IsComplete |
 |-------|:------------:|:-------------------------:|
-| `DestinationNetwork` | 7 (RedDestino), 12 (Destino) | ✅ Sí |
-| `SubnetMask` | 13 (Mascara) | ✅ Sí |
-| `NextHop` | 14 (ProximoSalto) | ✅ Sí |
-| `OutInterface` | 9 (InterfazSalida) | ✅ Sí |
-| `Protocol` | 10 (ModoEnrutamiento) | ❌ No (default "Static") |
+| `DestinationNetwork` | 7 (RedDestino), 12 (Destino) | Si |
+| `SubnetMask` | 13 (Mascara) | Si |
+| `NextHop` | 14 (ProximoSalto) | Si |
+| `OutInterface` | 9 (InterfazSalida) | Si |
+| `Protocol` | 10 (ModoEnrutamiento) | No (default "Static") |
 
 ## Reglas de Transición
 

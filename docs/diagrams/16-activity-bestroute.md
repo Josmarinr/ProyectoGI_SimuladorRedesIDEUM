@@ -21,15 +21,15 @@ graph TB
 
     G --> H{¿Es correcta?}
 
-    H -->|Sí| I[✅ +1 punto<br/>Muestra explicación]
-    H -->|No| J[❌ Muestra respuesta correcta<br/>con explicación detallada]
+    H -->|Sí| I[+1 punto<br/>Muestra explicación]
+    H -->|No| J[Muestra respuesta correcta<br/>con explicación detallada]
 
     I --> K[Siguiente escenario<br/>o resultados finales]
     J --> K
 
     K --> L{¿Quedan más<br/>escenarios?}
     L -->|Sí| B
-    L -->|No| M[🏁 Muestra puntaje final<br/>X/4 correctas]
+    L -->|No| M[Muestra puntaje final<br/>X/4 correctas]
 
     M --> N([Menú Actividades])
 ```

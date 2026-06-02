@@ -41,7 +41,7 @@ stateDiagram-v2
 | Evento | Disparador | Suscriptores |
 |--------|-----------|--------------|
 | `OnProtocolLog(string)` | Cada anuncio, cada cambio | Panel UI (actualiza texto de estado) |
-| `OnConvergence()` | Cuando `changed == false` en un ciclo completo | Panel UI (muestra mensaje verde ✅) |
+| `OnConvergence()` | Cuando `changed == false` en un ciclo completo | Panel UI (muestra mensaje verde) |
 
 ## Constantes
 

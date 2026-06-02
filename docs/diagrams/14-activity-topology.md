@@ -18,11 +18,11 @@ graph TB
     J --> K[Analiza grado de nodos<br/>y número de enlaces]
     K --> L{¿Qué topología es?}
 
-    L -->|1 nodo| M[⭐ Estrella]
-    L -->|Enlaces = n*(n-1)/2| N[🔁 Malla]
-    L -->|Enlaces = nodos| O[⭕ Anillo]
+    L -->|1 nodo| M[Estrella]
+    L -->|Enlaces = n*(n-1)/2| N[Malla]
+    L -->|Enlaces = nodos| O[Anillo]
     L -->|1 switch + routers| M
-    L -->|2+ routers + switches| P[🌳 Árbol]
+    L -->|2+ routers + switches| P[Arbol]
     L -->|Default| Q[📏 Bus]
 
     M --> R[Actualiza TopologyInfoPanel<br/>con tipo detectado]

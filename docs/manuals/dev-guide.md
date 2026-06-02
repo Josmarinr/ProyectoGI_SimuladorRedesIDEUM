@@ -239,32 +239,32 @@ Assets/
 ### Anti-patrones a Evitar
 
 ```csharp
-// ❌ MAL: FindAnyObjectByType (antes FindObjectOfType) en Update
+// MAL: FindAnyObjectByType (antes FindObjectOfType) en Update
 void Update() {
     var tm = FindAnyObjectByType<TopologyManager>(); // NO
 }
 
-// ✅ BIEN: Cachear referencia en Start
+// BIEN: Cachear referencia en Start
 TopologyManager tm;
 void Start() { tm = FindAnyObjectByType<TopologyManager>(); }
 
-// ❌ MAL: Lambda capturando variable mutable
+// MAL: Lambda capturando variable mutable
 for (int i = 0; i < 10; i++) {
     button.onClick.AddListener(() => DoSomething(i)); // i cambia!
 }
 
-// ✅ BIEN: Capturar en variable local
+// BIEN: Capturar en variable local
 for (int i = 0; i < 10; i++) {
     int captured = i;
     button.onClick.AddListener(() => DoSomething(captured));
 }
 
-// ❌ MAL: No desuscribirse en OnDestroy
+// MAL: No desuscribirse en OnDestroy
 void OnDestroy() {
     // topology.OnNodeAdded -= OnNodeAdded; // FALTA!
 }
 
-// ✅ BIEN: Siempre desuscribir
+// BIEN: Siempre desuscribir
 void OnDestroy() {
     if (topology != null)
         topology.OnNodeAdded -= OnNodeAdded;

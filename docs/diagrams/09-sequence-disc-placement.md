@@ -59,7 +59,7 @@ sequenceDiagram
         NV->>NV: DrawLinks()
     end
 
-    Note over Estudiante,DP: Nodo visible en pantalla 🟦
+    Note over Estudiante,DP: Nodo visible en pantalla
 ```
 
 ## Variante: Debug sin Discos Físicos

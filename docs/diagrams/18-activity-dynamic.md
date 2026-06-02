@@ -15,7 +15,7 @@ graph TB
 
     F --> G[Verifica ≥2 routers<br/>con IPs válidas]
     G --> H{¿Válido?}
-    H -->|No| I[❌ Mensaje: "Se necesitan<br/>al menos 2 routers"]
+    H -->|No| I[Mensaje: "Se necesitan<br/>al menos 2 routers"]
     H -->|Sí| J[Inicializa RouterAdvertState<br/>para cada router]
 
     J --> K[DynamicRoutingProtocol<br/>inicia coroutine RunProtocolLoop]
@@ -33,14 +33,14 @@ graph TB
     Q -->|Sí| L
     Q -->|No| R[Marca convergencia<br/>OnConvergence disparado]
 
-    R --> S[✅ Panel muestra:<br/>"Convergencia alcanzada"<br/>Rutas compartidas: N]
+    R --> S[Panel muestra:<br/>"Convergencia alcanzada"<br/>Rutas compartidas: N]
 
     S --> T[Estudiante puede<br/>PROBAR CONECTIVIDAD<br/>con ping entre PCs]
 
     T --> U([Menú Actividades])
 
     L --> V{Iteraciones<br/>> 10?}
-    V -->|Sí| W[⚠️ "Límite alcanzado<br/>sin convergencia total"]
+    V -->|Sí| W["Limite alcanzado<br/>sin convergencia total"]
     W --> T
 ```
 

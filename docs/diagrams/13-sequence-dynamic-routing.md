@@ -40,7 +40,7 @@ sequenceDiagram
         else Sin cambios
             DRP->>DRP: isConverged = true
             DRP->>DRP: OnConvergence()
-            DRP->>Panel: OnProtocolLog("✅ Convergencia alcanzada")
+            DRP->>Panel: OnProtocolLog("Convergencia alcanzada")
             Note right of Panel: Panel muestra mensaje verde
         end
     end
@@ -49,7 +49,7 @@ sequenceDiagram
 
     alt Límite alcanzado sin convergencia
         DRP->>DRP: StopProtocol()
-        DRP->>Panel: OnProtocolLog("⚠️ Límite de anuncios alcanzado")
+        DRP->>Panel: OnProtocolLog("Limite de anuncios alcanzado")
     end
 ```
 

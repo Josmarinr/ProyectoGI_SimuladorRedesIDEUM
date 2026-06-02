@@ -28,11 +28,11 @@ graph TB
     L --> M[Ejecuta TopologyManager.CheckConnectivity]
 
     M --> N{¿Conectividad<br/>exitosa?}
-    N -->|Sí| O[✅ Ping exitoso<br/>+10 puntos por ruta]
-    N -->|No| P[❌ Sin conectividad<br/>revisar configuración]
+    N -->|Sí| O[Ping exitoso<br/>+10 puntos por ruta]
+    N -->|No| P[Sin conectividad<br/>revisar configuración]
 
     O --> Q{¿Rutas estáticas<br/>completas?}
-    Q -->|Sí| R([🏁 Actividad completada])
+    Q -->|Sí| R([Actividad completada])
     Q -->|No| J
 
     P --> J

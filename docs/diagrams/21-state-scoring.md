@@ -42,13 +42,13 @@ stateDiagram-v2
 
 ## Escala de Notas
 
-| Puntaje Mínimo | Nota | Descripción |
+| Puntaje Minimo | Nota | Descripcion |
 |:--------------:|:----:|-------------|
-| 500 | 5 | ⭐ Excelente |
-| 400 | 4 | ✅ Bueno |
-| 300 | 3 | 📘 Regular |
-| 200 | 2 | ⚠️ Insuficiente |
-| < 200 | 1 | ❌ Reprobado |
+| 500 | 5 | Excelente |
+| 400 | 4 | Bueno |
+| 300 | 3 | Regular |
+| 200 | 2 | Insuficiente |
+| < 200 | 1 | Reprobado |
 
 ## Ejemplo de Sesión
 

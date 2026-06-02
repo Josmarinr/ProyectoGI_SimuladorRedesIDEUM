@@ -69,7 +69,7 @@ sequenceDiagram
 | RedDestino puesto | ✓ | ✗ | ✗ | ✗ | false |
 | + Mascara | ✓ | ✓ | ✗ | ✗ | false |
 | + ProximoSalto | ✓ | ✓ | ✓ | ✗ | false |
-| + InterfazSalida | ✓ | ✓ | ✓ | ✓ | **true** ✅ |
+| + InterfazSalida | Si | Si | Si | Si | **true** |
 | Tras ApplyToRouter | Limpio | Limpio | Limpio | Limpio | false |
 
 ## Archivos Relacionados

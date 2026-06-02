@@ -38,8 +38,8 @@ graph TB
     R --> S
 
     S --> T{¿Solución<br/>correcta?}
-    T -->|Sí| U[✅ Fallo resuelto<br/>Suma puntos]
-    T -->|No| V[❌ Fallo persiste<br/>Intenta de nuevo]
+    T -->|Sí| U[Fallo resuelto<br/>Suma puntos]
+    T -->|No| V[Fallo persiste<br/>Intenta de nuevo]
 
     U --> W[GenerateNewScenario<br/>o volver al menú]
     V --> J

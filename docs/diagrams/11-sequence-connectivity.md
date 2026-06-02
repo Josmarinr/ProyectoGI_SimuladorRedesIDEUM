@@ -57,9 +57,9 @@ sequenceDiagram
         Note right of PV: Paquete viaja de nodo en nodo<br/>siguiendo GetLinksOnPath()
 
         alt LLegada exitosa
-            PV->>PV: Paquete → verde ✅
+            PV->>PV: Paquete → verde
         else Fallo en el camino
-            PV->>PV: Paquete → rojo ❌
+            PV->>PV: Paquete → rojo
         end
 
         PV-->>SC: callback con resultado
