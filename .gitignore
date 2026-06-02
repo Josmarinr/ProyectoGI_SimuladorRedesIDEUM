@@ -55,12 +55,15 @@ mono_crash.*.json
 # Junk
 nul
 
-# AI agent configuration
+# AI agent configuration (operational - opencode runtime)
 .opencode/
 opencode.json
 AGENTS.md
 CODE_INDEX.md
 skills/
+
+# AI context folder (documentation hub for agents)
+ai/
 
 # Proposal, evaluation, presentation (research docs not for public repo)
 docs/anteproyecto-grado.md
