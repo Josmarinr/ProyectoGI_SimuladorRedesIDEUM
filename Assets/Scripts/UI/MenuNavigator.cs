@@ -28,8 +28,6 @@ namespace SimRedes.UI
         [SerializeField] private Color hoverColor = UIComponents.Colors.buttonHover;
         [SerializeField] private float selectScale = 1.15f;
         [SerializeField] private float animSpeed = 8f;
-        [SerializeField] private float normalWidth = 260f;
-        [SerializeField] private float normalHeight = 50f;
 
         private Vector3[] targetScales;
         private bool[] isHovered;
@@ -303,7 +301,6 @@ namespace SimRedes.UI
                     if (rt != null)
                     {
                         targetScales[i] = Vector3.one * selectScale;
-                        rt.sizeDelta = new Vector2(normalWidth * selectScale, normalHeight * selectScale);
                     }
 
                     if (text != null)
@@ -320,7 +317,6 @@ namespace SimRedes.UI
                     if (rt != null)
                     {
                         targetScales[i] = Vector3.one;
-                        rt.sizeDelta = new Vector2(normalWidth, normalHeight);
                     }
 
                     if (text != null)

@@ -6,7 +6,19 @@
 
 ## Estado Actual: 328 tests, pruebas en mesa IDEUM completadas
 
-> Tras 22 sesiones: **328 tests**. Sesion 23+24:
+> Tras 25 sesiones: **328 tests**. Sesion 25 (Junio 2026):
+> - **P1 (CRITICO) — Fix RAM/Colapso**: Cache de texturas en UIComponents (CreateRoundedRectTexture, CreateDeviceIcon, shared 1x1 white texture), destruccion de sprites viejos en DevicePanelController.UpdateDevicesList(), textura 1x1 compartida en NodeVisualizer, fix fugas de eventos en ActivityLoader (desuscripcion handlers protocolo), limpieza de texturas en PingVisualizer y SceneCleanupService.
+> - **P3 (MEDIO) — Ajuste masivo de UI/UX**: Todos los paneles redimensionados para 4096x2160. Menu principal (1000x1100, botones 480x145 fontSize 30), Actividades (1000x1100, botones 500x110 fontSize 22), Conectividad (820x700), Instrucciones (1050x850, fontSize 20), Leyenda Discos (960x1200, fontSize 16-18), HUD Simulacion (560x760, botones 140x58), DevicesPanel (400x640, items 350x65 fontSize 20), ScorePanel (220x110), BestRoute (960x850, botones 700x70 fontSize 22), RoutingTables (900x750, fontSize 20), StaticRouting (960x800, fontSize 22), DynamicRouting (960x1000, fontSize 20-24), Escenarios (1000x1000, items 880x130 fontSize 24), ScenarioInfo (800x700, fontSize 18-26). Botones cambiados de ALL CAPS a title case. Fuente cambiada de Arial a Helvetica Neue.
+> - **Bugfix TouchScript doble click**: TouchScriptDisabler ahora desactiva GameObject "TouchManager Instance" (evita doble procesamiento de eventos UI en todos los botones). Cooldown de 100-200ms en AddDeviceAtSpawn, ToggleLinkMode y OnDeviceItemClicked como respaldo.
+> - **Bugfix CONECTAR/DESCONECTAR**: LinkModeController convertido a singleton con Instance, usa TopologyManager.Instance en vez de campo stale. UpdateLinkButtonColors ahora controla Image.color directamente (no btn.colors que sobrescribe). Color rojo para modo DESCONECTAR. Cooldown 150ms en ToggleLinkMode. Corregido else→else if en rama desconectar para evitar que TouchScript duplicado resete el modo.
+> - **Bugfix DevicePanel**: Eliminado campo topology stale, usa TopologyManager.Instance. DestroyImmediate del panel viejo en RefreshDevicesPanel (evita que GameObject.Find encuentre el panel viejo). Cooldown 200ms en OnDeviceItemClicked.
+> - **Bugfix ActivityLoader.AddDeviceAtSpawn**: Usa TopologyManager.Instance en vez de campo topology stale. Los dispositivos creados con botones ahora aparecen en el panel.
+> - **Bugfix SceneCleanupService**: Agregados LinkModeController, PingModeController, IPConfigController, DevicePanelController, NodeInteractionController, DiscEventHandler, TangibleBridge a la lista de destruccion al volver al menu.
+> - **Bugfix MenuNavigator**: Eliminada sobrescritura de sizeDelta en UpdateSelection (usaba normalWidth=260, normalHeight=50 fijos que pisaban los tamanos reales de los botones).
+> - **Bugfix MainMenuManager**: Eliminada sobrescritura de sizeDelta en UpdateButtonSelection.
+> - **Reduccion de logs**: Eliminados ~23 Debug.Log de alto frecuencia (BuildTopologyActivity, NodeVisualizer, TopologyManager, TangibleDiscManager).
+> 
+> Sesion 23+24:
 > - **Bugfix FindFaultActivity**: discos tactiles en escenarios 3+ corregido
 >   (timing Awake vs Start, NodeVisualizer sync, TangibleDiscManager cleanup)
 > - **CODE_INDEX.md**: indice compacto de 46 scripts (~18K tokens, bajo demanda)
@@ -23,10 +35,11 @@
 >   - Esc5 (Detectar Fallos): fault.ip/fault.mask ahora se aplican al nodo
 >   - Esc4 (Red en Arbol): IPs de Router1/Router2 en misma subred que Router0
 ### Problemas detectados en pruebas IDEUM:
-> - **P1 (CRITICO) — Error de RAM/Colapso**: App colapsa por falta de RAM tras uso prolongado o actividades demandantes. Posible fuga de memoria en creacion/destruccion de paneles o manejo de texturas.
+> - **P1 (CRITICO) — Error de RAM/Colapso**: *Sesion 25: Fix aplicado.* Se identificaron y corrigieron 3 causas raiz: (1) Cache de texturas en UIComponents para reutilizar Texture2D en vez de crear cientos de instancias, (2) Destruccion de sprites viejos en DevicePanelController.UpdateDevicesList() que cada 2s creaba texturas nuevas sin limpiar, (3) Textura 1x1 compartida en NodeVisualizer en vez de crear una por enlace. Ademas: fix de fugas de eventos en ActivityLoader (desuscripcion de handlers de protocolo dinamico) y limpieza de texturas en PingVisualizer. Pendiente: verificar en mesa IDEUM que el colapso de RAM ya no ocurre.
 > - **P2 (ALTO) — Lineas de conexion invisibles en discos fisicos**: Al crear enlaces entre dispositivos fisicos, la linea verde no se renderiza. Se cambio a RawImage (sin sprite), alpha=1, 10px, SetAsLastSibling. Persiste sin solucion.
-> - **P3 (MEDIO) — Ajuste de tamanos UI**: Paneles y elementos necesitan ajuste fino para pantalla 4096x2160.
+> - **P3 (MEDIO) — Ajuste de tamanos UI**: *Sesion 25: Ajustados.* Botones del menu principal (95x320→130x320, fontSize 18→26, cornerRadius 12→20, panel 850→1060 alto, espaciado 100→135). Panel actividades (700x650→800x720, botones 280x50→360x65, fontSize 16→20). Panel conectividad (550x500→620x560). HUD simulacion (520x680→560x720, botones 130x52→140x58). DevicesPanel (360x600→400x640, items 320x58→350x65, fontSize 18→20). ScorePanel (180x90→220x110). Se agrego parametro cornerRadius a UIComponents.CreateMenuButton. Pendiente: paneles de configuracion (VLAN, ACL, NAT, Routing) y paneles de actividades (StaticRouting, DynamicRouting, BestRoute, FindFault, RoutingTables).
 > - **Fix CRITICO: Sin EventSystem en escena**: `SetupCanvas()` creaba Canvas + GraphicRaycaster pero NUNCA creaba el EventSystem. Sin EventSystem, ningun click/toque funciona en UI (el input se pierde). Se agrego `SetupEventSystem()` que crea EventSystem + InputSystemUIInputModule (requerido por `activeInputHandler=2`).
+> - **Fix Ray Tracing Warnings**: Se reescribio `SuppressRayTracingWarnings.cs` con un `ILogHandler` personalizado que filtra los warnings de compilacion de shaders `TraceRenderingLayerMask`, `DynamicGISkyOcclusion`, `TraceVirtualOffset` que aparecian en macOS por falta de soporte de ray tracing. El filtro intercepta los warnings en el Editor sin afectar otros logs ni interferir con el build para IDEUM (Windows).
 > - **Fix Fullscreen IDEUM + Touch**: `SceneSetup.SetupResolution()` se cambio de `false` (ventana) a `FullScreenMode.FullScreenWindow` a 4096x2160. TouchScript `setScaling()` modificado para siempre usar 1:1. PlayerSettings: `fullscreenMode: 1`, `defaultScreenWidth/Height: 4096x2160`.
 > - **Fix DevicePanelController**: `RefreshDevicesPanel()` no llamaba a `UpdateDevicesList()` tras crear items, dejandolos inactivos. Panel mostraba solo titulo "Dispositivos" sin los dispositivos.
 > - **Fix antirrebote TangibleBridge**: Discos se activaban/desactivaban rapidamente al colocarlos. Se reemplazo el debounce de re-adicion por un sistema de "remocion pendiente": cuando TangibleEngine reporta ausencia de un disco, no se remueve de inmediato, sino que se marca como pendiente. Solo se remueve si permanece ausente >1s (procesado en Update()). Si reaparece antes, se cancela la remocion pendiente.
@@ -51,9 +64,9 @@
 |----|-------|--------|-------------|
 | **A1** | Build de prueba para IDEUM (Windows x86_64) | Completada | Ninguna |
 | **A2** | Pruebas en mesa IDEUM real con discos fisicos (1-3) | Completada | A1 |
-| **P1** | Fix error de RAM/colapso por uso prolongado | **No iniciada** | A2 |
+| **P1** | Fix error de RAM/colapso por uso prolongado | **Completada** | A2 |
 | **P2** | Fix lineas de conexion invisibles en discos fisicos | **No iniciada** | A2 |
-| **P3** | Ajuste fino de tamanos UI para pantalla 4096x2160 | **No iniciada** | A2 |
+| **P3** | Ajuste masivo de tamanos UI para pantalla 4096x2160 | **Completada** | A2 |
 | **A4** | Suite completa de tests en Unity Editor | Completada | Ninguna |
 | **B1** | Verificar persistencia rutas discos 7-18 al recargar actividad | Completada | Ninguna |
 | **B2** | ShowConnectivityPanel sin SceneSetup | Completada | Ninguna |

@@ -61,7 +61,7 @@ namespace SimRedes.Tangible
 
             else if (keyboard[addEnlaceKey].wasPressedThisFrame)
             {
-                var linkMode = Object.FindAnyObjectByType<LinkModeController>();
+                var linkMode = LinkModeController.Instance;
                 if (linkMode != null)
                     linkMode.ToggleLinkMode("connect");
                 else

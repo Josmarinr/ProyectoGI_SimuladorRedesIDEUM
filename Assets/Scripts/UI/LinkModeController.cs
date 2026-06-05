@@ -7,18 +7,36 @@ namespace SimRedes.UI
 {
     public class LinkModeController : MonoBehaviour
     {
+        /// <summary>Instancia unica del LinkModeController. Usar esta en vez de FindAnyObjectByType.</summary>
+        public static LinkModeController Instance { get; private set; }
+
         private string currentLinkMode = null;
         private int linkModeFirstNode = -1;
         private Button connectBtn;
         private Button disconnectBtn;
-        private TopologyManager topology;
 
         private readonly Color activeButtonColor = new Color(0.2f, 0.7f, 0.3f, 1f);
         private readonly Color normalButtonColor = UIComponents.Colors.buttonNormal;
 
-        private void Start()
+        private void Awake()
         {
-            topology = Object.FindAnyObjectByType<TopologyManager>();
+            if (Instance != null && Instance != this)
+            {
+                // Ya hay una instancia vieja (de sesion anterior con Destroy diferido).
+                // Destruir la VIEJA y quedarse con esta (la nueva).
+                var oldGameObj = Instance.gameObject;
+                Instance = this;
+                Destroy(oldGameObj);
+            }
+            else
+            {
+                Instance = this;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
         }
 
         public void StoreLinkButtons(Button connect, Button disconnect)
@@ -27,10 +45,16 @@ namespace SimRedes.UI
             disconnectBtn = disconnect;
         }
 
+        private float lastToggleTime = 0f;
+
         public void ToggleLinkMode(string mode)
         {
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null) return;
+            // Ignorar eventos duplicados dentro de 150ms (TouchScript + InputSystem = doble clic)
+            if (Time.unscaledTime - lastToggleTime < 0.15f)
+                return;
+            lastToggleTime = Time.unscaledTime;
+
+            if (TopologyManager.Instance == null) return;
 
             if (currentLinkMode == mode)
             {
@@ -97,8 +121,7 @@ namespace SimRedes.UI
 
         public void HandleNodeLinkClick(int discId)
         {
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null) return;
+            if (TopologyManager.Instance == null) return;
 
             if (currentLinkMode == "connect")
             {
@@ -111,7 +134,7 @@ namespace SimRedes.UI
                 else if (linkModeFirstNode != discId)
                 {
                     UnhighlightAll();
-                    topology.AddLink(linkModeFirstNode, discId);
+                    TopologyManager.Instance.AddLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace creado entre {linkModeFirstNode} y {discId}");
                     // Forzar redibujado de enlaces visuales
                     var visualizer = GetVisualizer();
@@ -129,10 +152,10 @@ namespace SimRedes.UI
                     HighlightFirstNode();
                     Debug.Log($"[LinkMode] Primer nodo para desconectar: {discId}");
                 }
-                else
+                else if (linkModeFirstNode != discId)
                 {
                     UnhighlightAll();
-                    topology.RemoveLink(linkModeFirstNode, discId);
+                    TopologyManager.Instance.RemoveLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace eliminado entre {linkModeFirstNode} y {discId}");
                     // Forzar redibujado de enlaces visuales
                     var visualizer = GetVisualizer();
@@ -149,24 +172,29 @@ namespace SimRedes.UI
             linkModeFirstNode = -1;
         }
 
+        private readonly Color disconnectActiveColor = new Color(0.8f, 0.2f, 0.2f, 1f);
+
         private void UpdateLinkButtonColors()
         {
-            if (connectBtn != null)
-            {
-                var img = connectBtn.GetComponent<Image>();
-                if (img != null)
-                {
-                    img.color = currentLinkMode == "connect" ? activeButtonColor : normalButtonColor;
-                }
-            }
-            if (disconnectBtn != null)
-            {
-                var img = disconnectBtn.GetComponent<Image>();
-                if (img != null)
-                {
-                    img.color = currentLinkMode == "disconnect" ? activeButtonColor : normalButtonColor;
-                }
-            }
+            SetButtonColor(connectBtn, currentLinkMode == "connect", activeButtonColor);
+            SetButtonColor(disconnectBtn, currentLinkMode == "disconnect", disconnectActiveColor);
+        }
+
+        private void SetButtonColor(Button btn, bool isActive, Color activeColor)
+        {
+            if (btn == null) return;
+            // Desactivar transicion de color del Button para que no sobrescriba
+            var colors = btn.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = Color.white;
+            colors.pressedColor = Color.white;
+            colors.disabledColor = Color.white;
+            colors.colorMultiplier = 1f;
+            btn.colors = colors;
+            // Controlar el color via Image directamente
+            var img = btn.GetComponent<Image>();
+            if (img != null)
+                img.color = isActive ? activeColor : normalButtonColor;
         }
     }
 }

@@ -68,6 +68,7 @@ namespace SimRedes
         /// <summary>
         /// Re-aplica configuracion de camara (por si URP la sobrescribe),
         /// cachea referencias a managers y se suscribe a eventos de topologia.
+        /// Deshabilita TouchScriptInputModule para evitar dobles clicks.
         /// </summary>
         private void Start()
         {
@@ -177,6 +178,7 @@ namespace SimRedes
         /// Crea el EventSystem con InputSystemUIInputModule para que los clicks
         /// y el tactil funcionen con el nuevo Input System (activeInputHandler=2).
         /// Sin esto, los botones UI nunca reciben eventos de puntero.
+        /// TouchScript deshabilitado en Editor via TouchScriptDisabler para evitar dobles clicks.
         /// </summary>
         private void SetupEventSystem()
         {
@@ -519,7 +521,7 @@ namespace SimRedes
         // LinkMode
         public void ToggleLinkMode(string mode)
         {
-            var lm = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
+            var lm = LinkModeController.Instance;
             if (lm != null) lm.ToggleLinkMode(mode);
         }
 
@@ -528,7 +530,7 @@ namespace SimRedes
         /// </summary>
         public bool IsLinkModeActive()
         {
-            var lm = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
+            var lm = LinkModeController.Instance;
             return lm != null && lm.IsLinkModeActive();
         }
 

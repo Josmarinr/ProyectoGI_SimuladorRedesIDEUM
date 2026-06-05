@@ -1,7 +1,8 @@
 # Manual de Usuario — SimuladorRedes IDEUM
 
 > Simulador de redes académicas para mesas táctiles **IDEUM 55"**  
-> Versión: Junio 2026 · Plataforma: Windows 10 · Resolución: 4096x2160
+> Versión: Junio 2026 (Sesión 25) · Plataforma: Windows 10 · Resolución: 4096x2160  
+> UI: Helvetica Neue · Botones en title case · Paneles redimensionados para 4K
 
 ---
 
@@ -118,17 +119,18 @@ Al iniciar la aplicación se muestran 5 opciones:
 
 ```
 ┌─────────────────────────────────────┐
-│           SIMULADOR DE REDES        │
+│         SIMULADOR DE REDES          │
 │                                     │
-│  1.  INICIAR SIMULACIÓN             │
-│  2.  ACTIVIDADES                    │
-│  3.  PRUEBAS Y CONEXIONES           │
-│  4.  CÓMO USAR                      │
-│  5.  SALIR                          │
+│  1.  Iniciar Simulación             │
+│  2.  Actividades                    │
+│  3.  Pruebas y Conexiones           │
+│  4.  Cómo Usar                      │
+│  5.  Leyenda de Discos              │
+│  6.  Salir                          │
 └─────────────────────────────────────┘
 ```
 
-### Opción 1: INICIAR SIMULACIÓN
+### Opción 1: Iniciar Simulación
 
 Entra directamente al modo de simulación libre. Aquí puedes:
 
@@ -139,7 +141,7 @@ Entra directamente al modo de simulación libre. Aquí puedes:
 - Configurar VLANs, ACLs y NAT
 - Ver la topología detectada automáticamente
 
-### Opción 2: ACTIVIDADES
+### Opción 2: Actividades
 
 Panel con 7 actividades académicas numeradas (0-6):
 
@@ -153,7 +155,7 @@ Panel con 7 actividades académicas numeradas (0-6):
 | 5 | **Protocolo de Enrutamiento Dinámico Tangible** | Simula RIP, OSPF o EIGRP y observa la convergencia |
 | 6 | **Escenarios** | Carga escenarios preconfigurados con diferentes niveles |
 
-### Opción 3: PRUEBAS Y CONEXIONES
+### Opción 3: Pruebas y Conexiones
 
 Panel para pruebas rápidas de conectividad:
 
@@ -161,7 +163,7 @@ Panel para pruebas rápidas de conectividad:
 - Selecciona origen y destino
 - Haz ping y ve los resultados
 
-### Opción 4: LEYENDA DE DISCOS
+### Opción 4: Leyenda de Discos
 
 Panel visual que lista los **18 discos** del sistema en 3 secciones:
 
@@ -171,7 +173,7 @@ Panel visual que lista los **18 discos** del sistema en 3 secciones:
 
 Cada disco muestra su color, nombre y descripción. Incluye un hint sobre cómo configurar rutas usando los 4 campos básicos (Red Destino, Máscara, Next Hop, Interfaz).
 
-### Opción 5: CÓMO USAR
+### Opción 5: Cómo Usar
 
 Panel informativo con instrucciones detalladas en 2 columnas:
 
@@ -179,7 +181,7 @@ Panel informativo con instrucciones detalladas en 2 columnas:
 - Descripción de actividades
 - Conceptos de networking
 
-### Opción 6: SALIR
+### Opción 6: Salir
 
 Cierra la aplicación.
 

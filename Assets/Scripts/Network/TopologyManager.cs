@@ -98,7 +98,6 @@ namespace SimRedes.Network
                 nodes.Remove(discId);
                 links.RemoveAll(l => l.SourceNode.DiscId == discId || l.DestinationNode.DiscId == discId);
                 OnNodeRemoved?.Invoke(node);
-                UnityEngine.Debug.Log($"[Topology] Nodo eliminado: Disc {discId}");
             }
             OnTopologyChanged?.Invoke();
         }
@@ -137,7 +136,6 @@ namespace SimRedes.Network
                     var link = new NetworkLink(source, dest, srcInterface, dstInterface);
                     links.Add(link);
                     OnLinkAdded?.Invoke(link);
-                    UnityEngine.Debug.Log($"[Topology] Enlace creado: {source.Name} <-> {dest.Name}");
                     OnTopologyChanged?.Invoke();
                 }
             }

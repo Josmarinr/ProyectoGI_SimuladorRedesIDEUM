@@ -122,19 +122,15 @@ namespace SimRedes.Simulation
             var nodes = topologyManager.GetAllNodes();
             var links = topologyManager.GetAllLinks();
 
-            UnityEngine.Debug.Log($"[Detect] Nodos: {nodes.Count}, Enlaces: {links.Count}");
-
             if (nodes.Count < 2)
             {
                 currentTopology = TopologyType.Ninguna;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology}");
                 return;
             }
 
             int n = nodes.Count;
             int l = links.Count;
 
-            // Construir mapa de grado (numero de conexiones por nodo)
             var degree = new Dictionary<int, int>();
             foreach (var node in nodes) degree[node.DiscId] = 0;
             foreach (var link in links)
@@ -150,60 +146,51 @@ namespace SimRedes.Simulation
             int degree2 = degree.Values.Count(d => d == 2);
             int degreeNminus1 = degree.Values.Count(d => d == n - 1);
 
-            UnityEngine.Debug.Log($"[Detect] Grados: 1={degree1} 2={degree2} n-1={degreeNminus1}");
-
-            // 1. MALLA completa: cada nodo conectado a todos los demas
+            // 1. MALLA completa
             int perfectMeshLinks = n * (n - 1) / 2;
             if (l == perfectMeshLinks)
             {
                 currentTopology = TopologyType.Malla;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (mesh perfecto)");
                 return;
             }
 
-            // 2. ESTRELLA: 1 central (grado n-1), todos los demas hoja (grado 1)
+            // 2. ESTRELLA
             if (degreeNminus1 == 1 && degree1 == n - 1)
             {
                 currentTopology = TopologyType.Estrella;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (estrella)");
                 return;
             }
 
-            // 3. ANILLO: todos los nodos con grado 2, l == n
+            // 3. ANILLO
             if (l == n && degree2 == n)
             {
                 currentTopology = TopologyType.Anillo;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (anillo)");
                 return;
             }
 
-            // 4. BUS lineal: 2 extremos (grado 1), intermedios (grado 2), l == n-1
+            // 4. BUS lineal
             if (l == n - 1 && degree1 == 2 && degree2 == n - 2)
             {
                 currentTopology = TopologyType.Bus;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (bus)");
                 return;
             }
 
-            // 5. ARBOL: l == n-1 (conectado sin ciclos)
+            // 5. ARBOL
             if (l == n - 1)
             {
                 currentTopology = TopologyType.Arbol;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (arbol)");
                 return;
             }
 
-            // 6. MALLA parcial: mas enlaces que un arbol, menos que malla completa
+            // 6. MALLA parcial
             if (l > n - 1)
             {
                 currentTopology = TopologyType.Malla;
-                UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (malla parcial)");
-                return;
+                    return;
             }
 
             // 7. Por defecto
             currentTopology = TopologyType.Bus;
-            UnityEngine.Debug.Log($"[Detect] Topologia detectada: {currentTopology} (por defecto)");
         }
 
         /// <summary>

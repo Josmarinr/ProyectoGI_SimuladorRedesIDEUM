@@ -85,22 +85,22 @@ namespace SimRedes.UI
         public static GameObject CreateBestRoutePanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(520, 600), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(960, 850), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "BestRoutePanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Simulaci\u00f3n de Mejor Ruta", 24, new Vector2(0, 250), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Simulaci\u00f3n de Mejor Ruta", 44, new Vector2(0, 370), font);
 
             var destObj = new GameObject("DestIPText");
             destObj.transform.SetParent(panelObj.transform, false);
             var destRect = destObj.AddComponent<RectTransform>();
             destRect.anchorMin = new Vector2(0.5f, 0.5f);
             destRect.anchorMax = new Vector2(0.5f, 0.5f);
-            destRect.anchoredPosition = new Vector2(0, 190);
-            destRect.sizeDelta = new Vector2(460, 30);
+            destRect.anchoredPosition = new Vector2(0, 280);
+            destRect.sizeDelta = new Vector2(700, 50);
             var destText = destObj.AddComponent<Text>();
             destText.text = "Destino: --";
             destText.color = Color.white;
-            destText.fontSize = 16;
+            destText.fontSize = 26;
             destText.alignment = TextAnchor.MiddleCenter;
             destText.font = font;
 
@@ -109,12 +109,12 @@ namespace SimRedes.UI
             var resultRect = resultObj.AddComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0.5f, 0.5f);
             resultRect.anchorMax = new Vector2(0.5f, 0.5f);
-            resultRect.anchoredPosition = new Vector2(0, -200);
-            resultRect.sizeDelta = new Vector2(460, 60);
+            resultRect.anchoredPosition = new Vector2(0, -300);
+            resultRect.sizeDelta = new Vector2(700, 80);
             var resultText = resultObj.AddComponent<Text>();
             resultText.text = "Selecciona la mejor ruta para llegar al destino.";
             resultText.color = Color.white;
-            resultText.fontSize = 13;
+            resultText.fontSize = 22;
             resultText.alignment = TextAnchor.MiddleLeft;
             resultText.font = font;
 
@@ -123,19 +123,19 @@ namespace SimRedes.UI
             var scoreRect = scoreObj.AddComponent<RectTransform>();
             scoreRect.anchorMin = new Vector2(0.5f, 0.5f);
             scoreRect.anchorMax = new Vector2(0.5f, 0.5f);
-            scoreRect.anchoredPosition = new Vector2(0, -135);
-            scoreRect.sizeDelta = new Vector2(460, 30);
+            scoreRect.anchoredPosition = new Vector2(0, -190);
+            scoreRect.sizeDelta = new Vector2(700, 45);
             var scoreText = scoreObj.AddComponent<Text>();
             scoreText.text = "Puntaje: 0 / 0";
             scoreText.color = new Color(0.8f, 0.8f, 0.3f);
-            scoreText.fontSize = 14;
+            scoreText.fontSize = 24;
             scoreText.alignment = TextAnchor.MiddleCenter;
             scoreText.font = font;
 
-            Button nextBtn = UIComp.CreateMenuButton(panelObj.transform, "NextBtn", "SIGUIENTE", new Vector2(-80, -260), new Vector2(140, 40), font, 14);
+            Button nextBtn = UIComp.CreateMenuButton(panelObj.transform, "NextBtn", "Siguiente", new Vector2(-140, -380), new Vector2(220, 65), font, 24);
             nextBtn.gameObject.SetActive(false);
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(80, -260), new Vector2(140, 40), font, 14);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "Volver", new Vector2(140, -380), new Vector2(220, 65), font, 24);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
 
             var activity = UnityEngine.Object.FindAnyObjectByType<BestRouteActivity>();
@@ -316,18 +316,18 @@ namespace SimRedes.UI
         public static GameObject CreateRoutingTablesPanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(650, 500), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(900, 750), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "RoutingTablesPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Tabla de Enrutamiento Tangible", 24, new Vector2(0, 200), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Tabla de Enrutamiento Tangible", 38, new Vector2(0, 310), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
             var leftRect = leftPanel.AddComponent<RectTransform>();
             leftRect.anchorMin = new Vector2(0.5f, 0.5f);
             leftRect.anchorMax = new Vector2(0.5f, 0.5f);
-            leftRect.anchoredPosition = new Vector2(-140, 20);
-            leftRect.sizeDelta = new Vector2(280, 300);
+            leftRect.anchoredPosition = new Vector2(-200, 30);
+            leftRect.sizeDelta = new Vector2(380, 420);
             var leftText = leftPanel.AddComponent<Text>();
             leftText.text =                 "TABLA DE ENRUTAMIENTO TANGIBLE\n\n" +
                 "Visualiza la tabla de\n" +
@@ -336,22 +336,22 @@ namespace SimRedes.UI
                 "Presiona ACTUALIZAR para\n" +
                 "refrescar las tablas.";
             leftText.color = UIColors.textPrimary;
-            leftText.fontSize = 14;
+            leftText.fontSize = 20;
             leftText.alignment = TextAnchor.UpperLeft;
             leftText.font = font;
-            leftText.lineSpacing = 1.1f;
+            leftText.lineSpacing = 1.2f;
 
             var rightPanel = new GameObject("RightPanel");
             rightPanel.transform.SetParent(panelObj.transform, false);
             var rightRect = rightPanel.AddComponent<RectTransform>();
             rightRect.anchorMin = new Vector2(0.5f, 0.5f);
             rightRect.anchorMax = new Vector2(0.5f, 0.5f);
-            rightRect.anchoredPosition = new Vector2(140, 20);
-            rightRect.sizeDelta = new Vector2(280, 300);
+            rightRect.anchoredPosition = new Vector2(200, 30);
+            rightRect.sizeDelta = new Vector2(380, 420);
             var rightText = rightPanel.AddComponent<Text>();
             rightText.text = "RUTAS:\n\nNo hay routers.\n\nUsa la tecla 1 o coloca\ndiscos para anadir\nrouters.";
             rightText.color = UIColors.textAccent;
-            rightText.fontSize = 13;
+            rightText.fontSize = 20;
             rightText.alignment = TextAnchor.UpperLeft;
             rightText.font = font;
 
@@ -362,11 +362,11 @@ namespace SimRedes.UI
                 routingAct.infoText = leftText;
             }
 
-            Button refreshBtn = UIComp.CreateMenuButton(panelObj.transform, "RefreshBtn", "ACTUALIZAR", new Vector2(-80, -200), new Vector2(130, 40), font, 14);
+            Button refreshBtn = UIComp.CreateMenuButton(panelObj.transform, "RefreshBtn", "Actualizar", new Vector2(-140, -330), new Vector2(200, 60), font, 22);
             if (routingAct != null)
                 refreshBtn.onClick.AddListener(() => routingAct.RefreshRoutingTables());
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(80, -200), new Vector2(130, 40), font, 14);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "Volver", new Vector2(140, -330), new Vector2(200, 60), font, 22);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
 
             return panelObj;
@@ -383,18 +383,18 @@ namespace SimRedes.UI
         public static GameObject CreateStaticRoutingPanel(Transform canvas, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(650, 500), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(960, 800), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "StaticRoutingPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Enrutamiento Est\u00e1tico Tangible", 24, new Vector2(0, 200), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Enrutamiento Est\u00e1tico Tangible", 40, new Vector2(0, 350), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
             var leftRect = leftPanel.AddComponent<RectTransform>();
             leftRect.anchorMin = new Vector2(0.5f, 0.5f);
             leftRect.anchorMax = new Vector2(0.5f, 0.5f);
-            leftRect.anchoredPosition = new Vector2(-140, 20);
-            leftRect.sizeDelta = new Vector2(280, 300);
+            leftRect.anchoredPosition = new Vector2(-200, 40);
+            leftRect.sizeDelta = new Vector2(420, 400);
             var leftText = leftPanel.AddComponent<Text>();
             leftText.text = "ENRUTAMIENTO EST\u00c1TICO TANGIBLE\n\n" +
                 "Configura manualmente\nrutas en los routers.\n\n" +
@@ -404,22 +404,22 @@ namespace SimRedes.UI
                 "  TEST = Probar enrutamiento\n\n" +
                 "  P = Ping (teclado)";
             leftText.color = UIColors.textPrimary;
-            leftText.fontSize = 14;
+            leftText.fontSize = 22;
             leftText.alignment = TextAnchor.UpperLeft;
             leftText.font = font;
-            leftText.lineSpacing = 1.1f;
+            leftText.lineSpacing = 1.2f;
 
             var rightPanel = new GameObject("RightPanel");
             rightPanel.transform.SetParent(panelObj.transform, false);
             var rightRect = rightPanel.AddComponent<RectTransform>();
             rightRect.anchorMin = new Vector2(0.5f, 0.5f);
             rightRect.anchorMax = new Vector2(0.5f, 0.5f);
-            rightRect.anchoredPosition = new Vector2(140, 20);
-            rightRect.sizeDelta = new Vector2(280, 300);
+            rightRect.anchoredPosition = new Vector2(200, 40);
+            rightRect.sizeDelta = new Vector2(420, 400);
             var rightText = rightPanel.AddComponent<Text>();
             rightText.text = "RUTAS CONFIGURADAS:\n\nPresiona AÑADIR RUTA\npara agregar rutas de\nejemplo al router.";
             rightText.color = UIColors.textAccent;
-            rightText.fontSize = 12;
+            rightText.fontSize = 22;
             rightText.alignment = TextAnchor.UpperLeft;
             rightText.font = font;
 
@@ -434,30 +434,30 @@ namespace SimRedes.UI
                 feedbackRect.anchorMin = new Vector2(0.5f, 0f);
                 feedbackRect.anchorMax = new Vector2(0.5f, 0f);
                 feedbackRect.pivot = new Vector2(0.5f, 0f);
-                feedbackRect.anchoredPosition = new Vector2(0, 175);
-                feedbackRect.sizeDelta = new Vector2(500, 30);
+                feedbackRect.anchoredPosition = new Vector2(0, 245);
+                feedbackRect.sizeDelta = new Vector2(700, 45);
                 var feedbackTextComp = feedbackObj.AddComponent<Text>();
                 feedbackTextComp.text = "";
                 feedbackTextComp.color = UIColors.textAccent;
-                feedbackTextComp.fontSize = 14;
+                feedbackTextComp.fontSize = 22;
                 feedbackTextComp.alignment = TextAnchor.MiddleCenter;
                 feedbackTextComp.font = font;
                 staticAct.feedbackText = feedbackTextComp;
             }
 
-            Button manualBtn = UIComp.CreateMenuButton(panelObj.transform, "ManualRouteBtn", "AÑADIR MANUAL", new Vector2(-140, -100), new Vector2(130, 40), font, 14);
+            Button manualBtn = UIComp.CreateMenuButton(panelObj.transform, "ManualRouteBtn", "A\u00f1adir Manual", new Vector2(-220, -280), new Vector2(200, 60), font, 22);
             if (staticAct != null)
                 manualBtn.onClick.AddListener(() => staticAct.ShowAddRoutePanel());
 
-            Button addBtn = UIComp.CreateMenuButton(panelObj.transform, "AddRouteBtn", "AÑADIR RUTA", new Vector2(0, -100), new Vector2(130, 40), font, 14);
+            Button addBtn = UIComp.CreateMenuButton(panelObj.transform, "AddRouteBtn", "A\u00f1adir Ruta", new Vector2(0, -280), new Vector2(200, 60), font, 22);
             if (staticAct != null)
                 addBtn.onClick.AddListener(() => staticAct.AddSampleRoute());
 
-            Button testBtn = UIComp.CreateMenuButton(panelObj.transform, "TestRouteBtn", "TEST", new Vector2(140, -100), new Vector2(130, 40), font, 14);
+            Button testBtn = UIComp.CreateMenuButton(panelObj.transform, "TestRouteBtn", "Test", new Vector2(220, -280), new Vector2(200, 60), font, 22);
             if (staticAct != null)
                 testBtn.onClick.AddListener(() => staticAct.TestRouting());
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -170), new Vector2(140, 40), font, 14);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "Volver", new Vector2(0, -360), new Vector2(240, 65), font, 24);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
             return panelObj;
         }
@@ -490,18 +490,18 @@ namespace SimRedes.UI
             Action onSelectEIGRP = null)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(750, 820), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(960, 1000), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "DynamicRoutingPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Protocolo de Enrutamiento Din\u00e1mico Tangible", 24, new Vector2(0, 260), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Protocolo de Enrutamiento Din\u00e1mico Tangible", 40, new Vector2(0, 420), font);
 
             var leftPanel = new GameObject("LeftPanel");
             leftPanel.transform.SetParent(panelObj.transform, false);
             var leftRect = leftPanel.AddComponent<RectTransform>();
             leftRect.anchorMin = new Vector2(0.5f, 0.5f);
             leftRect.anchorMax = new Vector2(0.5f, 0.5f);
-            leftRect.anchoredPosition = new Vector2(-180, 10);
-            leftRect.sizeDelta = new Vector2(320, 340);
+            leftRect.anchoredPosition = new Vector2(-220, 30);
+            leftRect.sizeDelta = new Vector2(420, 380);
             var leftText = leftPanel.AddComponent<Text>();
             leftText.text =                 "PROTOCOLO DE ENRUTAMIENTO\n" +
                 "DIN\u00c1MICO TANGIBLE\n\n" +
@@ -511,7 +511,7 @@ namespace SimRedes.UI
                 "BOTONES:\n  START = Iniciar envio\n  STOP = Detener\n  LIMPIAR = Borrar rutas\n  VER RUTAS = Mostrar\n\n" +
                 "Usa teclas 1-4 para\ncrear la topologia.";
             leftText.color = UIColors.textPrimary;
-            leftText.fontSize = 14;
+            leftText.fontSize = 20;
             leftText.alignment = TextAnchor.UpperLeft;
             leftText.font = font;
             leftText.lineSpacing = 1.2f;
@@ -521,52 +521,52 @@ namespace SimRedes.UI
             var rightRect = rightPanel.AddComponent<RectTransform>();
             rightRect.anchorMin = new Vector2(0.5f, 0.5f);
             rightRect.anchorMax = new Vector2(0.5f, 0.5f);
-            rightRect.anchoredPosition = new Vector2(180, 10);
-            rightRect.sizeDelta = new Vector2(320, 340);
+            rightRect.anchoredPosition = new Vector2(220, 30);
+            rightRect.sizeDelta = new Vector2(420, 380);
             var rightText = rightPanel.AddComponent<Text>();
             rightText.text = "SIMULACION:\n\nProtocolo: Ninguno\n\nPresiona START para\niniciar el protocolo.";
             rightText.color = UIColors.textAccent;
-            rightText.fontSize = 14;
+            rightText.fontSize = 20;
             rightText.alignment = TextAnchor.UpperLeft;
             rightText.font = font;
             rightText.name = "StatusText";
 
-            float btnY = -165, btnSpacing = 110;
+            float btnY = -180, btnSpacing = 140;
 
             var dynAct = UnityEngine.Object.FindAnyObjectByType<DynamicRoutingActivity>();
 
-            Button ripBtn = UIComp.CreateMenuButton(panelObj.transform, "RIPBtn", "RIP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(95, 45), font, 16);
+            Button ripBtn = UIComp.CreateMenuButton(panelObj.transform, "RIPBtn", "RIP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(120, 55), font, 20);
             ripBtn.onClick.AddListener(() => {
                 UIPanelFactory.UpdateStatusText(panelObj, "RIP");
                 if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.RIP);
                 onSelectRIP?.Invoke();
             });
 
-            Button ospfBtn = UIComp.CreateMenuButton(panelObj.transform, "OSBFBtn", "OSPF", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(95, 45), font, 16);
+            Button ospfBtn = UIComp.CreateMenuButton(panelObj.transform, "OSBFBtn", "OSPF", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(120, 55), font, 20);
             ospfBtn.onClick.AddListener(() => {
                 UIPanelFactory.UpdateStatusText(panelObj, "OSPF");
                 if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.OSPF);
                 onSelectOSPF?.Invoke();
             });
 
-            Button eigrpBtn = UIComp.CreateMenuButton(panelObj.transform, "EIGRPBtn", "EIGRP", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(95, 45), font, 16);
+            Button eigrpBtn = UIComp.CreateMenuButton(panelObj.transform, "EIGRPBtn", "EIGRP", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(120, 55), font, 20);
             eigrpBtn.onClick.AddListener(() => {
                 UIPanelFactory.UpdateStatusText(panelObj, "EIGRP");
                 if (dynAct != null) dynAct.SetProtocol(RoutingProtocol.EIGRP);
                 onSelectEIGRP?.Invoke();
             });
 
-            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartBtn", "START", new Vector2(btnSpacing * 1.5f, btnY), new Vector2(95, 45), font, 16);
+            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartBtn", "START", new Vector2(btnSpacing * 1.5f, btnY), new Vector2(120, 55), font, 20);
             startBtn.onClick.AddListener(() => onStart?.Invoke(panelObj));
 
-            btnY -= 60;
-            Button stopBtn = UIComp.CreateMenuButton(panelObj.transform, "StopBtn", "STOP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(95, 40), font, 14);
+            btnY -= 70;
+            Button stopBtn = UIComp.CreateMenuButton(panelObj.transform, "StopBtn", "STOP", new Vector2(-btnSpacing * 1.5f, btnY), new Vector2(120, 50), font, 18);
             stopBtn.onClick.AddListener(() => onStop?.Invoke(panelObj));
 
-            Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(95, 40), font, 14);
+            Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "Limpiar", new Vector2(-btnSpacing * 0.5f, btnY), new Vector2(120, 50), font, 18);
             clearBtn.onClick.AddListener(() => onClearRoutes?.Invoke(panelObj));
 
-            Button viewBtn = UIComp.CreateMenuButton(panelObj.transform, "ViewBtn", "VER RUTAS", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(95, 40), font, 14);
+            Button viewBtn = UIComp.CreateMenuButton(panelObj.transform, "ViewBtn", "Ver Rutas", new Vector2(btnSpacing * 0.5f, btnY), new Vector2(120, 50), font, 18);
             viewBtn.onClick.AddListener(() => onViewRoutes?.Invoke(panelObj));
 
             var protocolStatusObj = new GameObject("ProtocolStatusText");
@@ -574,12 +574,12 @@ namespace SimRedes.UI
             var protoRect = protocolStatusObj.AddComponent<RectTransform>();
             protoRect.anchorMin = new Vector2(0.5f, 0.5f);
             protoRect.anchorMax = new Vector2(0.5f, 0.5f);
-            protoRect.anchoredPosition = new Vector2(0, 195);
-            protoRect.sizeDelta = new Vector2(400, 30);
+            protoRect.anchoredPosition = new Vector2(0, 280);
+            protoRect.sizeDelta = new Vector2(600, 40);
             var protoTextComp = protocolStatusObj.AddComponent<Text>();
             protoTextComp.text = "Protocolo: RIP";
             protoTextComp.color = new Color(0.3f, 0.8f, 1f);
-            protoTextComp.fontSize = 16;
+            protoTextComp.fontSize = 24;
             protoTextComp.alignment = TextAnchor.MiddleCenter;
             protoTextComp.font = font;
             protoTextComp.fontStyle = FontStyle.Bold;
@@ -595,12 +595,12 @@ namespace SimRedes.UI
                 feedbackRect.anchorMin = new Vector2(0.5f, 0f);
                 feedbackRect.anchorMax = new Vector2(0.5f, 0f);
                 feedbackRect.pivot = new Vector2(0.5f, 0f);
-                feedbackRect.anchoredPosition = new Vector2(0, 280);
-                feedbackRect.sizeDelta = new Vector2(500, 30);
+                feedbackRect.anchoredPosition = new Vector2(0, 320);
+                feedbackRect.sizeDelta = new Vector2(700, 45);
                 var feedbackTextComp = feedbackObj.AddComponent<Text>();
                 feedbackTextComp.text = "";
                 feedbackTextComp.color = UIColors.textAccent;
-                feedbackTextComp.fontSize = 14;
+                feedbackTextComp.fontSize = 20;
                 feedbackTextComp.alignment = TextAnchor.MiddleCenter;
                 feedbackTextComp.font = font;
                 dynAct.feedbackText = feedbackTextComp;
@@ -612,26 +612,23 @@ namespace SimRedes.UI
             dclRect.anchorMin = new Vector2(0.5f, 0.5f);
             dclRect.anchorMax = new Vector2(0.5f, 0.5f);
             dclRect.pivot = new Vector2(0.5f, 0.5f);
-            dclRect.anchoredPosition = new Vector2(0, -255);
-            dclRect.sizeDelta = new Vector2(650, 20);
+            dclRect.anchoredPosition = new Vector2(0, -270);
+            dclRect.sizeDelta = new Vector2(800, 28);
             var dclText = discConfigLabel.AddComponent<Text>();
             dclText.text = "--- CONFIG. AVANZADA (Discos Virtuales 15-18) ---";
             dclText.color = new Color(0.6f, 0.6f, 0.6f);
-            dclText.fontSize = 11;
+            dclText.fontSize = 16;
             dclText.alignment = TextAnchor.MiddleCenter;
             dclText.font = font;
 
-            /// <summary>
-            /// Crea una etiqueta de texto para la configuracion avanzada de discos virtuales.
-            /// </summary>
-            Text CreateConfigLabel(Transform parent, string text, Vector2 pos, float w, float h, int fsize)
+            Text CreateConfigLabel(string text, float y, float w = 220, float h = 28, int fsize = 16)
             {
                 var obj = new GameObject("ConfigLabel");
-                obj.transform.SetParent(parent, false);
+                obj.transform.SetParent(panelObj.transform, false);
                 var r = obj.AddComponent<RectTransform>();
                 r.anchorMin = new Vector2(0.5f, 0.5f);
                 r.anchorMax = new Vector2(0.5f, 0.5f);
-                r.anchoredPosition = pos;
+                r.anchoredPosition = new Vector2(-300, y);
                 r.sizeDelta = new Vector2(w, h);
                 var t = obj.AddComponent<Text>();
                 t.text = text; t.font = font; t.fontSize = fsize;
@@ -640,35 +637,35 @@ namespace SimRedes.UI
                 return t;
             }
 
-            float discY = -280;
-            CreateConfigLabel(panelObj.transform, "Vecino (15):", new Vector2(-250, discY), 200, 20, 11);
-            var neighborInput = UIComp.CreateInputField(panelObj.transform, "NeighborInput", new Vector2(-120, discY), new Vector2(140, 28), "", "Router1", font, 13);
-            Button neighborBtn = UIComp.CreateMenuButton(panelObj.transform, "NeighborBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
+            float discY = -305;
+            CreateConfigLabel("Vecino (15):", discY);
+            var neighborInput = UIComp.CreateInputField(panelObj.transform, "NeighborInput", new Vector2(-150, discY), new Vector2(200, 36), "", "Router1", font, 16);
+            Button neighborBtn = UIComp.CreateMenuButton(panelObj.transform, "NeighborBtn", "Aplicar", new Vector2(80, discY), new Vector2(120, 36), font, 15);
             if (onSetNeighbor != null) neighborBtn.onClick.AddListener(() => onSetNeighbor(neighborInput.text));
 
-            discY -= 22;
-            CreateConfigLabel(panelObj.transform, "Anunciar Red (16):", new Vector2(-250, discY), 200, 20, 11);
-            var networkInput = UIComp.CreateInputField(panelObj.transform, "NetworkInput", new Vector2(-120, discY), new Vector2(140, 28), "", "10.0.0.0/8", font, 13);
-            Button networkBtn = UIComp.CreateMenuButton(panelObj.transform, "NetworkBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
+            discY -= 28;
+            CreateConfigLabel("Anunciar Red (16):", discY);
+            var networkInput = UIComp.CreateInputField(panelObj.transform, "NetworkInput", new Vector2(-150, discY), new Vector2(200, 36), "", "10.0.0.0/8", font, 16);
+            Button networkBtn = UIComp.CreateMenuButton(panelObj.transform, "NetworkBtn", "Aplicar", new Vector2(80, discY), new Vector2(120, 36), font, 15);
             if (onSetNetwork != null) networkBtn.onClick.AddListener(() => onSetNetwork(networkInput.text));
 
-            discY -= 22;
-            CreateConfigLabel(panelObj.transform, "Costo/Delay (17):", new Vector2(-250, discY), 200, 20, 11);
-            var costInput = UIComp.CreateInputField(panelObj.transform, "CostInput", new Vector2(-120, discY), new Vector2(140, 28), "10", "10", font, 13);
-            Button costBtn = UIComp.CreateMenuButton(panelObj.transform, "CostBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
+            discY -= 28;
+            CreateConfigLabel("Costo/Delay (17):", discY);
+            var costInput = UIComp.CreateInputField(panelObj.transform, "CostInput", new Vector2(-150, discY), new Vector2(200, 36), "10", "10", font, 16);
+            Button costBtn = UIComp.CreateMenuButton(panelObj.transform, "CostBtn", "Aplicar", new Vector2(80, discY), new Vector2(120, 36), font, 15);
             if (onSetCost != null) costBtn.onClick.AddListener(() => {
                 if (int.TryParse(costInput.text, out int cost)) onSetCost(cost);
             });
 
-            discY -= 22;
-            CreateConfigLabel(panelObj.transform, "Ancho Banda (18):", new Vector2(-250, discY), 200, 20, 11);
-            var bwInput = UIComp.CreateInputField(panelObj.transform, "BWInput", new Vector2(-120, discY), new Vector2(140, 28), "1000", "1000", font, 13);
-            Button bwBtn = UIComp.CreateMenuButton(panelObj.transform, "BWBtn", "APLICAR", new Vector2(40, discY), new Vector2(80, 28), font, 11);
+            discY -= 28;
+            CreateConfigLabel("Ancho Banda (18):", discY);
+            var bwInput = UIComp.CreateInputField(panelObj.transform, "BWInput", new Vector2(-150, discY), new Vector2(200, 36), "1000", "1000", font, 16);
+            Button bwBtn = UIComp.CreateMenuButton(panelObj.transform, "BWBtn", "Aplicar", new Vector2(80, discY), new Vector2(120, 36), font, 15);
             if (onSetBW != null) bwBtn.onClick.AddListener(() => {
                 if (int.TryParse(bwInput.text, out int bw)) onSetBW(bw);
             });
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -385), new Vector2(140, 40), font, 14);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "Volver", new Vector2(0, -460), new Vector2(240, 65), font, 24);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
             return panelObj;
         }
@@ -687,13 +684,13 @@ namespace SimRedes.UI
             Action<int> onScenarioClick, Action onBack)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(800, 800), 25,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(1000, 1000), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "ScenariosPanel";
-            UIComp.CreateMenuTitle(panelObj.transform, "Escenarios Preconfigurados", 32, new Vector2(0, 320), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Escenarios Preconfigurados", 42, new Vector2(0, 430), font);
 
-            float startY = 170;
-            float itemSpacing = 115;
+            float startY = 190;
+            float itemSpacing = 150;
             int displayCount = Mathf.Min(scenarios.Count, 5);
 
             for (int i = 0; i < displayCount; i++)
@@ -708,11 +705,11 @@ namespace SimRedes.UI
                 itemRect.anchorMax = new Vector2(0.5f, 1f);
                 itemRect.pivot = new Vector2(0.5f, 1f);
                 itemRect.anchoredPosition = new Vector2(0, -startY - (i * itemSpacing));
-                itemRect.sizeDelta = new Vector2(700, 100);
+                itemRect.sizeDelta = new Vector2(880, 130);
 
                 var itemImg = itemBg.AddComponent<Image>();
-                Texture2D itemTex = UIComp.CreateRoundedRectTexture(700, 100, 15, UIColors.surfaceElevated, UIColors.borderAccent, 3f);
-                itemImg.sprite = Sprite.Create(itemTex, new Rect(0, 0, 700, 100), new Vector2(0.5f, 0.5f), 100);
+                Texture2D itemTex = UIComp.CreateRoundedRectTexture(880, 130, 18, UIColors.surfaceElevated, UIColors.borderAccent, 3f);
+                itemImg.sprite = Sprite.Create(itemTex, new Rect(0, 0, 880, 130), new Vector2(0.5f, 0.5f), 100);
                 itemImg.type = Image.Type.Sliced;
 
                 string difficultyText = scenario.difficulty == PredefinedScenarios.ScenarioDifficulty.Basico ? "BASICO" :
@@ -726,18 +723,18 @@ namespace SimRedes.UI
                 nameRect.anchorMin = new Vector2(0f, 0.5f);
                 nameRect.anchorMax = new Vector2(0.5f, 0.5f);
                 nameRect.pivot = new Vector2(0f, 0.5f);
-                nameRect.anchoredPosition = new Vector2(20, 18);
+                nameRect.anchoredPosition = new Vector2(25, 22);
                 nameRect.offsetMin = Vector2.zero;
-                nameRect.offsetMax = new Vector2(0, 25);
+                nameRect.offsetMax = new Vector2(0, 30);
                 var nameText = nameObj.AddComponent<Text>();
                 nameText.text = scenario.name;
                 nameText.font = font;
-                nameText.fontSize = 18;
+                nameText.fontSize = 24;
                 nameText.color = UIColors.textPrimary;
                 nameText.fontStyle = FontStyle.Bold;
                 nameText.alignment = TextAnchor.MiddleLeft;
                 nameText.resizeTextForBestFit = true;
-                nameText.resizeTextMinSize = 14;
+                nameText.resizeTextMinSize = 18;
 
                 var diffObj = new GameObject("Difficulty");
                 diffObj.transform.SetParent(itemBg.transform, false);
@@ -745,13 +742,13 @@ namespace SimRedes.UI
                 diffRect.anchorMin = new Vector2(0.5f, 0.5f);
                 diffRect.anchorMax = new Vector2(1f, 0.5f);
                 diffRect.pivot = new Vector2(0.5f, 0.5f);
-                diffRect.anchoredPosition = new Vector2(0, 18);
+                diffRect.anchoredPosition = new Vector2(0, 22);
                 diffRect.offsetMin = Vector2.zero;
-                diffRect.offsetMax = new Vector2(-20, 25);
+                diffRect.offsetMax = new Vector2(-25, 30);
                 var diffText = diffObj.AddComponent<Text>();
                 diffText.text = difficultyText;
                 diffText.font = font;
-                diffText.fontSize = 13;
+                diffText.fontSize = 18;
                 diffText.color = diffColor;
                 diffText.fontStyle = FontStyle.Bold;
                 diffText.alignment = TextAnchor.MiddleCenter;
@@ -762,12 +759,12 @@ namespace SimRedes.UI
                 descRect.anchorMin = new Vector2(0f, 0.5f);
                 descRect.anchorMax = new Vector2(1f, 0.5f);
                 descRect.pivot = new Vector2(0.5f, 0.5f);
-                descRect.anchoredPosition = new Vector2(0, -12);
-                descRect.sizeDelta = new Vector2(660, 25);
+                descRect.anchoredPosition = new Vector2(0, -18);
+                descRect.sizeDelta = new Vector2(840, 35);
                 var descText = descObj.AddComponent<Text>();
                 descText.text = scenario.description;
                 descText.font = font;
-                descText.fontSize = 14;
+                descText.fontSize = 20;
                 descText.color = UIColors.textSecondary;
                 descText.alignment = TextAnchor.MiddleCenter;
 
@@ -785,7 +782,7 @@ namespace SimRedes.UI
             if (navigator != null)
                 navigator.SetupPanel(panelObj, () => onBack?.Invoke());
 
-            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER", new Vector2(0, -360), new Vector2(200, 55), font, 20);
+            Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "Volver", new Vector2(0, -460), new Vector2(240, 65), font, 24);
             backBtn.onClick.AddListener(() => onBack?.Invoke());
             return panelObj;
         }
@@ -804,7 +801,7 @@ namespace SimRedes.UI
             Action onStart, Action onCancel)
         {
             Font font = UIPanelFactory.GetFont();
-            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(550, 500), 20,
+            GameObject panelObj = UIComp.CreateRoundedPanel(canvas, new Vector2(800, 700), 25,
                 UIColors.surfacePanel, UIColors.borderAccent);
             panelObj.name = "ScenarioInfoPanel";
 
@@ -814,34 +811,34 @@ namespace SimRedes.UI
             panelRect.pivot = new Vector2(0.5f, 0.5f);
             panelRect.anchoredPosition = Vector2.zero;
 
-            UIComp.CreateMenuTitle(panelObj.transform, scenario.name, 22, new Vector2(0, 200), font);
+            UIComp.CreateMenuTitle(panelObj.transform, scenario.name, 36, new Vector2(0, 290), font);
 
-            float yPos = 155;
-            float lineHeight = 30;
+            float yPos = 230;
+            float lineHeight = 40;
 
-            UIComp.CreateInfoText(panelObj.transform, "OBJETIVOS:", new Vector2(0, yPos), font, 14, UIColors.textAccent, true);
+            UIComp.CreateInfoText(panelObj.transform, "OBJETIVOS:", new Vector2(0, yPos), font, 22, UIColors.textAccent, true);
             yPos -= lineHeight;
 
             foreach (var obj in scenario.objectives)
             {
-                UIComp.CreateInfoText(panelObj.transform, "- " + obj, new Vector2(-20, yPos), font, 12, UIColors.textPrimary, false);
+                UIComp.CreateInfoText(panelObj.transform, "- " + obj, new Vector2(-20, yPos), font, 18, UIColors.textPrimary, false);
                 yPos -= lineHeight - 5;
             }
 
             yPos -= 10;
-            UIComp.CreateInfoText(panelObj.transform, "AYUDAS:", new Vector2(0, yPos), font, 14, UIColors.textSecondary, true);
+            UIComp.CreateInfoText(panelObj.transform, "AYUDAS:", new Vector2(0, yPos), font, 22, UIColors.textSecondary, true);
             yPos -= lineHeight;
 
             foreach (var hint in scenario.hints)
             {
-                UIComp.CreateInfoText(panelObj.transform, "* " + hint, new Vector2(-20, yPos), font, 11, UIColors.textSecondary, false);
+                UIComp.CreateInfoText(panelObj.transform, "* " + hint, new Vector2(-20, yPos), font, 18, UIColors.textSecondary, false);
                 yPos -= lineHeight - 5;
             }
 
-            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartScenarioBtn", "INICIAR", new Vector2(-80, -200), new Vector2(130, 45), font, 16);
+            Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartScenarioBtn", "Iniciar", new Vector2(-140, -300), new Vector2(220, 65), font, 26);
             startBtn.onClick.AddListener(() => { onStart?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
 
-            Button cancelBtn = UIComp.CreateMenuButton(panelObj.transform, "CancelBtn", "CANCELAR", new Vector2(80, -200), new Vector2(130, 45), font, 16);
+            Button cancelBtn = UIComp.CreateMenuButton(panelObj.transform, "CancelBtn", "Cancelar", new Vector2(140, -300), new Vector2(220, 65), font, 26);
             cancelBtn.onClick.AddListener(() => { onCancel?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
 
             return panelObj;

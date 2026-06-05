@@ -20,9 +20,15 @@ namespace SimRedes.Simulation
     {
         internal string selectedProtocol = null;
         private DynamicRoutingProtocol dynProtocol = null;
+        // Handlers almacenados para poder desuscribir eventos correctamente
+        private System.Action<string> onProtocolLogHandler;
+        private System.Action onConvergenceHandler;
         private TopologyManager topology;
         private Canvas canvas;
         private Font font;
+        // Proteccion contra doble clic (EventSystem puede generar 2 eventos con Both input mode)
+        private float lastAddTime = 0f;
+        private SimRedes.Network.DeviceType lastAddType = SimRedes.Network.DeviceType.Unknown;
         private int spawnIndex = 0;
         private Vector2[] spawnPositions = new Vector2[]
         {
@@ -35,6 +41,18 @@ namespace SimRedes.Simulation
         {
             topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
             canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
+        }
+
+        /// <summary>
+        /// Limpia las suscripciones a eventos del protocolo dinamico al destruirse.
+        /// </summary>
+        private void OnDestroy()
+        {
+            if (dynProtocol != null)
+            {
+                if (onProtocolLogHandler != null) dynProtocol.OnProtocolLog -= onProtocolLogHandler;
+                if (onConvergenceHandler != null) dynProtocol.OnConvergence -= onConvergenceHandler;
+            }
         }
 
         /// <summary>
@@ -299,14 +317,22 @@ namespace SimRedes.Simulation
         private void CreateSimulationHUDPanel(Transform ct)
         {
             var existingPanel = GameObject.Find("TopologyInfoPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                existingPanel.SetActive(false);
+                Destroy(existingPanel);
+            }
 
             var existingInfo = GameObject.Find("TopologyExamplePanel");
-            if (existingInfo != null) Destroy(existingInfo);
+            if (existingInfo != null)
+            {
+                existingInfo.SetActive(false);
+                Destroy(existingInfo);
+            }
 
             font = UIComp.GetFont();
 
-            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(520, 680), 20,
+            GameObject panelObj = UIComp.CreateRoundedPanel(ct, new Vector2(560, 760), 20,
                 UIColors.surfaceElevated, UIColors.borderAccent);
             panelObj.name = "TopologyInfoPanel";
 
@@ -316,53 +342,53 @@ namespace SimRedes.Simulation
             panelRect.pivot = new Vector2(1f, 1f);
             panelRect.anchoredPosition = new Vector2(-20, -20);
 
-            UIComp.CreateMenuTitle(panelObj.transform, "Topologia", 32, new Vector2(0, 260), font);
+            UIComp.CreateMenuTitle(panelObj.transform, "Topologia", 36, new Vector2(0, 280), font);
 
-            Button infoBtn = UIComp.CreateSmallInfoButton(panelObj.transform, new Vector2(200, 260), font);
+            Button infoBtn = UIComp.CreateSmallInfoButton(panelObj.transform, new Vector2(220, 280), font);
             infoBtn.onClick.AddListener(() => UIPanelFactory.ToggleTopologyExamplePanel(ct, font));
 
-            float infoY = 190f;
-            float lineHeight = 38f;
+            float infoY = 210f;
+            float lineHeight = 42f;
 
             var topologyTypeText = UIComp.CreateInfoText(panelObj.transform, "Topologia: Sin topologia",
-                new Vector2(0, infoY), font, 23, UIColors.textAccent, true);
+                new Vector2(0, infoY), font, 26, UIColors.textAccent, true);
             topologyTypeText.gameObject.name = "TopologyTypeText";
 
             infoY -= lineHeight;
             var linkText = UIComp.CreateInfoText(panelObj.transform, "Enlaces: 0",
-                new Vector2(0, infoY), font, 22, UIColors.textPrimary, true);
+                new Vector2(0, infoY), font, 24, UIColors.textPrimary, true);
             linkText.gameObject.name = "LinkCountText";
 
             infoY -= lineHeight + 12;
             var devicesTitle = UIComp.CreateInfoText(panelObj.transform, "Dispositivos:",
-                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 23, UIColors.textSecondary, false);
             UIComp.ApplyTitleStyle(devicesTitle);
 
-            infoY -= 34;
+            infoY -= 36;
             var routerText = UIComp.CreateInfoText(panelObj.transform, "  Routers: 0",
-                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 23, UIColors.textSecondary, false);
             routerText.gameObject.name = "RouterCountText";
 
-            infoY -= 32;
+            infoY -= 34;
             var switchText = UIComp.CreateInfoText(panelObj.transform, "  Switches: 0",
-                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 23, UIColors.textSecondary, false);
             switchText.gameObject.name = "SwitchCountText";
 
-            infoY -= 32;
+            infoY -= 34;
             var pcText = UIComp.CreateInfoText(panelObj.transform, "  PCs: 0",
-                new Vector2(0, infoY), font, 21, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 23, UIColors.textSecondary, false);
             pcText.gameObject.name = "PCCountText";
 
             infoY -= lineHeight + 10;
             var pingResultText = UIComp.CreateInfoText(panelObj.transform, "Ping: Seleccionar origen",
-                new Vector2(0, infoY), font, 22, UIColors.textSecondary, false);
+                new Vector2(0, infoY), font, 24, UIColors.textSecondary, false);
             pingResultText.gameObject.name = "PingResultText";
 
-            float btnY = -115f;
-            float btnSpacing = 135f;
+            float btnY = -125f;
+            float btnSpacing = 150f;
 
             Button clearBtn = UIComp.CreateMenuButton(panelObj.transform, "ClearBtn", "LIMPIAR",
-                new Vector2(-btnSpacing, btnY), new Vector2(130, 52), font, 19);
+                new Vector2(-btnSpacing, btnY), new Vector2(140, 58), font, 21);
             clearBtn.onClick.AddListener(() => {
                 var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
                 if (cleanup != null)
@@ -372,7 +398,7 @@ namespace SimRedes.Simulation
             });
 
             Button pingBtn = UIComp.CreateMenuButton(panelObj.transform, "PingBtn", "PING",
-                new Vector2(0, btnY), new Vector2(130, 52), font, 19);
+                new Vector2(0, btnY), new Vector2(140, 58), font, 21);
             var pingCtrl = UnityEngine.Object.FindAnyObjectByType<PingModeController>();
             if (pingCtrl != null)
             {
@@ -381,52 +407,64 @@ namespace SimRedes.Simulation
             }
 
             Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "VOLVER",
-                new Vector2(btnSpacing, btnY), new Vector2(130, 52), font, 19);
+                new Vector2(btnSpacing, btnY), new Vector2(140, 58), font, 21);
             backBtn.onClick.AddListener(() => GoBackToMainMenu());
 
-            float linkBtnY = -180f;
-            float linkBtnSpacing = 145f;
+            float linkBtnY = -195f;
+            float linkBtnSpacing = 155f;
+
+            // Asegurar que LinkModeController existe (por si la limpieza anterior lo destruyo)
+            var linkCtrl = LinkModeController.Instance;
+            if (linkCtrl == null)
+            {
+                var gm = GameObject.Find("GameManager");
+                if (gm != null)
+                {
+                    linkCtrl = gm.GetComponent<LinkModeController>();
+                    if (linkCtrl == null)
+                        linkCtrl = gm.AddComponent<LinkModeController>();
+                }
+            }
 
             Button connectBtn = UIComp.CreateMenuButton(panelObj.transform, "ConnectBtn", "CONECTAR",
-                new Vector2(-linkBtnSpacing, linkBtnY), new Vector2(130, 52), font, 18);
-            var linkCtrl = UnityEngine.Object.FindAnyObjectByType<LinkModeController>();
+                new Vector2(-linkBtnSpacing, linkBtnY), new Vector2(140, 58), font, 20);
             if (linkCtrl != null)
             {
                 connectBtn.onClick.AddListener(() => linkCtrl.ToggleLinkMode("connect"));
             }
 
             Button disconnectBtn = UIComp.CreateMenuButton(panelObj.transform, "DisconnectBtn", "DESCONECTAR",
-                new Vector2(linkBtnSpacing, linkBtnY), new Vector2(130, 52), font, 16);
+                new Vector2(linkBtnSpacing, linkBtnY), new Vector2(140, 58), font, 18);
             if (linkCtrl != null)
             {
                 disconnectBtn.onClick.AddListener(() => linkCtrl.ToggleLinkMode("disconnect"));
                 linkCtrl.StoreLinkButtons(connectBtn, disconnectBtn);
             }
 
-            float devBtnY = -245f;
-            float devSpacing = 90f;
+            float devBtnY = -265f;
+            float devSpacing = 120f;
 
             Button routerBtn = UIComp.CreateMenuButton(panelObj.transform, "RouterBtn", "ROUTER",
-                new Vector2(-devSpacing, devBtnY), new Vector2(100, 42), font, 15);
+                new Vector2(-devSpacing, devBtnY), new Vector2(110, 48), font, 17);
             routerBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Router));
 
             Button switchBtn = UIComp.CreateMenuButton(panelObj.transform, "SwitchBtn", "SWITCH",
-                new Vector2(0, devBtnY), new Vector2(100, 42), font, 15);
+                new Vector2(0, devBtnY), new Vector2(110, 48), font, 17);
             switchBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.Switch));
 
             Button pcBtn = UIComp.CreateMenuButton(panelObj.transform, "PCBtn", "PC",
-                new Vector2(devSpacing, devBtnY), new Vector2(100, 42), font, 15);
+                new Vector2(devSpacing, devBtnY), new Vector2(110, 48), font, 17);
             pcBtn.onClick.AddListener(() => AddDeviceAtSpawn(Network.DeviceType.PC));
 
-            float advBtnY = -305f;
-            float advSpacing = 120f;
+            float advBtnY = -330f;
+            float advSpacing = 130f;
 
             Button vlanBtn = UIComp.CreateMenuButton(panelObj.transform, "VLANBtn", "VLAN",
-                new Vector2(-advSpacing, advBtnY), new Vector2(110, 42), font, 17);
+                new Vector2(-advSpacing, advBtnY), new Vector2(120, 48), font, 19);
             vlanBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("VLAN"));
 
             Button aclBtn = UIComp.CreateMenuButton(panelObj.transform, "ACLBtn", "ACL",
-                new Vector2(0, advBtnY), new Vector2(110, 42), font, 17);
+                new Vector2(0, advBtnY), new Vector2(120, 48), font, 19);
             aclBtn.onClick.AddListener(() => CreateNetworkAdvancedPanel("ACL"));
 
             Button natBtn = UIComp.CreateMenuButton(panelObj.transform, "NATBtn", "NAT",
@@ -699,12 +737,25 @@ namespace SimRedes.Simulation
         /// </summary>
         private void AddDeviceAtSpawn(Network.DeviceType type)
         {
-            EnsureTopology();
-            if (topology == null)
+            // Verificar si es una llamada duplicada (EventSystem puede procesar el clic dos veces
+            // con activeInputHandler=Both en el Editor). Skip si el ultimo dispositivo se creo
+            // hace menos de 100ms con el mismo tipo.
+            float now = Time.unscaledTime;
+            if (now - lastAddTime < 0.1f && lastAddType == type)
+            {
+                UnityEngine.Debug.Log($"[ActivityLoader] Llamada duplicada ignorada: {type}");
+                return;
+            }
+            lastAddTime = now;
+            lastAddType = type;
+
+            // Usar TopologyManager.Instance (singleton siempre fresco) en vez de campo cacheado
+            var tm = TopologyManager.Instance;
+            if (tm == null)
             {
                 var gm = GameObject.Find("GameManager");
                 if (gm == null) gm = new GameObject("GameManager");
-                topology = gm.AddComponent<TopologyManager>();
+                tm = gm.AddComponent<TopologyManager>();
                 // Asegurar que DevicePanelController exista (se destruye con GameManager al limpiar)
                 if (gm.GetComponent<DevicePanelController>() == null)
                     gm.AddComponent<DevicePanelController>();
@@ -720,10 +771,10 @@ namespace SimRedes.Simulation
             Vector2 pos = spawnPositions[spawnIndex % spawnPositions.Length];
             spawnIndex++;
             int discId = spawnIndex + 200; // ID unico (sobre 100 usado por TangibleDiscManager)
-            topology.AddNode(discId, type, pos);
+            tm.AddNode(discId, type, pos);
             var devicePanel = UnityEngine.Object.FindAnyObjectByType<DevicePanelController>();
             if (devicePanel != null) devicePanel.RefreshDevicesPanel();
-            UnityEngine.Debug.Log($"[ActivityLoader] Dispositivo agregado: {type} en {pos}");
+            UnityEngine.Debug.Log($"[ActivityLoader] Dispositivo agregado: {type} en {pos}, discId={discId}");
         }
 
         /// <summary>
@@ -790,9 +841,12 @@ namespace SimRedes.Simulation
             var gameManager = GameObject.Find("GameManager");
             if (gameManager == null) gameManager = new GameObject("GameManager");
 
+            // Desuscribir handlers viejos ANTES de destruir el protocolo anterior
             if (dynProtocol != null)
             {
                 dynProtocol.StopProtocol();
+                if (onProtocolLogHandler != null) dynProtocol.OnProtocolLog -= onProtocolLogHandler;
+                if (onConvergenceHandler != null) dynProtocol.OnConvergence -= onConvergenceHandler;
                 Destroy(dynProtocol);
             }
 
@@ -804,14 +858,15 @@ namespace SimRedes.Simulation
             else
                 dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.OSPF;
 
-            dynProtocol.OnProtocolLog += (msg) => {
+            // Almacenar handlers como campos para poder desuscribirlos después
+            onProtocolLogHandler = (msg) => {
                 UnityEngine.Debug.Log($"[{selectedProtocol}] {msg}");
                 var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
                 if (statusText != null)
                     statusText.text = $"[{selectedProtocol}] {msg}\n\nStatus: Ejecutando...";
             };
 
-            dynProtocol.OnConvergence += () => {
+            onConvergenceHandler = () => {
                 var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
                 if (statusText != null)
                 {
@@ -821,6 +876,9 @@ namespace SimRedes.Simulation
                     statusText.color = new Color(0.2f, 0.8f, 0.2f);
                 }
             };
+
+            dynProtocol.OnProtocolLog += onProtocolLogHandler;
+            dynProtocol.OnConvergence += onConvergenceHandler;
 
             dynProtocol.StartProtocol();
 

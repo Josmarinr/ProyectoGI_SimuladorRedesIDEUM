@@ -63,12 +63,7 @@ namespace SimRedes.Tangible
             activeDiscs[uniqueId] = position;
             discTypeToDiscId[uniqueId] = discType;
 
-            int subscriberCount = OnDiscPlaced?.GetInvocationList()?.Length ?? 0;
-            if (subscriberCount == 0)
-                UnityEngine.Debug.LogWarning($"[DiscManager] WARN: OnDiscPlaced sin suscriptores al colocar disco {uniqueId}");
-
             OnDiscPlaced?.Invoke(uniqueId, position);
-            UnityEngine.Debug.Log($"[DiscManager] Disco creado: tipo={discType}, uniqueId={uniqueId}, subs={subscriberCount}");
             return uniqueId;
         }
 

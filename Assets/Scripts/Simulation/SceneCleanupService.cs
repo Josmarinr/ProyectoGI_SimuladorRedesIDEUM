@@ -35,6 +35,7 @@ namespace SimRedes.Simulation
 
         /// <summary>
         /// Limpia la simulacion actual: discos, topologia y elementos visuales.
+        /// Tambien libera el cache de texturas.
         /// </summary>
         /// <param name="topology">Gestor de topologia a limpiar.</param>
         /// <param name="visualizer">Visualizador de nodos y enlaces a destruir.</param>
@@ -52,6 +53,7 @@ namespace SimRedes.Simulation
                     foreach (Transform child in visualizer.linkContainer)
                         Object.Destroy(child.gameObject);
             }
+            UIComponents.ClearTextureCache();
         }
 
         /// <summary>
@@ -71,7 +73,12 @@ namespace SimRedes.Simulation
                     m is DebugDiscSimulator || m is ScoringSystem ||
                     m is BuildTopologyActivity || m is FindFaultActivity ||
                     m is RoutingTablesActivity || m is StaticRoutingActivity ||
-                    m is DynamicRoutingActivity || m is DynamicRoutingProtocol || m is BestRouteActivity)
+                    m is DynamicRoutingActivity || m is DynamicRoutingProtocol ||
+                    m is BestRouteActivity ||
+                    m is LinkModeController || m is PingModeController ||
+                    m is IPConfigController || m is DevicePanelController ||
+                    m is NodeInteractionController || m is DiscEventHandler ||
+                    m is TangibleBridge)
                     Object.Destroy(m.gameObject);
             }
 
@@ -96,6 +103,9 @@ namespace SimRedes.Simulation
                 scaler.referenceResolution = new Vector2(4096, 2160);
                 scaler.matchWidthOrHeight = 0.5f;
             }
+
+            // Limpiar cache de texturas para liberar memoria de paneles destruidos
+            UIComponents.ClearTextureCache();
 
             createMainMenuCallback?.Invoke();
         }

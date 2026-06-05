@@ -146,7 +146,6 @@ namespace SimRedes.UI
             }
 
             var allLinks = topology.GetAllLinks();
-            Debug.Log($"[NodeVisualizer] DrawLinks: {allLinks.Count} enlaces, {nodeObjects.Count} nodos en diccionario");
 
             foreach (var link in allLinks)
             {
@@ -159,13 +158,11 @@ namespace SimRedes.UI
                 if (!nodeObjects.TryGetValue(link.SourceNode.DiscId, out var srcObj) ||
                     !nodeObjects.TryGetValue(link.DestinationNode.DiscId, out var dstObj))
                 {
-                    Debug.LogWarning($"[NodeVisualizer] No se encontraron nodos visuales para enlace: {link.SourceNode.DiscId} -> {link.DestinationNode.DiscId}");
                     continue;
                 }
 
                 if (srcObj == null || dstObj == null) continue;
 
-                Debug.Log($"[NodeVisualizer] Creando linea de enlace entre nodo {link.SourceNode.DiscId} y {link.DestinationNode.DiscId}");
                 CreateLinkLine(srcObj.GetComponent<RectTransform>(),
                               dstObj.GetComponent<RectTransform>(),
                               link.IsFunctional());
@@ -185,11 +182,8 @@ namespace SimRedes.UI
             Color lineColor = isActive ? Color.green : Color.red;
             lineImage.color = lineColor;
 
-            // Crear textura de color 1x1 para RawImage
-            Texture2D tex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-            tex.SetPixel(0, 0, Color.white);
-            tex.Apply();
-            lineImage.texture = tex;
+            // Usar textura blanca 1x1 compartida (evita crear cientos de Texture2D)
+            lineImage.texture = UIComponents.GetSharedWhiteTexture();
 
             RectTransform rect = lineObj.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -202,8 +196,6 @@ namespace SimRedes.UI
             rect.sizeDelta = new Vector2(Mathf.Max(distance, 2f), 10);
             rect.anchoredPosition = from.anchoredPosition + direction / 2f;
             rect.localEulerAngles = new Vector3(0, 0, angle);
-
-            Debug.Log($"[NodeVisualizer] Linea creada: desde=({from.anchoredPosition.x:F0},{from.anchoredPosition.y:F0}) hasta=({to.anchoredPosition.x:F0},{to.anchoredPosition.y:F0}) distancia={distance:F0}, active={isActive}");
         }
 
         private void AddClickEvent(EventTrigger trigger, UnityEngine.Events.UnityAction action)

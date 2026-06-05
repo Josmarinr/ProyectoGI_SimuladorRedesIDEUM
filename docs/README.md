@@ -82,15 +82,16 @@
 | Diagramas UML | 21 (Mermaid) |
 | API endpoints documentados | 9 archivos |
 | Manuales | 2 (usuario + dev) |
-| Tests EditMode | **108** (9 suites: 4 Network + 4 Simulation + 1 Tangible) |
+| Tests EditMode | **328** (18 suites: 4 Network + 4 Simulation + 2 Tangible + 8 UI) |
 | Skills (opencode) | 18 |
 | Agentes | 6 (main, architect, programmer, reviewer, tester, builder) |
-| Líneas de código fuente | ~11,847 |
-| Líneas de documentación | ~4,200 |
-| SceneSetup | ~480 líneas (refactorizado desde ~4,246) |
-| Warnings de compilación eliminados | ~188 |
-| Bugs corregidos (auditoría null safety) | 6 |
+| Líneas de código fuente | ~12,500 |
+| Líneas de documentación | ~4,500 |
+| SceneSetup | ~635 líneas (refactorizado desde ~4,246) |
+| Warnings de compilación eliminados | ~200 |
+| Bugs corregidos (null safety + stale refs + TouchScript) | ~25 |
 | Build generado | `Build/SimuladorRedes.exe` (Windows x86_64) |
+| Bugs activos | **P2** — Líneas de conexión invisibles en discos físicos |
 
 ---
 

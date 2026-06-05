@@ -47,7 +47,61 @@ cd SimuladorRedes
 3. Selecciona la versión **6000.4.5f1** (si no la tienes, instálala desde Unity Hub)
 4. Abre el proyecto
 
-### Verificar Configuración
+### Nota sobre TouchScript y Doble Clic
+
+El proyecto usa **TouchScript** para la entrada táctil en la mesa IDEUM. En el Editor de Unity, tanto TouchScript como `InputSystemUIInputModule` procesan los mismos eventos de clic, causando **doble activación** en todos los botones.
+
+**Solución:** `TouchScriptDisabler` (en `Assets/Scripts/Simulation/TouchScriptDisabler.cs`) deshabilita el GameObject "TouchManager Instance" en el Editor, deteniendo el procesamiento de TouchScript.
+
+```csharp
+// TouchScriptDisabler.cs — se ejecuta en Start()
+var tmObj = GameObject.Find("TouchManager Instance");
+if (tmObj != null) tmObj.SetActive(false);
+```
+
+En runtime (IDEUM), `UNITY_EDITOR` no está definido, por lo que TouchScript funciona normalmente.
+
+### Singletons y Referencias Stale
+
+Para evitar el problema de referencias **stale** (objetos destruidos cuyo `Destroy()` está diferido al final del frame), todos los managers importantes usan singleton con auto-limpieza:
+
+```csharp
+// Usar siempre Instance en vez de FindAnyObjectByType o campos cacheados
+TopologyManager.Instance.AddNode(...);
+LinkModeController.Instance.ToggleLinkMode("connect");
+```
+
+**Nunca cachear** una referencia a TopologyManager o LinkModeController en un campo privado. Siempre usar `ClassName.Instance` para obtener la instancia actual.
+
+### Fuentes
+
+Las fuentes se centralizan en `UIComponents.GetFont()`. La fuente principal es **Helvetica Neue** (con fallback a Arial). No crear instancias de Font manualmente — siempre usar:
+
+```csharp
+Font font = UIComp.GetFont();
+```
+
+### CreateMenuButton
+
+`UIComponents.CreateMenuButton` tiene parámetros opcionales para cornerRadius y borderWidth:
+
+```csharp
+public static Button CreateMenuButton(Transform parent, string name, string label, 
+    Vector2 position, Vector2 size, Font font, 
+    int fontSize = 18, int cornerRadius = 12, float borderWidth = 1.5f);
+```
+
+Para botones del menú principal usar `borderWidth=0` para evitar separación visual por bordes.
+
+### Botones CONECTAR/DESCONECTAR
+
+LinkModeController tiene singleton `Instance`. Los colores se controlan via `Image.color` directamente (no `btn.colors` que el Button sobrescribe). Activo: verde para CONECTAR, rojo para DESCONECTAR.
+
+### UI en 4096x2160
+
+El Canvas usa `ScaleWithScreenSize` con resolución de referencia 4096x2160 y `match=0.5`. Todos los paneles y botones se dimensionan para esta resolución.
+
+Verificar Configuración
 
 Al abrir el proyecto por primera vez:
 

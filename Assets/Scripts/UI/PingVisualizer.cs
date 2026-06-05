@@ -270,6 +270,14 @@ namespace SimRedes.UI
 
             yield return new WaitForSeconds(0.4f);
 
+            // Destruir textura y sprite antes de destruir el GameObject para evitar fugas
+            var packetImg = packet.GetComponent<Image>();
+            if (packetImg != null && packetImg.sprite != null)
+            {
+                if (packetImg.sprite.texture != null)
+                    Destroy(packetImg.sprite.texture);
+                Destroy(packetImg.sprite);
+            }
             Destroy(packet);
             isAnimating = false;
 

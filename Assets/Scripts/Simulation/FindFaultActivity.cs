@@ -245,7 +245,7 @@ namespace SimRedes.Simulation
                 topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null)
             {
-                Debug.LogError("[FindFault] No TopologyManager disponible para cargar escenario");
+                Debug.Log("[FindFault] No TopologyManager disponible para cargar escenario");
                 return;
             }
             if (index < 0 || index >= scenarios.Count) return;

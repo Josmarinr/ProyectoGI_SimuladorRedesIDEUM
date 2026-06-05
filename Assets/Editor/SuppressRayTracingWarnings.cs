@@ -16,9 +16,8 @@ using UnityEngine.Rendering;
 /// son internos de Unity para ProbeVolumes. Las variantes RT fallan en macOS, pero
 /// las variantes compute shader (CS) funcionan correctamente.
 ///
-/// Los warnings son inofensivos y no afectan el renderizado ni el funcionamiento.
-/// Este script elimina las variantes ray tracing durante el build en plataformas
-/// donde no son compatibles.
+/// El proyecto no usa ray tracing (simulador 2D para mesa tangible IDEUM).
+/// Este script elimina las variantes ray tracing tanto en build como en el Editor.
 /// </summary>
 public class SuppressRayTracingWarnings : IPreprocessShaders
 {
@@ -26,9 +25,7 @@ public class SuppressRayTracingWarnings : IPreprocessShaders
 
     /// <summary>
     /// IPreprocessShaders: elimina variantes con keyword UNITY_RAY_TRACING
-    /// o REQUIRE_RAY_TRACING en todas las plataformas.
-    /// El proyecto no usa ray tracing (URP 2D, mesa tangible), estas variantes
-    /// son internas de Unity para ProbeVolumes/PathTracing.
+    /// durante la compilacion para builds (Windows x86_64).
     /// </summary>
     public void OnProcessShader(Shader shader, ShaderSnippetData snippet, IList<ShaderCompilerData> data)
     {
@@ -44,18 +41,56 @@ public class SuppressRayTracingWarnings : IPreprocessShaders
         }
     }
 
+    // ==================== EDITOR-TIME FILTER ====================
+
     /// <summary>
-    /// Configuracion al cargar el proyecto en el Editor.
+    /// Registra el filtro de logs al cargar el proyecto en el Editor.
+    /// Intercepta los warnings de compilacion de shaders ray tracing
+    /// antes de que lleguen a la consola.
     /// </summary>
     [InitializeOnLoadMethod]
     private static void Init()
     {
-        // Forzar stripping de variantes en el Editor (para builds)
-        // y configurar el pipeline global
-        EditorApplication.delayCall += () =>
+        // Asegurar que el pipeline global esta configurado
+        if (Shader.globalRenderPipeline != "UniversalPipeline")
+            Shader.globalRenderPipeline = "UniversalPipeline";
+
+        // Reemplazar el log handler para filtrar warnings especificos
+        var logger = Debug.unityLogger;
+        if (logger.logHandler is RayTracingLogFilter) return; // ya aplicado
+        logger.logHandler = new RayTracingLogFilter(logger.logHandler);
+    }
+}
+
+/// <summary>
+/// Filtro de logs que suprime los warnings de compilacion de shaders
+/// ray tracing en el Editor. No afecta otros logs.
+/// </summary>
+internal class RayTracingLogFilter : ILogHandler
+{
+    private readonly ILogHandler originalHandler;
+
+    public RayTracingLogFilter(ILogHandler original)
+    {
+        originalHandler = original;
+    }
+
+    public void LogFormat(LogType logType, Object context, string format, params object[] args)
+    {
+        // Suprimir warnings de compilacion de shaders ray tracing
+        if (logType == LogType.Warning && format != null &&
+            (format.Contains("Ray Tracing Shader") ||
+             format.Contains("raytracing") ||
+             format.Contains("UNITY_RAY_TRACING")))
         {
-            if (Shader.globalRenderPipeline != "UniversalPipeline")
-                Shader.globalRenderPipeline = "UniversalPipeline";
-        };
+            return; // no pasar al handler original
+        }
+
+        originalHandler.LogFormat(logType, context, format, args);
+    }
+
+    public void LogException(System.Exception exception, Object context)
+    {
+        originalHandler.LogException(exception, context);
     }
 }

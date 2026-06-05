@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 using System.Linq;
 using SimRedes.Network;
 using SimRedes.Simulation;
@@ -12,7 +13,6 @@ namespace SimRedes.UI
     public class DevicePanelController : MonoBehaviour
     {
         private int selectedNodeForRemoval = -1;
-        private TopologyManager topology;
         private NodeVisualizer visualizer;
         private Canvas canvas;
 
@@ -66,31 +66,36 @@ namespace SimRedes.UI
                                 selectedNodeForRemoval = -1;
                                 UpdateDevicesVisualState();
                             }
-                            // Si hay modo CONEXION activo, deseleccionar primer extremo
-                            var linkCtrl = Object.FindAnyObjectByType<LinkModeController>();
-                            if (linkCtrl != null && linkCtrl.IsLinkModeActive() && linkCtrl.GetLinkModeFirstNode() != -1)
-                            {
-                                linkCtrl.ClearFirstNode();
-                                UpdateDevicesList();
-                            }
+                            // NOTA: No limpiar el primer extremo del modo CONEXION al hacer clic fuera del panel.
+                            // Si lo hicieramos, el usuario nunca podria conectar dos dispositivos porque cada
+                            // clic en un nodo visual (que esta fuera del DevicesPanel) resetea el estado.
+                            // El modo CONEXION se cancela presionando CONECTAR/DESCONECTAR nuevamente.
                         }
                     }
                 }
             }
         }
 
+        private float lastDeviceClickTime = 0f;
+        private int lastDeviceClickIndex = -1;
+
         public void OnDeviceItemClicked(int index)
         {
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null) return;
+            // Ignorar eventos duplicados dentro de 200ms (TouchScript + InputSystem = doble clic)
+            float now = Time.unscaledTime;
+            if (now - lastDeviceClickTime < 0.2f && lastDeviceClickIndex == index)
+                return;
+            lastDeviceClickTime = now;
+            lastDeviceClickIndex = index;
 
-            var nodes = topology.GetAllNodes();
+            if (TopologyManager.Instance == null) return;
+            var nodes = TopologyManager.Instance.GetAllNodes();
             if (index >= nodes.Count) return;
 
             var node = nodes[index];
 
             // Si el modo CONEXION/DESCONEXION esta activo, priorizar enlace
-            var linkCtrl = Object.FindAnyObjectByType<LinkModeController>();
+            var linkCtrl = LinkModeController.Instance;
             if (linkCtrl != null && linkCtrl.IsLinkModeActive())
             {
                 // No marcar como seleccion de eliminacion, solo pasar a HandleNodeLinkClick
@@ -133,10 +138,9 @@ namespace SimRedes.UI
         {
             if (selectedNodeForRemoval == -1) return;
 
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology != null)
+            if (TopologyManager.Instance != null)
             {
-                topology.RemoveNode(selectedNodeForRemoval);
+                TopologyManager.Instance.RemoveNode(selectedNodeForRemoval);
                 Debug.Log($"[DevicePanelController] Nodo eliminado: {selectedNodeForRemoval}");
             }
 
@@ -175,8 +179,9 @@ namespace SimRedes.UI
         public void RefreshDevicesPanel()
         {
             // Siempre destruir el panel existente para recrearlo con items frescos
+            // Usar DestroyImmediate para evitar que GameObject.Find encuentre el panel viejo
             var existingPanel = GameObject.Find("DevicesPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null) DestroyImmediate(existingPanel);
 
             var foundCanvas = Object.FindAnyObjectByType<Canvas>();
             if (foundCanvas == null)
@@ -185,29 +190,29 @@ namespace SimRedes.UI
                 return;
             }
 
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-
             Font arialFont = GetFont();
-            int nodeCount = topology != null ? topology.GetAllNodes().Count : 0;
+            var tm = TopologyManager.Instance;
+            if (tm == null) return;
+            
+            var allNodes = tm.GetAllNodes();
+            int nodeCount = allNodes.Count;
 
             GameObject panelObj = UIPanelFactory.CreateDevicesPanel(foundCanvas.transform,
                 nodeCount, OnDeviceItemClicked);
 
-            if (topology != null)
+            if (nodeCount > 0)
             {
-                var nodes = topology.GetAllNodes();
-                float startY = 200f;
-                for (int i = 0; i < nodes.Count; i++)
+                float startY = 220f;
+                for (int i = 0; i < nodeCount; i++)
                 {
                     int index = i;
-                    float yPos = startY - (i * 58);
+                    float yPos = startY - (i * 65);
                     CreateDeviceItem(panelObj.transform, index, yPos, arialFont);
                 }
             }
 
             UpdateDevicesList();
             TopologyInfoPanelSync();
-            Debug.Log("[DevicePanelController] DevicesPanel creado con " + (topology?.GetAllNodes().Count ?? 0) + " nodos");
         }
 
         /// <summary>
@@ -215,8 +220,9 @@ namespace SimRedes.UI
         /// </summary>
         private void TopologyInfoPanelSync()
         {
-            if (topology == null) return;
-            var nodes = topology.GetAllNodes();
+            var tm = TopologyManager.Instance;
+            if (tm == null) return;
+            var nodes = tm.GetAllNodes();
             int routers = nodes.Count(n => n.Type == Network.DeviceType.Router);
             int switches = nodes.Count(n => n.Type == Network.DeviceType.Switch);
             int pcs = nodes.Count(n => n.Type == Network.DeviceType.PC);
@@ -233,7 +239,7 @@ namespace SimRedes.UI
             if (routerText != null) routerText.text = $"  Routers: {routers}";
             if (switchText != null) switchText.text = $"  Switches: {switches}";
             if (pcText != null) pcText.text = $"  PCs: {pcs}";
-            if (linkText != null) linkText.text = $"Enlaces: {topology.GetAllLinks().Count}";
+            if (linkText != null) linkText.text = $"Enlaces: {tm.GetAllLinks().Count}";
         }
 
         private void CreateDeviceItem(Transform parent, int index, float y, Font font)
@@ -246,11 +252,11 @@ namespace SimRedes.UI
             itemRect.anchorMin = new Vector2(0.5f, 0.5f);
             itemRect.anchorMax = new Vector2(0.5f, 0.5f);
             itemRect.anchoredPosition = new Vector2(0, y);
-            itemRect.sizeDelta = new Vector2(320, 58);
+            itemRect.sizeDelta = new Vector2(350, 65);
 
             var bgImg = itemObj.AddComponent<Image>();
-            Texture2D bgTex = UIComp.CreateRoundedRectTexture(320, 58, 10, UIColors.surfaceElevated, UIColors.borderAccent, 1f);
-            bgImg.sprite = Sprite.Create(bgTex, new Rect(0, 0, 320, 58), new Vector2(0.5f, 0.5f), 100);
+            Texture2D bgTex = UIComp.CreateRoundedRectTexture(350, 65, 10, UIColors.surfaceElevated, UIColors.borderAccent, 1f);
+            bgImg.sprite = Sprite.Create(bgTex, new Rect(0, 0, 350, 65), new Vector2(0.5f, 0.5f), 100);
             bgImg.type = Image.Type.Sliced;
 
             var btn = itemObj.AddComponent<Button>();
@@ -262,8 +268,8 @@ namespace SimRedes.UI
             iconRect.anchorMin = new Vector2(0f, 0.5f);
             iconRect.anchorMax = new Vector2(0f, 0.5f);
             iconRect.pivot = new Vector2(0f, 0.5f);
-            iconRect.anchoredPosition = new Vector2(30, 0);
-            iconRect.sizeDelta = new Vector2(32, 32);
+            iconRect.anchoredPosition = new Vector2(35, 0);
+            iconRect.sizeDelta = new Vector2(36, 36);
 
             var iconImg = iconObj.AddComponent<Image>();
             iconImg.color = Color.gray;
@@ -274,13 +280,13 @@ namespace SimRedes.UI
             nameRect.anchorMin = new Vector2(0f, 0.5f);
             nameRect.anchorMax = new Vector2(0f, 0.5f);
             nameRect.pivot = new Vector2(0f, 0.5f);
-            nameRect.anchoredPosition = new Vector2(60, 0);
-            nameRect.sizeDelta = new Vector2(200, 28);
+            nameRect.anchoredPosition = new Vector2(70, 0);
+            nameRect.sizeDelta = new Vector2(220, 32);
 
             var nameText = nameObj.AddComponent<Text>();
             nameText.text = "";
             nameText.color = UIColors.textPrimary;
-            nameText.fontSize = 18;
+            nameText.fontSize = 20;
             nameText.alignment = TextAnchor.MiddleLeft;
             nameText.font = font;
 
@@ -293,10 +299,10 @@ namespace SimRedes.UI
             var devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null) return;
+            var tm = TopologyManager.Instance;
+            if (tm == null) return;
 
-            var nodes = topology.GetAllNodes();
+            var nodes = tm.GetAllNodes();
             int maxItems = nodes.Count;
 
             for (int i = 0; i < maxItems; i++)
@@ -310,7 +316,7 @@ namespace SimRedes.UI
                 var node = nodes[i];
 
                 // Determinar si este nodo es el primero seleccionado en modo CONEXION/DESCONEXION
-                var linkCtrl = Object.FindAnyObjectByType<LinkModeController>();
+                var linkCtrl = LinkModeController.Instance;
                 bool isLinkModeFirst = (linkCtrl != null && linkCtrl.IsLinkModeActive() && linkCtrl.GetLinkModeFirstNode() == node.DiscId);
                 bool isSelectedForRemoval = (selectedNodeForRemoval == node.DiscId);
 
@@ -328,6 +334,13 @@ namespace SimRedes.UI
                 if (iconObj != null)
                 {
                     var img = iconObj.GetComponent<Image>();
+                    // Destruir sprite anterior para evitar fuga de Texture2D
+                    if (img.sprite != null)
+                    {
+                        Destroy(img.sprite);
+                        // NOTA: no destruimos img.sprite.texture porque puede estar compartido
+                        // via UIComponents.GetSharedWhiteTexture() o el cache de CreateRoundedRectTexture
+                    }
                     img.color = UIColors.GetColorForDeviceType(node.Type);
                     img.sprite = CreateCircleIcon(24, UIColors.GetColorForDeviceType(node.Type));
                     img.gameObject.SetActive(true);
@@ -362,10 +375,10 @@ namespace SimRedes.UI
             var devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            if (topology == null) topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null) return;
+            var tm = TopologyManager.Instance;
+            if (tm == null) return;
 
-            var nodes = topology.GetAllNodes();
+            var nodes = tm.GetAllNodes();
 
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -375,7 +388,7 @@ namespace SimRedes.UI
                 var node = nodes[i];
                 bool isSelected = (selectedNodeForRemoval == node.DiscId);
 
-                var linkCtrl = Object.FindAnyObjectByType<LinkModeController>();
+                var linkCtrl = LinkModeController.Instance;
                 bool isLinkModeFirst = (linkCtrl != null && linkCtrl.IsLinkModeActive() && linkCtrl.GetLinkModeFirstNode() == node.DiscId);
 
                 var nameObj = itemObj.Find("Name");
@@ -403,8 +416,15 @@ namespace SimRedes.UI
             }
         }
 
+        // Cache de sprites circulares para device panel: key = "size_colorR_colorG_colorB"
+        private static Dictionary<string, Sprite> circleSpriteCache = new Dictionary<string, Sprite>();
+
         private Sprite CreateCircleIcon(int size, Color color)
         {
+            string cacheKey = $"{size}_{color.r:F4}_{color.g:F4}_{color.b:F4}";
+            if (circleSpriteCache.TryGetValue(cacheKey, out var cached) && cached != null)
+                return cached;
+
             Texture2D tex = new Texture2D(size, size);
             Color[] pixels = new Color[size * size];
             int center = size / 2;
@@ -424,7 +444,9 @@ namespace SimRedes.UI
 
             tex.SetPixels(pixels);
             tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            var sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            circleSpriteCache[cacheKey] = sprite;
+            return sprite;
         }
 
         private Font GetFont()
@@ -435,6 +457,23 @@ namespace SimRedes.UI
         private ColorBlock GetButtonColors(Color c)
         {
             return UIComp.GetButtonColors(c);
+        }
+
+        /// <summary>
+        /// Limpia el cache de sprites al destruirse para evitar texturas colgadas.
+        /// </summary>
+        private void OnDestroy()
+        {
+            foreach (var kvp in circleSpriteCache)
+            {
+                if (kvp.Value != null)
+                {
+                    if (kvp.Value.texture != null)
+                        Destroy(kvp.Value.texture);
+                    Destroy(kvp.Value);
+                }
+            }
+            circleSpriteCache.Clear();
         }
     }
 }

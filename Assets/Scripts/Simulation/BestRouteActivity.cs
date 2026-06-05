@@ -167,8 +167,8 @@ namespace SimRedes.Simulation
             RectTransform panelRect = panelObj.GetComponent<RectTransform>();
             if (panelRect == null) return;
             float panelHeight = panelRect.sizeDelta.y;
-            float startY = 60;
-            float yStep = 55;
+            float startY = 120;
+            float yStep = 80;
 
             int routesCount = scenario.Options.Count;
             float totalHeight = routesCount * yStep + 40;
@@ -187,7 +187,7 @@ namespace SimRedes.Simulation
                 btnRect.anchorMin = new Vector2(0.5f, 0.5f);
                 btnRect.anchorMax = new Vector2(0.5f, 0.5f);
                 btnRect.anchoredPosition = new Vector2(0, yPos);
-                btnRect.sizeDelta = new Vector2(440, 48);
+                btnRect.sizeDelta = new Vector2(700, 70);
 
                 Image btnImg = btnObj.AddComponent<Image>();
                 btnImg.color = new Color(0.15f, 0.15f, 0.2f, 1);
@@ -205,8 +205,8 @@ namespace SimRedes.Simulation
                 RectTransform textRect = textObj.AddComponent<RectTransform>();
                 textRect.anchorMin = Vector2.zero;
                 textRect.anchorMax = Vector2.one;
-                textRect.offsetMin = new Vector2(8, 2);
-                textRect.offsetMax = new Vector2(-8, -2);
+                textRect.offsetMin = new Vector2(12, 4);
+                textRect.offsetMax = new Vector2(-12, -4);
 
                 Text label = textObj.AddComponent<Text>();
                 label.text = string.Format("{0}/{1}  via  {2}  ({3}, metrica {4})",
@@ -216,7 +216,7 @@ namespace SimRedes.Simulation
                     route.Protocol,
                     route.Metric);
                 label.font = arialFont;
-                label.fontSize = 12;
+                label.fontSize = 22;
                 label.color = Color.white;
                 label.alignment = TextAnchor.MiddleLeft;
 

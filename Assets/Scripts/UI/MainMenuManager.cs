@@ -31,7 +31,6 @@ namespace SimRedes.UI
         private int selectedIndex = 0;
         private Button[] currentMenuButtons;
         private bool menuActive = false;
-        private float buttonScaleSelected = 1.1f;
 
         private void Awake()
         {
@@ -133,26 +132,9 @@ namespace SimRedes.UI
                     var image = currentMenuButtons[i].GetComponent<Image>();
                     if (image != null)
                     {
-                        if (i == selectedIndex)
-                        {
-                            image.color = new Color(0.4f, 0.6f, 0.8f, 1f);
-                            var rt = currentMenuButtons[i].GetComponent<RectTransform>();
-                            if (rt != null)
-                            {
-                                rt.sizeDelta = new Vector2(currentMenuButtons[i].GetComponent<RectTransform>().sizeDelta.x * buttonScaleSelected,
-                                                          currentMenuButtons[i].GetComponent<RectTransform>().sizeDelta.y * buttonScaleSelected);
-                            }
-                        }
-                        else
-                        {
-                            image.color = new Color(0.2f, 0.4f, 0.6f, 1f);
-                            var rt = currentMenuButtons[i].GetComponent<RectTransform>();
-                            if (rt != null)
-                            {
-                                rt.sizeDelta = new Vector2(rt.sizeDelta.x / buttonScaleSelected,
-                                                          rt.sizeDelta.y / buttonScaleSelected);
-                            }
-                        }
+                        image.color = (i == selectedIndex)
+                            ? new Color(0.4f, 0.6f, 0.8f, 1f)  // seleccionado: mas claro
+                            : new Color(0.2f, 0.4f, 0.6f, 1f); // no seleccionado: color base
                     }
                 }
             }

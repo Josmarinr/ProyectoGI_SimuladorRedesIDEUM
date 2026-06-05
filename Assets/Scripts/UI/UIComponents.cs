@@ -85,8 +85,49 @@ namespace SimRedes.UI
         // los atlas de textura de fuente con multiples instancias.
         private static Font cachedFont = null;
 
+        // Cache de texturas redondeadas para evitar crear cientos de Texture2D
+        // (que Unity NO libera automaticamente al destruir GameObjects).
+        // La clave generica combina: width_height_cornerRadius_colorR_colorG_colorB_colorA_borderR_borderG_borderB_borderA_borderWidth
+        private static Dictionary<string, Texture2D> roundedTextureCache = new Dictionary<string, Texture2D>();
+
+        // Textura blanca 1x1 compartida para lineas de enlace y otros usos
+        // donde solo importa el color del RawImage/Image, no la textura en si.
+        private static Texture2D sharedWhiteTexture = null;
+        private static bool sharedWhiteTextureCreated = false;
+
         /// <summary>
-        /// Obtiene la fuente del sistema (Arial o LegacyRuntime.ttf como fallback).
+        /// Obtiene una textura blanca 1x1 compartida. Se crea una sola vez
+        /// y se reutiliza en toda la aplicacion. Util para lineas de enlace
+        /// u otros elementos donde el color se controla via Image.color.
+        /// </summary>
+        public static Texture2D GetSharedWhiteTexture()
+        {
+            if (!sharedWhiteTextureCreated)
+            {
+                sharedWhiteTexture = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                sharedWhiteTexture.SetPixel(0, 0, Color.white);
+                sharedWhiteTexture.Apply();
+                sharedWhiteTextureCreated = true;
+            }
+            return sharedWhiteTexture;
+        }
+
+        /// <summary>
+        /// Limpia el cache de texturas redondeadas. Llamar en SceneCleanupService
+        /// al limpiar la escena para liberar memoria de texturas no utilizadas.
+        /// </summary>
+        public static void ClearTextureCache()
+        {
+            foreach (var tex in roundedTextureCache.Values)
+            {
+                if (tex != null) UnityEngine.Object.Destroy(tex);
+            }
+            roundedTextureCache.Clear();
+        }
+
+        /// <summary>
+        /// Obtiene la fuente del sistema (Helvetica Neue en macOS, Arial como fallback).
+        /// Helvetica Neue es mas legible y moderna que Arial, con mejor soporte Bold.
         /// La fuente se crea una sola vez y se reutiliza en todo el proyecto.
         /// El tamano se controla via <c>text.fontSize</c> en cada componente Text.
         /// </summary>
@@ -95,7 +136,9 @@ namespace SimRedes.UI
         public static Font GetFont(int size = 14)
         {
             if (cachedFont != null) return cachedFont;
-            cachedFont = Font.CreateDynamicFontFromOSFont("Arial", 14);
+            cachedFont = Font.CreateDynamicFontFromOSFont("Helvetica Neue", 14);
+            if (cachedFont == null)
+                cachedFont = Font.CreateDynamicFontFromOSFont("Arial", 14);
             if (cachedFont == null)
                 cachedFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             return cachedFont;
@@ -327,8 +370,10 @@ namespace SimRedes.UI
         /// <param name="size">Dimensiones del boton.</param>
         /// <param name="font">Fuente del texto.</param>
         /// <param name="fontSize">Tamano de fuente (por defecto 18).</param>
+        /// <param name="cornerRadius">Radio de esquinas redondeadas (por defecto 12).</param>
+        /// <param name="borderWidth">Grosor del borde en pixeles (0 = sin borde, por defecto 1.5).</param>
         /// <returns>Componente Button creado.</returns>
-        public static Button CreateMenuButton(Transform parent, string name, string label, Vector2 position, Vector2 size, Font font, int fontSize = 18)
+        public static Button CreateMenuButton(Transform parent, string name, string label, Vector2 position, Vector2 size, Font font, int fontSize = 18, int cornerRadius = 12, float borderWidth = 1.5f)
         {
             var btnObj = new GameObject(name);
             btnObj.transform.SetParent(parent, false);
@@ -340,7 +385,7 @@ namespace SimRedes.UI
             rect.sizeDelta = size;
 
             var img = btnObj.AddComponent<Image>();
-            Texture2D btnTex = CreateRoundedRectTexture((int)size.x, (int)size.y, 12, Colors.buttonNormal, Colors.borderAccent, 1.5f);
+            Texture2D btnTex = CreateRoundedRectTexture((int)size.x, (int)size.y, cornerRadius, Colors.buttonNormal, Colors.borderAccent, borderWidth);
             img.sprite = Sprite.Create(btnTex, new Rect(0, 0, (int)size.x, (int)size.y), new Vector2(0.5f, 0.5f), 100);
             img.type = Image.Type.Sliced;
 
@@ -368,6 +413,7 @@ namespace SimRedes.UI
             text.fontStyle = FontStyle.Bold;
             text.alignment = TextAnchor.MiddleCenter;
             text.font = font;
+            text.horizontalOverflow = HorizontalWrapMode.Overflow;
 
             return btn;
         }
@@ -605,6 +651,7 @@ namespace SimRedes.UI
 
         /// <summary>
         /// Genera una textura con esquinas redondeadas y borde opcional.
+        /// Utiliza el cache interno para reutilizar texturas identicas.
         /// Utiliza distancia a rectangulo redondeado para determinar cada pixel.
         /// </summary>
         /// <param name="width">Ancho de la textura en pixeles.</param>
@@ -613,9 +660,20 @@ namespace SimRedes.UI
         /// <param name="fillColor">Color de relleno interior.</param>
         /// <param name="borderColor">Color del borde (por defecto transparente).</param>
         /// <param name="borderWidth">Grosor del borde en pixeles (0 = sin borde).</param>
-        /// <returns>Texture2D con esquinas redondeadas.</returns>
+        /// <returns>Texture2D con esquinas redondeadas (del cache si ya existe).</returns>
         public static Texture2D CreateRoundedRectTexture(int width, int height, int cornerRadius, Color fillColor, Color borderColor = default, float borderWidth = 0f)
         {
+            // Generar clave unica para el cache
+            string cacheKey = string.Format("{0}_{1}_{2}_{3:F4}_{4:F4}_{5:F4}_{6:F4}_{7:F4}_{8:F4}_{9:F4}_{10:F4}_{11:F4}",
+                width, height, cornerRadius,
+                fillColor.r, fillColor.g, fillColor.b, fillColor.a,
+                borderColor.r, borderColor.g, borderColor.b, borderColor.a,
+                borderWidth);
+
+            // Reutilizar textura del cache si existe
+            if (roundedTextureCache.TryGetValue(cacheKey, out var cachedTex) && cachedTex != null)
+                return cachedTex;
+
             Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
             tex.filterMode = FilterMode.Trilinear;
             tex.wrapMode = TextureWrapMode.Clamp;
@@ -651,6 +709,10 @@ namespace SimRedes.UI
 
             tex.SetPixels(pixels);
             tex.Apply();
+
+            // Almacenar en cache para reutilizar
+            roundedTextureCache[cacheKey] = tex;
+
             return tex;
         }
 
@@ -700,9 +762,13 @@ namespace SimRedes.UI
             return Sprite.Create(tex, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 100);
         }
 
+        // Cache de sprites de dispositivo: key = "size_colorR_colorG_colorB_antiAlias"
+        private static Dictionary<string, Sprite> deviceIconCache = new Dictionary<string, Sprite>();
+
         /// <summary>
         /// Crea un icono redondo para representar un dispositivo de red.
-        /// Soporta anti-aliasing para bordes suaves.
+        /// Soporta anti-aliasing para bordes suaves. Los resultados se cachean
+        /// por combinacion de parametros.
         /// </summary>
         /// <param name="size">Tamano del icono en pixeles.</param>
         /// <param name="color">Color del icono.</param>
@@ -710,6 +776,10 @@ namespace SimRedes.UI
         /// <returns>Sprite circular del dispositivo.</returns>
         public static Sprite CreateDeviceIcon(int size, Color color, bool antiAlias = true)
         {
+            string cacheKey = $"{size}_{color.r:F4}_{color.g:F4}_{color.b:F4}_{antiAlias}";
+            if (deviceIconCache.TryGetValue(cacheKey, out var cached) && cached != null)
+                return cached;
+
             Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
             Color[] pixels = new Color[size * size];
             int center = size / 2;
@@ -756,7 +826,9 @@ namespace SimRedes.UI
             tex.filterMode = antiAlias ? FilterMode.Bilinear : FilterMode.Point;
             tex.SetPixels(pixels);
             tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            var sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            deviceIconCache[cacheKey] = sprite;
+            return sprite;
         }
 
         /// <summary>
@@ -828,7 +900,7 @@ namespace SimRedes.UI
         /// <param name="font">Fuente del texto.</param>
         /// <param name="text">Contenido del texto.</param>
         /// <returns>GameObject de la columna con componente Text.</returns>
-        public static GameObject CreateInfoColumn(Transform parent, Vector2 position, float width, float height, Font font, string text)
+        public static GameObject CreateInfoColumn(Transform parent, Vector2 position, float width, float height, Font font, string text, int fontSize = 14)
         {
             var colObj = new GameObject("InfoColumn");
             colObj.transform.SetParent(parent, false);
@@ -840,7 +912,7 @@ namespace SimRedes.UI
             var colText = colObj.AddComponent<Text>();
             colText.text = text;
             colText.color = Colors.textPrimary;
-            colText.fontSize = 14;
+            colText.fontSize = fontSize;
             colText.alignment = TextAnchor.UpperLeft;
             colText.font = font;
             return colObj;
