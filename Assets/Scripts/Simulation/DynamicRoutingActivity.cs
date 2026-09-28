@@ -6,6 +6,13 @@ using SimRedes.Network;
 
 namespace SimRedes.Simulation
 {
+    /// <summary>
+    /// Actividad de enrutamiento dinamico (RIP/OSPF/EIGRP) con configuracion
+    /// virtual de discos 15-18. Tolera TopologyManager null (tras C3 puede
+    /// resolver a null sin crear singletons fantasma): los metodos tratan la
+    /// ausencia de topologia como lista vacia con estado vacio en la UI,
+    /// igual que RoutingTablesActivity y StaticRoutingActivity (sin NRE).
+    /// </summary>
     public class DynamicRoutingActivity : MonoBehaviour
     {
         [Header("UI References")]
@@ -31,6 +38,18 @@ namespace SimRedes.Simulation
             UpdateUI();
         }
 
+        /// <summary>
+        /// Retorna los routers de la topologia actual. Si no hay TopologyManager
+        /// (aun no existe en escena) retorna una lista vacia en vez de fallar,
+        /// misma tolerancia que StaticRoutingActivity.GetRouters.
+        /// </summary>
+        /// <returns>Lista con los nodos de tipo Router (vacia si no hay manager).</returns>
+        public List<NetworkNode> GetRouters()
+        {
+            if (topologyManager == null) return new List<NetworkNode>();
+            return topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+        }
+
         public void SetProtocol(RoutingProtocol protocol)
         {
             currentProtocol = protocol;
@@ -39,11 +58,22 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log($"[DynamicRouting] Protocolo: {protocol}");
         }
 
+        /// <summary>
+        /// Inicia el protocolo seleccionado con los routers de la topologia.
+        /// Sin TopologyManager o con menos de 2 routers muestra estado vacio
+        /// en el feedback (sin excepcion).
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (RightPanel para el log).</param>
         public void StartProtocol(GameObject panel)
         {
-            if (topologyManager == null) return;
-            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
-            if (routers.Count < 2) { ShowFeedback("Se necesitan al menos 2 routers"); return; }
+            var routers = GetRouters();
+            if (routers.Count < 2)
+            {
+                ShowFeedback(topologyManager == null
+                    ? "No hay topología disponible todavía"
+                    : "Se necesitan al menos 2 routers");
+                return;
+            }
 
             if (dynProtocol != null) { dynProtocol.StopProtocol(); Destroy(dynProtocol); }
 
@@ -76,28 +106,39 @@ namespace SimRedes.Simulation
             };
         }
 
+        /// <summary>
+        /// Detiene el protocolo activo si lo hay.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (no usado, firma de callbacks).</param>
         public void StopProtocol(GameObject panel)
         {
             if (dynProtocol != null) dynProtocol.StopProtocol();
             ShowFeedback("Protocolo detenido");
         }
 
+        /// <summary>
+        /// Limpia las rutas de todos los routers. Sin TopologyManager la lista
+        /// de routers es vacia: no falla y aun asi reporta la limpieza.
+        /// </summary>
+        /// <param name="panel">Panel de la actividad (no usado, firma de callbacks).</param>
         public void ClearAllRoutes(GameObject panel)
         {
             if (dynProtocol != null) dynProtocol.ClearAllRoutes();
-            if (topologyManager != null)
-            {
-                foreach (var r in topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router))
-                    r.RoutingTable.Clear();
-            }
+            foreach (var r in GetRouters())
+                r.RoutingTable.Clear();
             ShowFeedback("Rutas limpiadas");
         }
 
+        /// <summary>
+        /// Muestra las tablas de rutas de todos los routers en el panel derecho.
+        /// Sin TopologyManager muestra el estado vacio (sin excepcion).
+        /// </summary>
+        /// <param name="panel">Panel de la actividad con el RightPanel de texto.</param>
         public void ShowRoutes(GameObject panel)
         {
             var rightText = panel.transform.Find("RightPanel")?.GetComponent<UnityEngine.UI.Text>();
             if (rightText == null) return;
-            var routers = topologyManager?.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router) ?? new System.Collections.Generic.List<NetworkNode>();
+            var routers = GetRouters();
             string info = "TABLAS DE RUTAS:\n\n";
             foreach (var r in routers)
             {
@@ -136,15 +177,20 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Actualiza el texto de tablas. Sin TopologyManager trata la lista de
+        /// routers como vacia y muestra el estado "Necesitas al menos 2 routers"
+        /// (mismo tratamiento empty-state que RoutingTablesActivity), en vez de
+        /// dejar el texto anterior sin actualizar.
+        /// </summary>
         private void UpdateTablesDisplay()
         {
             if (tablesText == null) return;
-            if (topologyManager == null) return;
 
             string content = "=== ENRUTAMIENTO DINÁMICO ===\n\n";
             content += "Protocolo actual: " + currentProtocol + "\n\n";
 
-            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+            var routers = GetRouters();
             if (routers.Count < 2)
             {
                 content += "Necesitas al menos 2 routers.\n" +

@@ -8,6 +8,8 @@ namespace SimRedes.UI
     /// <summary>
     /// Navegador de menus con soporte para teclado (flechas, Enter, ESC, numeros) y mouse.
     /// Mantiene un indice de seleccion, animaciones de escala y colores de boton.
+    /// Es el UNICO punto de polling del loop de navegacion (C4): MainMenuManager
+    /// ya no tiene su propio loop; ambos comparten este panel activo.
     /// </summary>
     public class MenuNavigator : MonoBehaviour
     {
@@ -61,6 +63,9 @@ namespace SimRedes.UI
         /// <summary>
         /// Procesa entrada del teclado (flechas, Enter, ESC, digitos 1-6) y del mouse
         /// para navegar entre botones del panel activo. Actualiza hover y animaciones en cada frame.
+        /// Loop unico de navegacion: mismo orden de checks (arriba, abajo, confirmar,
+        /// ESC, digitos) y semantica edge-trigger (wasPressedThisFrame) que siempre;
+        /// MainMenuManager delega aqui en vez de replicar este loop.
         /// </summary>
         private void Update()
         {

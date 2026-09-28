@@ -205,8 +205,3 @@ Limpia discos y topología.
 public void ForceClearAll()
 ```
 Limpieza forzada (ignora null checks).
-
-```csharp
-public void TestConnectivity()
-```
-Prueba de conectividad entre dos nodos.

@@ -1,10 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using SimRedes.Simulation;
 
 namespace SimRedes.UI
 {
+    /// <summary>
+    /// Estado y paneles del menu principal (menu, actividades, conectividad,
+    /// instrucciones) con sus botones de retorno y colores de seleccion.
+    /// La navegacion por teclado NO vive aqui: el loop unico de teclado
+    /// (flechas/W-S, Enter/Espacio, ESC/Backspace, digitos 1-6) es el de
+    /// <see cref="MenuNavigator"/>, que navega los mismos botones del panel
+    /// activo (C4: un solo dueño del input para evitar dobles invocaciones).
+    /// </summary>
     public class MainMenuManager : MonoBehaviour
     {
         public static MainMenuManager Instance { get; private set; }
@@ -29,7 +36,6 @@ namespace SimRedes.UI
 
         private int selectedIndex = 0;
         private Button[] currentMenuButtons;
-        private bool menuActive = false;
 
         private void Awake()
         {
@@ -41,83 +47,9 @@ namespace SimRedes.UI
 
         private void Start()
         {
-            menuActive = true;
             SetupButtons();
             ShowMainMenu();
             UpdateButtonSelection();
-        }
-
-        private void Update()
-        {
-            if (menuActive)
-            {
-                HandleKeyboardNavigation();
-            }
-        }
-
-        private void HandleKeyboardNavigation()
-        {
-            if (currentMenuButtons == null || currentMenuButtons.Length == 0) return;
-
-            var keyboard = Keyboard.current;
-            if (keyboard == null) return;
-
-            if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
-            {
-                selectedIndex--;
-                if (selectedIndex < 0) selectedIndex = currentMenuButtons.Length - 1;
-                UpdateButtonSelection();
-                UnityEngine.Debug.Log("[Menu] Navegando arriba, index: " + selectedIndex);
-            }
-            else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
-            {
-                selectedIndex++;
-                if (selectedIndex >= currentMenuButtons.Length) selectedIndex = 0;
-                UpdateButtonSelection();
-                UnityEngine.Debug.Log("[Menu] Navegando abajo, index: " + selectedIndex);
-            }
-            else if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
-            {
-                if (selectedIndex >= 0 && selectedIndex < currentMenuButtons.Length)
-                {
-                    currentMenuButtons[selectedIndex].onClick.Invoke();
-                    UnityEngine.Debug.Log("[Menu] Enter presionado, invocando boton: " + selectedIndex);
-                }
-            }
-            else if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
-            {
-                SelectButtonByIndex(0);
-            }
-            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
-            {
-                SelectButtonByIndex(1);
-            }
-            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
-            {
-                SelectButtonByIndex(2);
-            }
-            else if (keyboard.digit4Key.wasPressedThisFrame || keyboard.numpad4Key.wasPressedThisFrame)
-            {
-                SelectButtonByIndex(3);
-            }
-            else if (keyboard.digit5Key.wasPressedThisFrame || keyboard.numpad5Key.wasPressedThisFrame)
-            {
-                SelectButtonByIndex(4);
-            }
-            else if (keyboard.escapeKey.wasPressedThisFrame || keyboard.backspaceKey.wasPressedThisFrame)
-            {
-                GoBackToPreviousMenu();
-            }
-        }
-
-        private void SelectButtonByIndex(int index)
-        {
-            if (currentMenuButtons != null && index >= 0 && index < currentMenuButtons.Length)
-            {
-                selectedIndex = index;
-                UpdateButtonSelection();
-                currentMenuButtons[selectedIndex].onClick.Invoke();
-            }
         }
 
         private void UpdateButtonSelection()
@@ -168,7 +100,6 @@ namespace SimRedes.UI
 
         public void ShowMainMenu()
         {
-            menuActive = true;
             HideAllPanels();
             if (mainMenuPanel != null)
                 mainMenuPanel.SetActive(true);
@@ -184,14 +115,12 @@ namespace SimRedes.UI
         public void OnStartClicked()
         {
             UnityEngine.Debug.Log("[Menu] Iniciando simulacion...");
-            menuActive = false;
             HideAllPanels();
             StartSimulation();
         }
 
         public void OnActivitiesClicked()
         {
-            menuActive = true;
             HideAllPanels();
             if (activitiesPanel != null)
                 activitiesPanel.SetActive(true);
@@ -206,7 +135,6 @@ namespace SimRedes.UI
 
         public void OnConnectivityClicked()
         {
-            menuActive = true;
             HideAllPanels();
             if (connectivityPanel != null)
                 connectivityPanel.SetActive(true);
@@ -221,7 +149,6 @@ namespace SimRedes.UI
 
         public void OnInstructionsClicked()
         {
-            menuActive = true;
             HideAllPanels();
             if (instructionsPanel != null)
                 instructionsPanel.SetActive(true);
@@ -269,25 +196,8 @@ namespace SimRedes.UI
         public void SelectActivity(string activityName)
         {
             UnityEngine.Debug.Log("[Menu] Actividad seleccionada: " + activityName);
-            menuActive = false;
             HideAllPanels();
             StartSimulation();
-        }
-
-        private void GoBackToPreviousMenu()
-        {
-            if (activitiesPanel != null && activitiesPanel.activeSelf)
-            {
-                ShowMainMenu();
-            }
-            else if (connectivityPanel != null && connectivityPanel.activeSelf)
-            {
-                ShowMainMenu();
-            }
-            else if (instructionsPanel != null && instructionsPanel.activeSelf)
-            {
-                ShowMainMenu();
-            }
         }
     }
 }

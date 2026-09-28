@@ -22,6 +22,14 @@ namespace SimRedes.Simulation
         private List<NetworkNode> routers = new List<NetworkNode>();
 
         /// <summary>
+        /// Indica si el panel de tablas esta en pantalla. Define el scope del
+        /// atajo R = refrescar: solo existe mientras el panel esta visible;
+        /// fuera de el, R vuelve a ser "Eliminar" (comportamiento global
+        /// documentado, ver SimulationControls.ShouldRemoveSelectedNodeOnR).
+        /// </summary>
+        public bool IsRefreshPanelVisible => tableText != null && tableText.gameObject.activeInHierarchy;
+
+        /// <summary>
         /// Inicializa la actividad: resuelve TopologyManager via
         /// <see cref="ActivityStartup.ResolveTopologyManager"/> (sin crear
         /// singletons fantasma) y actualiza la UI inicial.
@@ -33,13 +41,14 @@ namespace SimRedes.Simulation
         }
 
         /// <summary>
-        /// Escucha la tecla R para refrescar las tablas de enrutamiento si el texto de tabla esta visible.
+        /// Escucha la tecla R para refrescar las tablas de enrutamiento,
+        /// unicamente mientras el panel de tablas esta visible (scope del atajo;
+        /// fuera del panel R significa "Eliminar" y lo maneja SimulationControls).
         /// </summary>
         private void Update()
         {
             var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.rKey.wasPressedThisFrame
-                && tableText != null && tableText.gameObject.activeInHierarchy)
+            if (keyboard != null && keyboard.rKey.wasPressedThisFrame && IsRefreshPanelVisible)
             {
                 RefreshRoutingTables();
             }
@@ -141,7 +150,7 @@ namespace SimRedes.Simulation
                 content += "------------------------------------------------------------\n\n";
             }
 
-            content += "\nACTUALIZAR = Refrescar tablas | ESC = Menú";
+            content += "\nACTUALIZAR / R = Refrescar tablas | ESC = Menú";
 
             tableText.text = content;
         }

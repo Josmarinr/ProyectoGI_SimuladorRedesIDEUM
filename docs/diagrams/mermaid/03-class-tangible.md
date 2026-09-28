@@ -58,7 +58,6 @@ classDiagram
         +SimulateDiscAt(type, pos) void
         +ClearAllDiscs() void
         +ForceClearAll() void
-        +TestConnectivity() void
     }
 
     class TE_TangibleEngine {

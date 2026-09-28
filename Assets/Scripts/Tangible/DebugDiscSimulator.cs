@@ -7,8 +7,9 @@ namespace SimRedes.Tangible
 {
     /// <summary>
     /// Simula la colocacion de discos fisicos mediante teclado para testing sin hardware IDEUM.
-    /// Asigna teclas (1-5, C, P) para crear routers, switches, PCs, enlaces, fallos,
-    /// limpiar la escena y probar conectividad.
+    /// Asigna teclas (1-5, C) para crear routers, switches, PCs, enlaces, fallos
+    /// y limpiar la escena (solo si enableSimulation=true). La tecla P (ping)
+    /// tiene un unico dueno: SimulationControls.ExecutePing (C4b).
     /// </summary>
     public class DebugDiscSimulator : MonoBehaviour
     {
@@ -21,7 +22,6 @@ namespace SimRedes.Tangible
         [SerializeField] private Key addFalloKey = Key.Digit5;
         [SerializeField] private Key addProtocoloKey = Key.Digit6;
         [SerializeField] private Key clearKey = Key.C;
-        [SerializeField] private Key pingTestKey = Key.P;
 
         private const int BASE_DISC_ID = 100;
 
@@ -40,8 +40,8 @@ namespace SimRedes.Tangible
         private int positionIndex = 0;
 
         /// <summary>
-        /// Escucha teclas de acceso rapido para simular discos, alternar modo conexion,
-        /// limpiar escena y ejecutar pruebas de conectividad (solo si enableSimulation=true).
+        /// Escucha teclas de acceso rapido para simular discos, alternar modo conexion
+        /// y limpiar la escena (solo si enableSimulation=true).
         /// </summary>
         private void Update()
         {
@@ -76,9 +76,6 @@ namespace SimRedes.Tangible
 
             else if (keyboard[clearKey].wasPressedThisFrame)
                 ClearAllDiscs();
-
-            else if (keyboard[pingTestKey].wasPressedThisFrame)
-                TestConnectivity();
         }
 
         /// <summary>
@@ -182,24 +179,6 @@ namespace SimRedes.Tangible
         public void ForceClearAll()
         {
             ClearAllDiscs();
-        }
-
-        /// <summary>
-        /// Prueba la conectividad entre los dos primeros nodos de la topologia
-        /// y registra el resultado en la consola.
-        /// </summary>
-        private void TestConnectivity()
-        {
-            var topology = Object.FindAnyObjectByType<Network.TopologyManager>();
-            if (topology != null)
-            {
-                var nodes = topology.GetAllNodes();
-                if (nodes.Count >= 2)
-                {
-                    bool connected = topology.CheckConnectivity(nodes[0].DiscId, nodes[1].DiscId);
-                    UnityEngine.Debug.Log($"[DebugSim] Conectividad entre {nodes[0].Name} y {nodes[1].Name}: {connected}");
-                }
-            }
         }
     }
 }
