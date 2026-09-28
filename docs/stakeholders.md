@@ -72,7 +72,7 @@
 
 **Expectativas:**
 - Arquitectura modular que facilite mantenimiento
-- Cobertura de tests completa (328+ pruebas)
+- Cobertura de tests completa (390+ pruebas)
 - Documentación técnica actualizada
 - Comunidad activa de contribuidores (futuro open-source)
 

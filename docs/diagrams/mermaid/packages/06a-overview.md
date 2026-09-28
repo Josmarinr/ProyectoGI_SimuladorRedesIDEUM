@@ -31,7 +31,7 @@ graph TB
     end
 
     subgraph S6["SimRedes.Core"]
-        AppLogger
+        MemoryDiagnostics
     end
 
     subgraph S7["External"]

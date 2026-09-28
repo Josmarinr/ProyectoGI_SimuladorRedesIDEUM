@@ -15,8 +15,8 @@ Assets/
     Tangible/     Integracion con discos fisicos: TangibleBridge, DiscManager, DiscEventHandler
     Simulation/   Actividades y escenas: SceneSetup, ActivityLoader, 7 actividades, ScoringSystem
     UI/           Interfaz de usuario: 3 factories, 5 controladores, visualizadores
-    Core/         Utilidades: AppLogger (logging deshabilitado por defecto)
-  Editor/Tests/   328 tests EditMode, 18 suites
+    Core/         Diagnostico: MemoryDiagnostics (conteo de memoria, tecla F10)
+  Editor/Tests/   390 tests EditMode, 29 suites
   Main.unity      Escena principal del simulador
 docs/
   api/            Documentacion de 9 APIs del sistema
@@ -110,19 +110,25 @@ TopologyManager expone eventos que el resto del sistema consume:
 
 ## Datos Clave
 
-### Tests (328 EditMode, 18 suites)
+### Tests (390 EditMode, 29 suites)
 
 | Suite | Tests | Suite | Tests |
 |-------|:-----:|-------|:-----:|
-| TestIPValidation | 18 | TestRoutingTable | 18 |
-| TestRouteBuilderState | 15 | TestRoutePersistence | 3 |
-| TestDiscToRouteIntegration | 10 | TestTopologyManager | 32 |
-| TestDynamicRoutingProtocol | 24 | TestActivityLoader | 20 |
-| TestDiscEventHandler | 18 | TestTangibleBridge | 15 |
-| TestScoringSystem | 19 | TestBestRouteActivity | 12 |
-| TestSceneCleanupService | 4 | TestPredefinedScenarios | 13 |
-| TestARPTable | 13 | TestVLANManager | 18 |
-| TestACLManager | 29 | TestNATManager | 25 |
+| TestACLManager | 29 | TestARPTable | 13 |
+| TestDiscToRouteIntegration | 10 | TestIPValidation | 18 |
+| TestNATManager | 25 | TestRoutePersistence | 3 |
+| TestRoutingTable | 20 | TestTopologyManager | 39 |
+| TestVLANManager | 18 | TestDiscEventHandler | 18 |
+| TestRouteBuilderState | 15 | TestTangibleBridge | 15 |
+| TestActivityLoader | 20 | TestActivityLoaderSplit | 8 |
+| TestActivityStartup | 5 | TestBestRouteActivity | 12 |
+| TestBuildTopologyActivity | 3 | TestDynamicRoutingProtocol | 24 |
+| TestFindFaultScenarios | 5 | TestInputUnification | 16 |
+| TestPredefinedScenarios | 13 | TestScenarioLoaderGuards | 1 |
+| TestSceneCleanupRoutes | 4 | TestSceneCleanupService | 3 |
+| TestSceneSetupSplit | 5 | TestScoringSystem | 19 |
+| TestActivityPanelFactory | 12 | TestConfigPanelFactory | 10 |
+| TestUIPanelFactory | 7 | | |
 
 ### Comandos Debug (Keyboard)
 
@@ -139,7 +145,7 @@ TopologyManager expone eventos que el resto del sistema consume:
 | Componente | Especificacion |
 |------------|----------------|
 | Motor | Unity 6000.4.5f1 (Unity 6) |
-| Lenguaje | C# (46 scripts, ~11,847 lineas) |
+| Lenguaje | C# (54 scripts, ~15,272 lineas) |
 | Input | Input System Package 1.19.0 (migracion completa) |
 | Mesa | IDEUM TangibleEngine SDK (TCP, puerto 4949) |
 | Tests | NUnit + Unity Test Framework |

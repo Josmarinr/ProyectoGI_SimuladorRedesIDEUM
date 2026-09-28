@@ -110,7 +110,7 @@ graph TB
 | **Red** | C# plain classes + MonoBehaviour | Simulación de red: nodos, enlaces, routing |
 | **Actividades** | MonoBehaviour | 7 actividades académicas + sistema de evaluación |
 | **Presentación** | Unity Canvas + uGUI | Interfaz de usuario, visualización, animación |
-| **Pruebas** | NUnit 3.x (EditMode) | 50 tests unitarios |
+| **Pruebas** | NUnit 3.x (EditMode) | 390 tests unitarios |
 | **Herramientas** | opencode + skills | Automatización de desarrollo con agentes IA |
 
 ## Singleton Patterns

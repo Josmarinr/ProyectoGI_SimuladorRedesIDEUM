@@ -296,7 +296,7 @@ El `EditorBuildSettings.asset` debe tener `Assets/Main.unity` como primera escen
 | **Fix disco Destino (ID 12)** | Case agregado en HandleRoutingConfigDisc() — antes caía al default silencioso. |
 | **ShowConnectivityPanel unificado** | ActivityLoader delega en UIPanelFactory.CreateConnectivityPanel() con struct ConnectivityPanelRefs. ~125 líneas de código duplicado eliminadas. |
 | **CreateStatusPanel deprecado** | Código muerto marcado [Obsolete]. Sin callers. |
-| **Tests unitarios (47 EditMode)** | IPValidation (18), RoutingTable (14), RouteBuilderState (15). En Assets/Editor/Tests/. |
+| **Tests unitarios (53 EditMode)** | IPValidation (18), RoutingTable (20), RouteBuilderState (15). En Assets/Editor/Tests/. |
 | **Input System Both** | activeInputHandler cambiado de 0 (Old) a 2 (Both). El Input System Package 1.19.0 ahora está activo junto con el código legacy. |
 | **Dead code eliminado** | ActivityPanel.cs removido (sin callers). GameManager.cs limpiado (RoutingSimulator muerto removido). |
 
@@ -451,7 +451,7 @@ SceneSetup.cs pasó de ~2600L a ~379L mediante la extracción de 8 nuevos archiv
 #### DebugDiscSimulator
 - enableSimulation = true por defecto (testing con teclado 1/2/3)
 - Para producción en mesa IDEUM real: setear enableSimulation = false
-- AppLogger.cs en Core/ para logging centralizado (EnableLogging = false)
+- MemoryDiagnostics.cs en Core/ (diagnóstico de memoria en runtime, tecla F10)
 
 #### FIX: Duplicación de nodos en IDEUM (TangibleBridge)
 - TangibleBridge usaba `PatternId` (1-6) para buscar discos, pero TangibleDiscManager generaba uniqueId (101, 102...)

@@ -70,7 +70,7 @@ graph TB
     end
 
     subgraph "Core - SimRedes.Core"
-        LOG[AppLogger]
+        MD[MemoryDiagnostics]
     end
 
     %% Hub connections (thick)
@@ -157,7 +157,7 @@ graph TB
 | `PredefinedScenarios.cs` | Simulation |
 | `ScoringSystem.cs` | Simulation |
 | `IDEUMConfigurator.cs` | UI |
-| `AppLogger.cs` | Core |
+| `MemoryDiagnostics.cs` | Core |
 
 ---
 
@@ -165,8 +165,8 @@ graph TB
 
 | Métrica | Valor |
 |---|---|
-| Scripts fuente | 47 archivos, ~15K líneas |
-| Tests EditMode | 328 tests, 21 suites |
+| Scripts fuente | 54 archivos, ~15K líneas |
+| Tests EditMode | 390 tests, 29 suites |
 | Namespaces | 6 (SimRedes, Network, Tangible, Simulation, UI, Core) |
 | Skills | 20 |
 | Diagramas | 21 (Mermaid) + 14 (Archify) |

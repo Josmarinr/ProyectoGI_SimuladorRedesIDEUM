@@ -28,7 +28,7 @@ Los diagramas se dividen en archivos individuales para facilitar su lectura:
 | `SimRedes.Tangible` | 5 | Integración con hardware IDEUM |
 | `SimRedes.Simulation` | 14 | Actividades, escenarios, puntajes, protocolos |
 | `SimRedes.UI` | 14 | Paneles, visualización, controladores de interacción |
-| `SimRedes.Core` | 1 | Utilidades transversales (AppLogger) |
+| `SimRedes.Core` | 1 | Utilidades transversales (MemoryDiagnostics) |
 | `Tests.EditMode.*` | 4 | Tests unitarios EditMode |
 
 ## Archivos Relacionados

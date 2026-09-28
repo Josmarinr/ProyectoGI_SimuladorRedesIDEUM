@@ -31,7 +31,7 @@ graph TB
     end
 
     subgraph "Simulation"
-        LOG[AppLogger]
+        MD[MemoryDiagnostics]
         PC[PointerClickHandler]
         TS[TouchScriptDisabler]
         PRED[PredefinedScenarios]
@@ -335,7 +335,7 @@ graph TB
 
 | Archivo | Depende de |
 |---|---|
-| `AppLogger.cs` | *(ninguno — leaf)* |
+| `MemoryDiagnostics.cs` | *(ninguno — leaf)* |
 
 ---
 
@@ -354,4 +354,4 @@ graph TB
 ## Archivos Hoja (Sin Dependencias Salientes)
 
 11 archivos no dependen de ningún otro archivo del proyecto:
-`IPValidation`, `DiscConfiguration`, `ACLManager`, `NATManager`, `TangibleDiscManager`, `PointerClickHandler`, `TouchScriptDisabler`, `PredefinedScenarios`, `ScoringSystem`, `IDEUMConfigurator`, `AppLogger`
+`IPValidation`, `DiscConfiguration`, `ACLManager`, `NATManager`, `TangibleDiscManager`, `PointerClickHandler`, `TouchScriptDisabler`, `PredefinedScenarios`, `ScoringSystem`, `IDEUMConfigurator`, `MemoryDiagnostics`

@@ -15,7 +15,7 @@
 ### "Quiero cambiar la lógica de routing (FindBestRoute)"
 - **Archivo**: `Assets/Scripts/Network/RoutingTable.cs`
 - **Método**: `FindBestRoute()` — longest prefix match + métrica
-- **Test**: `TestRoutingTable.cs` (18 tests)
+- **Test**: `TestRoutingTable.cs` (20 tests)
 - **Skill**: `network-tables`
 
 ### "Quiero agregar un nuevo tipo de dispositivo"

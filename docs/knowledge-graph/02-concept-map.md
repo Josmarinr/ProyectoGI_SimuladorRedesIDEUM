@@ -26,7 +26,7 @@
 | **Actividad** | `StaticRoutingActivity.cs` | UI para agregar rutas manualmente |
 | **Config por disco** | `RouteBuilderState.cs` | `ApplyToRouter()` → `AddStaticRoute()` |
 | **Validación** | `IPValidation.cs` | `IsValidIP()`, `IsValidSubnetMask()` |
-| **Test** | `TestRoutingTable.cs` | 18 tests de RoutingTable |
+| **Test** | `TestRoutingTable.cs` | 20 tests de RoutingTable |
 | **Test integración** | `TestDiscToRouteIntegration.cs` | 10 tests disco → ruta |
 | **Diagrama** | `17-activity-static.md` | Flujo de actividad estática |
 | **Skill** | `network-tables` | RoutingTable API |
@@ -138,7 +138,7 @@
 |---|---|---|
 | **Factory** | `ActivityPanelFactory.cs` | 8 métodos Create*Panel |
 | **Componentes** | `UIComponents.cs` | `CreateMenuButton()`, `CreateInfoText()`, etc. |
-| **Test** | `TestActivityPanelFactory.cs` | 8 tests |
+| **Test** | `TestActivityPanelFactory.cs` | 12 tests |
 
 ### Controladores de Interacción
 
@@ -213,7 +213,7 @@
 | Aspecto | Archivo | Ubicación |
 |---|---|---|
 | **Implementación** | `SceneCleanupService.cs` | `ClearSimulation()`, `GoBackToMainMenu()` |
-| **Test** | `TestSceneCleanupService.cs` | 4 tests |
+| **Test** | `TestSceneCleanupService.cs` | 3 tests |
 
 ---
 

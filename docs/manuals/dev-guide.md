@@ -163,7 +163,7 @@ rm -rf Library/
 | `SimRedes.Tangible` | TangibleDiscManager, TangibleBridge, DiscEventHandler |
 | `SimRedes.Simulation` | ActivityLoader, 7 Activities, DynamicRoutingProtocol, Scoring |
 | `SimRedes.UI` | UIPanelFactory, ActivityPanelFactory, ConfigPanelFactory, UIComponents, 5 Controllers, Visualizers |
-| `SimRedes.Core` | AppLogger |
+| `SimRedes.Core` | MemoryDiagnostics |
 
 ### Patrón Singleton
 
@@ -190,7 +190,7 @@ public class TopologyManager : MonoBehaviour {
 ```
 Assets/
 ├── Scripts/
-│   ├── Network/              # ~11 archivos — Núcleo de networking
+│   ├── Network/              # ~10 archivos — Núcleo de networking
 │   │   ├── TopologyManager.cs    # Singleton, nodos, enlaces, pathfinding
 │   │   ├── NetworkNode.cs        # Dispositivos de red
 │   │   ├── NetworkLink.cs        # Conexiones entre dispositivos
@@ -209,7 +209,7 @@ Assets/
 │   │   ├── RouteBuilderState.cs      # Construcción parcial de rutas
 │   │   └── DebugDiscSimulator.cs     # Simulación por teclado
 │   │
-│   ├── Simulation/           # ~15 archivos — Actividades y orquestación
+│   ├── Simulation/           # ~23 archivos — Actividades y orquestación
 │   │   ├── SceneSetup.cs           # Orquestador (~623L, refactorizado desde ~4,246L)
 │   │   ├── ActivityLoader.cs       # Dispatcher (~900L)
 │   │   ├── SceneCleanupService.cs  # Singleton de limpieza
@@ -225,7 +225,7 @@ Assets/
 │   │   ├── SimulationControls.cs       # ESC, P, R
 │   │   └── RoutingProtocols.cs         # RoutingSimulator estático + enum
 │   │
-│   ├── UI/                   # ~16 archivos — Interfaces de usuario
+│   ├── UI/                   # ~15 archivos — Interfaces de usuario
 │   │   ├── UIPanelFactory.cs        # Fábrica base: navegación + info (~834L)
 │   │   ├── ActivityPanelFactory.cs  # Fábrica de paneles de actividades 0-6 (~694L)
 │   │   ├── ConfigPanelFactory.cs    # Fábrica de configuración de red (~790L)
@@ -243,25 +243,25 @@ Assets/
 │   │   └── ConnectivityTestPanel.cs # Panel de pruebas
 │   │
 │   └── Core/                  # ~1 archivo — Utilidades
-│       └── AppLogger.cs            # Logger centralizado
+│       └── MemoryDiagnostics.cs     # Diagnóstico de memoria (F10)
 │
 ├── Editor/Tests/              # Tests unitarios EditMode
 │   ├── Network/
 │   │   ├── TestIPValidation.cs           # 18 tests
-│   │   ├── TestRoutingTable.cs           # 14 tests
+│   │   ├── TestRoutingTable.cs           # 20 tests
 │   │   ├── TestRoutePersistence.cs       # 3 tests
 │   │   └── TestDiscToRouteIntegration.cs # 10 tests
 │   ├── Simulation/
 │   │   ├── TestScoringSystem.cs          # 19 tests
 │   │   ├── TestBestRouteActivity.cs      # 12 tests
-│   │   ├── TestSceneCleanupService.cs    # 4 tests
+│   │   ├── TestSceneCleanupService.cs    # 3 tests
 │   │   └── TestPredefinedScenarios.cs    # 13 tests
 │   └── Tangible/
 │       └── TestRouteBuilderState.cs      # 15 tests
 │
 └── .opencode/                 # Configuración de agentes IA
     ├── agents/                # 6 agentes
-    └── skills/                # 18 skills
+    └── skills/                # 20 skills
 ```
 
 ---
@@ -288,7 +288,7 @@ Assets/
 - **UI**: Todo code-only (sin prefabs). Canvas modo Expand.
 - **Destrucción**: Usar `UnityEngine.Object.Destroy` (calificar con namespace para evitar ambigüedad).
 - **Tipos ambiguos**: `DeviceType` → usar `SimRedes.Network.DeviceType` (no `UnityEngine.DeviceType`).
-- **Logger**: Usar `AppLogger.LogWarning()` / `AppLogger.LogError()` en lugar de `Debug.Log` directo.
+- **Logger**: Usar `Debug.Log` / `Debug.LogWarning` / `Debug.LogError` directo con contexto (AppLogger fue eliminado en C0).
 
 ### Anti-patrones a Evitar
 
@@ -634,19 +634,25 @@ Para testing en PC:
 
 ### Estructura
 
-Los tests están en `Assets/Editor/Tests/` y son **328 tests EditMode** (18 suites):
+Los tests están en `Assets/Editor/Tests/` y son **390 tests EditMode** (29 suites):
 
 | Suite | Tests | Suite | Tests |
 |-------|:-----:|-------|:-----:|
-| TestIPValidation | 18 | TestRoutingTable | 18 |
-| TestRouteBuilderState | 15 | TestRoutePersistence | 3 |
-| TestDiscToRouteIntegration | 10 | TestTopologyManager | 32 |
-| TestDynamicRoutingProtocol | 24 | TestActivityLoader | 20 |
-| TestDiscEventHandler | 18 | TestTangibleBridge | 15 |
-| TestScoringSystem | 19 | TestBestRouteActivity | 12 |
-| TestSceneCleanupService | 4 | TestPredefinedScenarios | 13 |
-| TestARPTable | 13 | TestVLANManager | 18 |
-| TestACLManager | 29 | TestNATManager | 25 |
+| TestACLManager | 29 | TestARPTable | 13 |
+| TestDiscToRouteIntegration | 10 | TestIPValidation | 18 |
+| TestNATManager | 25 | TestRoutePersistence | 3 |
+| TestRoutingTable | 20 | TestTopologyManager | 39 |
+| TestVLANManager | 18 | TestDiscEventHandler | 18 |
+| TestRouteBuilderState | 15 | TestTangibleBridge | 15 |
+| TestActivityLoader | 20 | TestActivityLoaderSplit | 8 |
+| TestActivityStartup | 5 | TestBestRouteActivity | 12 |
+| TestBuildTopologyActivity | 3 | TestDynamicRoutingProtocol | 24 |
+| TestFindFaultScenarios | 5 | TestInputUnification | 16 |
+| TestPredefinedScenarios | 13 | TestScenarioLoaderGuards | 1 |
+| TestSceneCleanupRoutes | 4 | TestSceneCleanupService | 3 |
+| TestSceneSetupSplit | 5 | TestScoringSystem | 19 |
+| TestActivityPanelFactory | 12 | TestConfigPanelFactory | 10 |
+| TestUIPanelFactory | 7 | | |
 
 ### Cómo Ejecutar
 
@@ -693,12 +699,13 @@ namespace Tests.EditMode.Network {
 }
 ```
 
-### Cobertura Actual (328 tests, 18 suites)
+### Cobertura Actual (390 tests, 29 suites)
 
-Todas las suites principales tienen cobertura completa. Las 18 suites cubren:
+Todas las suites principales tienen cobertura completa. Las 29 suites cubren:
 - **Network**: IPValidation, RoutingTable, RoutePersistence, DiscToRouteIntegration, TopologyManager, ARPTable, VLANManager, ACLManager, NATManager
 - **Tangible**: RouteBuilderState, DiscEventHandler, TangibleBridge
-- **Simulation**: ScoringSystem, BestRouteActivity, SceneCleanupService, PredefinedScenarios, DynamicRoutingProtocol, ActivityLoader
+- **Simulation**: ScoringSystem, BestRouteActivity, SceneCleanupService, SceneCleanupRoutes, PredefinedScenarios, DynamicRoutingProtocol, ActivityLoader, ActivityLoaderSplit, ActivityStartup, BuildTopologyActivity, FindFaultScenarios, InputUnification, ScenarioLoaderGuards, SceneSetupSplit
+- **UI**: UIPanelFactory, ActivityPanelFactory, ConfigPanelFactory
 ---
 
 ## 11. Build y Despliegue
@@ -749,14 +756,14 @@ Si el build abre en negro:
 
 ### Logging
 
-Usar `AppLogger` en lugar de `Debug.Log` directo:
+Usar `Debug.LogWarning` / `Debug.LogError` / `Debug.Log` con contexto (tag + mensaje):
 
 ```csharp
-AppLogger.LogWarning("TopologyManager", "Nodo duplicado: " + discId);
-AppLogger.LogError("DiscEventHandler", "No se encontró router cerca");
+Debug.LogWarning("TopologyManager: Nodo duplicado: " + discId);
+Debug.LogError("DiscEventHandler: No se encontró router cerca");
 ```
 
-> `EnableLogging = false` en producción. Para ver logs en desarrollo, cambiar a `true`.
+> Nota: `AppLogger` fue eliminado en la tarea C0; el logging directo con `Debug` es el flujo actual.
 
 ### Errores Comunes y Soluciones
 
@@ -790,7 +797,7 @@ AppLogger.LogError("DiscEventHandler", "No se encontró router cerca");
 | `tester` | Ejecuta tests | bash |
 | `builder` | Build & deploy | edit, bash |
 
-### Skills (18 disponibles)
+### Skills (20 disponibles)
 
 Los skills están en `.opencode/skills/` y proveen guías de referencia para tareas específicas:
 
@@ -810,8 +817,10 @@ Los skills están en `.opencode/skills/` y proveen guías de referencia para tar
 | Skill | Archivo |
 |-------|---------|
 | `agent-workflow` | Flujo de trabajo entre agentes |
+| `archify` | Diagramas HTML interactivos (arquitectura, secuencia, workflow) |
 | `best-practices` | Patrones de diseño y anti-patrones |
 | `build-and-deploy` | Build para IDEUM/PC, pantalla negra fix |
+| `code-documentation` | Documentación XML (///) en código C# |
 | `debugging` | Logging, profiling, errores comunes |
 | `dynamic-routing` | RIP/OSPF/EIGRP, convergencia |
 | `ideum-integration` | TangibleEngine, discos, bridge |

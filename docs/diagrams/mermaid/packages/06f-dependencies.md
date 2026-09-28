@@ -23,7 +23,7 @@ graph TB
     end
 
     subgraph CORE["SimRedes.Core"]
-        LOG[AppLogger]
+        MD[MemoryDiagnostics]
     end
 
     subgraph EXT["External"]
@@ -39,7 +39,6 @@ graph TB
     ROOT -->|usa| FAC
     ROOT -->|usa| AL
     ROOT -->|usa| TB
-    ROOT -->|usa| LOG
 
     TB -->|mapea discos| TM
     TB -->|recibe TUIO| TE
@@ -49,8 +48,6 @@ graph TB
     AL -->|activa discos| TB
 
     FAC -->|consulta| TM
-
-    LOG -->|logging| ROOT
 
     TST -->|prueba| TM
     TST -->|prueba| TB

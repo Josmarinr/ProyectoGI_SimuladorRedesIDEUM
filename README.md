@@ -138,7 +138,7 @@ Assets/
 │   └── Tests/
 │       ├── Network/
 │       │   ├── TestIPValidation.cs   - 18 tests: IP, máscara, subred
-│       │   └── TestRoutingTable.cs   - 14 tests: rutas estáticas/dinámicas
+│       │   └── TestRoutingTable.cs   - 20 tests: rutas estáticas/dinámicas
 │       └── Tangible/
 │           └── TestRouteBuilderState.cs - 15 tests: estado transitorio de ruta
 │
@@ -492,7 +492,7 @@ Paleta de colores basada en investigación para interfaces de juegos de uso prol
 - **Fix disco Destino (ID 12)**: Ahora tiene case propio en `HandleRoutingConfigDisc()` — antes caía al default (no-op).
 - **ShowConnectivityPanel unificado**: ActivityLoader ahora usa `UIPanelFactory.CreateConnectivityPanel()` (struct `ConnectivityPanelRefs`), eliminando ~125 líneas de código duplicado de creación de UI.
 - **CreateStatusPanel deprecado**: Marcado `[Obsolete]` — era código muerto sin callers.
-- **Tests unitarios**: 47 tests EditMode para `IPValidation`, `RoutingTable` y `RouteBuilderState` en `Assets/Editor/Tests/`.
+- **Tests unitarios**: 53 tests EditMode para `IPValidation`, `RoutingTable` y `RouteBuilderState` en `Assets/Editor/Tests/`.
 
 ### Pendiente 🔄
 - Testing con discos f├¡sicos en IDEUM
@@ -531,13 +531,16 @@ Si solo está `Assets/Scenes/GetStarted_Scene.unity`, el componente `SceneSetup`
 
 ## Skills (opencode)
 
-El proyecto incluye **18 skills** en formato opencode (`.opencode/skills/`).  
+El proyecto incluye **20 skills** en formato opencode (`.opencode/skills/`).  
 Los agentes cargan automáticamente el skill relevante con el tool `skill` según la tarea.
 
 ```
 .opencode/skills/
+├── agent-workflow/          # Comunicación y flujo entre agentes
+├── archify/                 # Diagramas HTML interactivos (arquitectura, secuencia, workflow)
 ├── best-practices/          # Arquitectura, patrones, checklist
 ├── build-and-deploy/        # Build IDEUM/PC, pantalla negra fix
+├── code-documentation/      # Documentación XML (///) en código C#
 ├── debugging/               # Logging, profiling, errores comunes
 ├── dynamic-routing/         # RIP/OSPF
 ├── ideum-integration/       # TangibleEngine, discos, bridge
@@ -552,8 +555,7 @@ Los agentes cargan automáticamente el skill relevante con el tool `skill` segú
 ├── unity-ui-buttons/        # Botones, colores, textos
 ├── vlan-acl-nat/            # Redes virtuales, acceso, traducción
 ├── unity-code-style/        # Naming, Unity lifecycle, convenciones
-├── testing-guide/           # Cómo escribir y ejecutar tests
-└── agent-workflow/          # Comunicación y flujo entre agentes
+└── testing-guide/           # Cómo escribir y ejecutar tests
 ```
 
 Cada skill contiene código listo para copiar y explicaciones de la arquitectura.
@@ -591,7 +593,7 @@ Los agentes los usan automáticamente como referencia durante implementación, r
 - **ActivityLoader** centraliza la lógica de carga de 7 actividades + 5 escenarios (~800L)
 - **SceneCleanupService** es un singleton que maneja la destrucción ordenada al salir
 - **Input System**: Activo en modo Both (`activeInputHandler = 2`). El código legacy con `Input.GetKeyDown()` funciona junto con el nuevo Input System Package. Para código nuevo, usar `UnityEngine.InputSystem`.
-- **Tests**: 47 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.
+- **Tests**: 390 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.
 - **Código eliminado**: `ActivityPanel.cs` (sin callers), `GameManager.routingSimulator` y `GetRoutingSimulator()` (sin callers).
 
 ---

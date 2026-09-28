@@ -8,15 +8,15 @@
 
 | Namespace | Suites | Tests | Cobertura |
 |---|---|---|---|
-| Network | 9 | ~166 | Alta |
-| Tangible | 3 | ~48 | Alta |
-| Simulation | 6 | ~92 | Media |
-| UI | 3 | ~22 | Baja |
-| **Total** | **21** | **~328** | — |
+| Network | 9 | 175 | Alta |
+| Tangible | 3 | 48 | Alta |
+| Simulation | 14 | 138 | Media |
+| UI | 3 | 29 | Baja |
+| **Total** | **29** | **390** | — |
 
 ---
 
-## Network/ — 9 suites, ~166 tests
+## Network/ — 9 suites, 175 tests
 
 ### TestIPValidation.cs → `IPValidation` (18 tests)
 
@@ -32,7 +32,7 @@
 | `GetBroadcastAddress()` | 1 |
 | `GetGatewayFromIP()` | 2 (correcto + null) |
 
-### TestRoutingTable.cs → `RoutingTable`, `RoutingEntry` (18 tests)
+### TestRoutingTable.cs → `RoutingTable`, `RoutingEntry` (20 tests)
 
 | Método testado | Tests |
 |---|---|
@@ -46,8 +46,9 @@
 | `GetAllEntries()` | 1 (copia defensiva) |
 | `Clear()` | 1 |
 | `GetTableSummary()` | 1 |
+| `FormatRouteLine()` | 2 (static, RIP con prefijo/protocolo) |
 
-### TestTopologyManager.cs → `TopologyManager` (32 tests)
+### TestTopologyManager.cs → `TopologyManager` (39 tests)
 
 | Método testado | Tests |
 |---|---|
@@ -63,6 +64,7 @@
 | `FindPath()` | 3 (conectado, desconectado, nodo único) |
 | `CheckConnectivity()` | 4 (misma subred, diferente, sin link, switch transparente) |
 | `GetRoutingTableSummary()` | 2 (con datos, vacío) |
+| `FindLink()` | 7 (normal, invertido, sin enlace, null, por discId ×3) |
 | `ClearTopology()` | 2 (con datos, vacío) |
 
 ### TestARPTable.cs → `ARPTable` (13 tests)
@@ -82,7 +84,7 @@
 | Método testado | Tests |
 |---|---|
 | `Constructor` | 1 (VLAN 1 default) |
-| `CreateVLAN()` | 5 (auto ID, incremento, específico, duplicado) |
+| `CreateVLAN()` | 4 (auto ID, incremento, específico, duplicado) |
 | `DeleteVLAN()` | 4 (default, existente, con nodos, no existe) |
 | `AssignToVLAN()` | 4 (asignado, auto-create, reasignar, múltiples) |
 | `GetNodeVLAN()` | 1 (sin asignar) |
@@ -94,11 +96,11 @@
 | Método testado | Tests |
 |---|---|
 | `ACLRule.DefaultValues` | 1 |
-| `ACLRule.Matches()` | 10 (wildcard src/dst, src específico, protocolo, puerto src/dst, null) |
+| `ACLRule.Matches()` | 12 (wildcard src/dst, src específico, protocolo, puerto src/dst, null) |
 | `CreateACL()` | 2 (nuevo, duplicado) |
 | `AddRule()` | 3 (auto-create, secuencia, incremento) |
 | `RemoveRule()` | 1 |
-| `CheckPacket()` | 5 (no ACL, vacío, deny, permit, primer match) |
+| `CheckPacket()` | 6 (no ACL, vacío, deny, permit, primer match, implicit deny) |
 | `DeleteACL()` | 1 |
 | `CreateStandardRule()` | 1 |
 | `CreateExtendedRule()` | 1 |
@@ -116,7 +118,7 @@
 | `AddPAT()` | 1 |
 | `LookupInternal()` | 3 (con puerto, sin puerto, no existe) |
 | `LookupExternal()` | 2 (existe, no existe) |
-| `TranslatePacket()` | 6 (outgoing match/miss, incoming static/PAT/miss) |
+| `TranslatePacket()` | 5 (outgoing match/miss, incoming static/PAT/miss) |
 | `RemoveEntry()` | 1 |
 | `ClearNAT()` | 1 |
 | `GetNATTable()` | 1 |
@@ -148,7 +150,7 @@
 
 ---
 
-## Tangible/ — 3 suites, ~48 tests
+## Tangible/ — 3 suites, 48 tests
 
 ### TestDiscEventHandler.cs → `DiscEventHandler` (18 tests)
 
@@ -156,21 +158,21 @@
 |---|---|
 | `HandleDiscPlaced()` | 4 (Router, Switch, PC, disco no físico) |
 | `HandleDiscRemoved()` | 2 (existe, no existe) |
-| `HandleRoutingConfigDisc()` | 10 (RedDestino, 4 discos completos, IpRoute, ModoEnrutamiento, Métrica, Destino, Vecino sin activity, Vecino con activity, AnunciarRed, Costo, BW, Sin router cercano) |
+| `HandleRoutingConfigDisc()` | 12 (RedDestino, 4 discos completos, IpRoute, ModoEnrutamiento, Métrica, Destino, Vecino sin activity, Vecino con activity, AnunciarRed, Costo, BW, Sin router cercano) |
 
 ### TestRouteBuilderState.cs → `RouteBuilderState` (15 tests)
 
 | Método testado | Tests |
 |---|---|
 | `IsComplete` | 7 (todos campos, falta destino/mask/nextHop/interface, strings vacíos, protocolo opcional) |
-| `ApplyToRouter()` | 5 (completo, protocol override OSPF, incompleto, router inexistente, múltiples llamadas) |
+| `ApplyToRouter()` | 6 (completo, protocol override OSPF, incompleto, router inexistente, múltiples llamadas) |
 | `Reset()` | 2 (limpia campos, preserva protocolo) |
 
 ### TestTangibleBridge.cs → `TangibleBridge` (15 tests)
 
 | Método testado | Tests |
 |---|---|
-| `MapPatternToDiscType()` | 5 (patrones 1-4, desconocido) |
+| `MapPatternToDiscType()` | 6 (patrones 1-4, desconocido) |
 | `ConvertToCanvasPosition()` | 3 (fallback, screen→canvas, bordes) |
 | `tangibleIdToUniqueId` | 1 (inicia vacío) |
 | `HandleTangibleAdded()` | 3 (con DiscManager, reuso, sin DiscManager) |
@@ -179,7 +181,7 @@
 
 ---
 
-## Simulation/ — 6 suites, ~92 tests
+## Simulation/ — 14 suites, 138 tests
 
 ### TestScoringSystem.cs → `ScoringSystem` (19 tests)
 
@@ -213,7 +215,7 @@
 | `GetScenarioCount()` | 1 |
 | `GetScenario()` | 2 (válido, inválido) |
 | `GetScenariosByDifficulty()` | 3 (Básico, Intermedio, Avanzado) |
-| Validación de datos | 5 (nombre, dispositivos, links, IPs, objetivos) |
+| Validación de datos | 6 (nombre, dispositivos, links, IPs, objetivos) |
 | `GetScenarios()` | 1 (copia defensiva) |
 
 ### TestActivityLoader.cs → `ActivityLoader` (20 tests)
@@ -232,29 +234,98 @@
 
 | Método testado | Tests |
 |---|---|
-| `StartProtocol()` | 4 (2 routers, <2 routers, sin topology, EIGRP) |
+| `StartProtocol()` | 5 (2 routers, <2 routers, sin topology, EIGRP) |
 | `StopProtocol()` | 1 |
 | `ProtocolType` | 3 (default RIP, OSPF, EIGRP) |
-| `GetProtocolStatus()` | 4 (stopped, running, EIGRP stopped) |
+| `GetProtocolStatus()` | 3 (stopped, running, EIGRP stopped) |
 | `CalculateEIGRPMetric()` | 3 (default K, custom BW, custom delay) |
 | `SetKValue()` | 2 (índice válido, bulk) |
 | `GetRouterRoutesSummary()` | 2 (con rutas, sin rutas) |
 | Configuración virtual | 4 (SetManualNeighbor, SetManualNetwork, SetCustomCost, SetCustomBandwidth) |
 | `ClearAllRoutes()` | 1 |
-| Restart | 1 |
 
-### TestSceneCleanupService.cs → `SceneCleanupService` (4 tests)
+### TestSceneCleanupService.cs → `SceneCleanupService` (3 tests)
 
 | Método testado | Tests |
 |---|---|
 | Singleton | 1 |
 | `ClearSimulation()` null params | 1 |
 | `ClearSimulation()` parcial null | 1 |
-| `ExitApplication()` | 1 |
+
+### TestActivityLoaderSplit.cs → `ActivityLoader` (fachada), `ActivityDispatcher`, `ActivityHudFactory`, `ScenarioLoader` (8 tests)
+
+| Método testado | Tests |
+|---|---|
+| Fachada `SetSelectedProtocol()` / `StartSimulation()` | 2 |
+| `ActivityHudFactory` (panel HUD, debounce de clicks) | 2 |
+| `ActivityDispatcher` (SelectActivity, protocolo desde botón RIP) | 2 |
+| `ScenarioLoader.BuildScenarioTopology()` (nodos/links/IPs/rutas, falla en nodo) | 2 |
+
+### TestActivityStartup.cs → `ActivityStartup` (5 tests)
+
+| Método testado | Tests |
+|---|---|
+| `ResolveTopologyManager()` (sin manager, con manager, nunca crea GameObject fantasma) | 3 |
+| `Start()` de actividades sin manager (no falla ni crea fantasma) | 1 |
+| `Start()` con manager existente (lo asigna) | 1 |
+
+### TestBuildTopologyActivity.cs → `BuildTopologyActivity` (3 tests)
+
+| Método testado | Tests |
+|---|---|
+| `Start()` suscribe los 4 handlers de topología | 1 |
+| `OnDestroy()` desuscribe todos | 1 |
+| `OnDestroy()` sin `Start()` no lanza ni deja suscripciones | 1 |
+
+### TestFindFaultScenarios.cs → `FindFaultScenarios`, `FindFaultActivity` (5 tests)
+
+| Escenario testado | Tests |
+|---|---|
+| `Create()` devuelve 4 escenarios | 1 |
+| Nombres y tipos de falla esperados | 1 |
+| Datos de reparación clave vs dataset original | 1 |
+| Instancias independientes por llamada | 1 |
+| `FindFaultActivity.Awake()` carga el catálogo | 1 |
+
+### TestInputUnification.cs → input unificado (`MenuNavigator`, `SimulationControls`, `DebugDiscSimulator`, `DynamicRoutingActivity`) (16 tests)
+
+| Comportamiento testado | Tests |
+|---|---|
+| Ciclo de teclado: único owner (`MenuNavigator`) | 2 |
+| `MenuNavigator.SelectAndInvoke()` (invoca botón, índice fuera de rango) | 2 |
+| `ShouldRemoveSelectedNodeOnR()` (panel visible/oculto, sin actividad) | 3 |
+| `IsRefreshPanelVisible()` | 1 |
+| `DebugDiscSimulator` sin binding de tecla P | 1 |
+| `SimulationControls` como owner de P | 1 |
+| Barrido de menú (`ShouldSkipMainMenuSweep`, `GoBackToMainMenu` sin canvas) | 2 |
+| `DynamicRoutingActivity` sin topología (4 guards) | 4 |
+
+### TestScenarioLoaderGuards.cs → `ScenarioLoader` (1 test)
+
+| Escenario testado | Tests |
+|---|---|
+| `LoadScenario()` sin `PredefinedScenarios`: LogError y no lanza | 1 |
+
+### TestSceneCleanupRoutes.cs → `SceneCleanupService` (4 tests)
+
+| Método testado | Tests |
+|---|---|
+| `GetOrCreate()` (crea y reutiliza instancia única) | 2 |
+| `DestroyPreviousPanels()` (escena vacía, panel + backdrop) | 2 |
+
+### TestSceneSetupSplit.cs → `SceneSetup` (fachada), `SceneBootstrap`, `SceneNavigation` (5 tests)
+
+| Método testado | Tests |
+|---|---|
+| Fachada pública de `SceneSetup` callable en escena vacía | 1 |
+| `SceneBootstrap.SetupScene()` (CanvasScaler + EventSystem) | 1 |
+| `SetupManagers()` crea GameManager con todos los managers | 1 |
+| `CreateMainMenu()` construye panel de menú | 1 |
+| `SceneNavigation.ShowActivities()` reemplaza menú por actividades | 1 |
 
 ---
 
-## UI/ — 3 suites, ~22 tests
+## UI/ — 3 suites, 29 tests
 
 ### TestUIPanelFactory.cs → `UIPanelFactory` (7 tests)
 
@@ -266,9 +337,9 @@
 | `CreateConnectivityPanel()` | 1 |
 | `CreateInstructionsPanel()` | 1 |
 | `CreateDiscLegendPanel()` | 1 |
-| `CreateNumericKeypad()` | 1 (12 teclas) |
+| `CreateConnectivityPanel()` estructura de hijos | 1 |
 
-### TestActivityPanelFactory.cs → `ActivityPanelFactory` (8 tests)
+### TestActivityPanelFactory.cs → `ActivityPanelFactory` (12 tests)
 
 | Método testado | Tests |
 |---|---|
@@ -280,8 +351,9 @@
 | `CreateDynamicRoutingPanel()` | 1 |
 | `CreateScenariosPanel()` | 1 |
 | `CreateScenarioInfoPanel()` | 1 |
+| Estructura y colores de items | 4 (ScenarioItem colores/hijos, DynamicRouting inputs, BestRoute back button) |
 
-### TestConfigPanelFactory.cs → `ConfigPanelFactory` (7 tests)
+### TestConfigPanelFactory.cs → `ConfigPanelFactory` (10 tests)
 
 | Método testado | Tests |
 |---|---|
@@ -292,6 +364,7 @@
 | `CreateVLANPanel()` | 1 |
 | `CreateACLPanel()` | 1 |
 | `CreateNATPanel()` | 1 |
+| Estructura de inputs | 3 (AddRoute config fields, VLAN input, ACL name input) |
 
 ---
 
@@ -299,7 +372,7 @@
 
 | Clase | Archivo | Notas |
 |---|---|---|
-| `SceneSetup` | Simulation/ | Probado indirectamente por ActivityLoader tests |
+| `SceneSetup` | Simulation/ | Probado por TestSceneSetupSplit (fachada, bootstrap, navegación) |
 | `NodeVisualizer` | UI/ | Probado indirectamente por TopologyManager tests |
 | `PingVisualizer` | UI/ | Probado indirectamente por connectivity tests |
 | `LinkModeController` | UI/ | Sin tests directos |
@@ -307,12 +380,12 @@
 | `IPConfigController` | UI/ | Sin tests directos |
 | `DevicePanelController` | UI/ | Sin tests directos |
 | `NodeInteractionController` | UI/ | Sin tests directos |
-| `MenuNavigator` | UI/ | Sin tests directos |
-| `MainMenuManager` | UI/ | Sin tests directos |
+| `MenuNavigator` | UI/ | Probado vía TestInputUnification |
+| `MainMenuManager` | UI/ | Probado vía TestInputUnification |
 | `ConnectivityTestPanel` | UI/ | Sin tests directos |
 | `IDEUMConfigurator` | UI/ | Leaf node, trivial |
-| `AppLogger` | Core/ | Leaf node, trivial |
+| `MemoryDiagnostics` | Core/ | Leaf node, trivial |
 | `RoutingProtocols` | Simulation/ | Probado vía DynamicRoutingProtocol tests |
-| `SimulationControls` | Simulation/ | Probado vía ActivityLoader tests |
+| `SimulationControls` | Simulation/ | Probado vía TestInputUnification |
 | `TouchScriptDisabler` | SimRedes/ | Leaf node, trivial |
 | `PointerClickHandler` | SimRedes/ | Leaf node, trivial |

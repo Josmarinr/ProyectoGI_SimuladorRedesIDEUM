@@ -68,7 +68,7 @@ sequenceDiagram
 
     alt Opción 5: SALIR
         User->>Menu: Click "SALIR"
-        Menu->>SS: SceneCleanupService.ExitApplication()
+        Menu->>SS: ExitApplication()
         Note over SS: Application.Quit()
     end
 

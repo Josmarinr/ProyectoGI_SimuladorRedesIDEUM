@@ -183,7 +183,7 @@ docs/
 | Documentos de requerimientos | 3 (stakeholders, user stories, requirements) |
 | API endpoints documentados | 9 archivos |
 | Manuales | 3 (usuario + dev + hardware) |
-| Tests EditMode | **328** (21 suites: 9 Network + 6 Simulation + 3 Tangible + 3 UI) |
+| Tests EditMode | **390** (29 suites: 9 Network + 14 Simulation + 3 Tangible + 3 UI) |
 | Skills (opencode) | 20 |
 | Agentes | 7 (main, architect, programmer, reviewer, tester, builder, documenter) |
 | Líneas de código fuente | ~15,000 |
