@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Disco Físico → Nodo en Topología",
+    "subtitle": "Flujo completo de colocación",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "column_fit": "spread"
+  },
+  "participants": [
+    { "id": "disc", "type": "external", "label": "Disco" },
+    { "id": "te", "type": "external", "label": "TE Service" },
+    { "id": "bridge", "type": "backend", "label": "Bridge" },
+    { "id": "tdm", "type": "backend", "label": "DiscManager" },
+    { "id": "deh", "type": "backend", "label": "EventHandler" },
+    { "id": "tm", "type": "backend", "label": "TopologyMgr" },
+    { "id": "nv", "type": "frontend", "label": "NodeVisual" }
+  ],
+  "messages": [
+    { "id": "m1", "from": "disc", "to": "te", "y": 160, "label": "Colocar disco", "variant": "emphasis" },
+    { "id": "m2", "from": "te", "to": "bridge", "y": 210, "label": "OnTangibleAdded(id, x, y)", "variant": "emphasis" },
+    { "id": "m3", "from": "bridge", "to": "tdm", "y": 260, "label": "AddDisc(id, type, pos)" },
+    { "id": "m4", "from": "tdm", "to": "deh", "y": 310, "label": "OnDiscPlaced(id, type, pos)", "variant": "return" },
+    { "id": "m5", "from": "deh", "to": "tm", "y": 360, "label": "AddNode(id, type, pos)", "variant": "emphasis" },
+    { "id": "m6", "from": "tm", "to": "nv", "y": 410, "label": "OnTopologyChanged", "variant": "return" },
+    { "id": "m7", "from": "tm", "to": "nv", "y": 460, "label": "CreateNodeVisual()", "variant": "dashed" }
+  ],
+  "activations": [
+    { "participant": "bridge", "from": 210, "to": 260, "type": "backend" },
+    { "participant": "deh", "from": 310, "to": 360, "type": "backend" },
+    { "participant": "tm", "from": 360, "to": 410, "type": "backend" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Física", "items": ["Discos PUCs con RFID", "TangibleEngine detecta"] },
+    { "dot": "emerald", "title": "Software", "items": ["Bridge mapea IDs", "TopologyMgr crea nodo", "NodeVisual instancia GO"] }
+  ]
+}

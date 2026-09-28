@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM — Arquitectura General",
+    "subtitle": "Sistema de simulación de redes tangibles para educación",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [1100, 650],
+    "views": [
+      { "id": "tangible-flow", "label": "Integración Tangible", "focus": ["discs", "te", "bridge", "handler", "tm"], "note": "Flujo desde discos físicos hasta TopologyManager" },
+      { "id": "network-core", "label": "Núcleo de Red", "focus": ["tm", "nn", "rt", "ipval"], "note": "Componentes centrales de simulación de red" },
+      { "id": "ui-layer", "label": "Capa de Presentación", "focus": ["upf", "nv", "pv"], "note": "Interfaces de usuario y controladores" }
+    ]
+  },
+  "components": [
+    { "id": "discs", "type": "external", "label": "Discos IDEUM", "sublabel": "6 PUCs", "pos": [40, 220], "size": [100, 45] },
+    { "id": "te", "type": "external", "label": "TangibleEngine", "sublabel": ":4949", "pos": [180, 220], "size": [100, 45] },
+    { "id": "bridge", "type": "backend", "label": "TangibleBridge", "sublabel": "Mapeo", "pos": [320, 220], "size": [100, 45] },
+    { "id": "handler", "type": "backend", "label": "DiscEventHandler", "sublabel": "Auto-connect", "pos": [460, 220], "size": [100, 45] },
+    { "id": "tm", "type": "backend", "label": "TopologyManager", "sublabel": "Singleton", "pos": [620, 220], "size": [110, 45], "tag": "Hub" },
+    { "id": "nn", "type": "database", "label": "NetworkNode", "sublabel": "Router/SW/PC", "pos": [620, 100], "size": [100, 45] },
+    { "id": "rt", "type": "database", "label": "RoutingTable", "sublabel": "RIP/OSPF", "pos": [780, 100], "size": [100, 45] },
+    { "id": "ipval", "type": "security", "label": "IPValidation", "sublabel": "Validación", "pos": [780, 220], "size": [100, 45] },
+    { "id": "vlan", "type": "security", "label": "VLANManager", "sublabel": "VLANs", "pos": [780, 340], "size": [100, 45] },
+    { "id": "al", "type": "backend", "label": "ActivityLoader", "sublabel": "Dispatcher", "pos": [460, 340], "size": [100, 45] },
+    { "id": "drp", "type": "backend", "label": "DynamicRouting", "sublabel": "RIP/OSPF", "pos": [320, 340], "size": [100, 45] },
+    { "id": "upf", "type": "frontend", "label": "UIPanelFactory", "sublabel": "Paneles", "pos": [620, 440], "size": [100, 45] },
+    { "id": "nv", "type": "frontend", "label": "NodeVisualizer", "sublabel": "Visual", "pos": [780, 440], "size": [100, 45] },
+    { "id": "pv", "type": "frontend", "label": "PingVisualizer", "sublabel": "Ping", "pos": [780, 530], "size": [100, 45] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Unity App", "wraps": ["bridge", "handler", "tm", "nn", "rt", "ipval", "vlan", "al", "drp", "upf", "nv", "pv"], "pad": 20 },
+    { "kind": "security-group", "label": "TangibleEngine", "wraps": ["te"], "pad": 12 },
+    { "kind": "region", "label": "Mesa IDEUM", "wraps": ["discs"], "pad": 12 }
+  ],
+  "connections": [
+    { "id": "c1", "from": "discs", "to": "te", "label": "RFID", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "c2", "from": "te", "to": "bridge", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "c3", "from": "bridge", "to": "handler", "fromSide": "right", "toSide": "left" },
+    { "id": "c4", "from": "handler", "to": "tm", "label": "AddNode", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "c5", "from": "tm", "to": "nn", "fromSide": "top", "toSide": "bottom" },
+    { "id": "c6", "from": "nn", "to": "rt", "fromSide": "right", "toSide": "left" },
+    { "id": "c7", "from": "tm", "to": "ipval", "fromSide": "right", "toSide": "left" },
+    { "id": "c8", "from": "tm", "to": "vlan", "fromSide": "right", "toSide": "left" },
+    { "id": "c9", "from": "al", "to": "tm", "label": "orchestrates", "variant": "emphasis", "fromSide": "top", "toSide": "bottom" },
+    { "id": "c10", "from": "al", "to": "drp", "fromSide": "left", "toSide": "right" },
+    { "id": "c11", "from": "upf", "to": "nv", "fromSide": "right", "toSide": "left" },
+    { "id": "c12", "from": "upf", "to": "pv", "fromSide": "right", "toSide": "left" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Integración Tangible", "items": ["TangibleEngine: TCP :4949", "TangibleBridge: mapea IDs", "Auto-connect < 300px"] },
+    { "dot": "emerald", "title": "Núcleo de Red", "items": ["TopologyManager: ~25 deps", "NetworkNode: Router/SW/PC", "Static, RIP, OSPF, EIGRP"] },
+    { "dot": "rose", "title": "Presentación", "items": ["UIPanelFactory: 20+ paneles", "NodeVisualizer + PingVisualizer", "3 Factories de UI"] }
+  ]
+}

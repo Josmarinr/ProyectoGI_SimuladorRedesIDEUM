@@ -55,6 +55,13 @@ mono_crash.*.json
 # Junk
 nul
 
+# Agent/tool state
+.atl/
+.obsidian/
+
+# UnityTE installers (large binaries)
+UnityTE/*.exe
+
 # AI agent configuration (operational - opencode runtime)
 .opencode/
 opencode.json
@@ -69,5 +76,4 @@ ai/
 docs/anteproyecto-grado.md
 docs/proposal-context.md
 docs/instrumentos-evaluacion-usabilidad.md
-docs/presentacion-contenido.md
 docs/presentacion-guion.md

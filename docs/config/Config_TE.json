@@ -1,0 +1,90 @@
+{
+  "Config": {
+    "Name": "simred",
+    "SensitivityMultiplier": 1.0,
+    "Recovery": {
+      "Timeout": 200,
+      "TangibleDistance": 50.0,
+      "PointDistance": 50.0
+    },
+    "Smoothing": {
+      "PositionHistory": 1,
+      "RotationHistory": 10
+    },
+    "Pending3PointMatchDelay": 0
+  },
+  "Patterns": [
+    {
+      "PatternId": 1,
+      "Name": "router",
+      "KeepAlivePoints": 2,
+      "Points": [
+        {
+          "X": -87.6666641,
+          "Y": -37.0
+        },
+        {
+          "X": 82.3333359,
+          "Y": -56.0
+        },
+        {
+          "X": 5.33333349,
+          "Y": 93.0
+        }
+      ],
+      "Offset": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Radius": 102.635086
+    },
+    {
+      "PatternId": 2,
+      "Name": "switch",
+      "KeepAlivePoints": 2,
+      "Points": [
+        {
+          "X": -94.3333359,
+          "Y": -74.3333359
+        },
+        {
+          "X": 109.666664,
+          "Y": -35.3333321
+        },
+        {
+          "X": -15.333333,
+          "Y": 109.666664
+        }
+      ],
+      "Offset": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Radius": 124.6167
+    },
+    {
+      "PatternId": 3,
+      "Name": "pc",
+      "KeepAlivePoints": 2,
+      "Points": [
+        {
+          "X": -123.0,
+          "Y": -53.6666679
+        },
+        {
+          "X": 114.0,
+          "Y": -71.6666641
+        },
+        {
+          "X": 9.0,
+          "Y": 125.333336
+        }
+      ],
+      "Offset": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Radius": 142.609543
+    }
+  ]
+}

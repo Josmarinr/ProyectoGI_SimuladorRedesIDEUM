@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Actividad: Encuentra el Fallo",
+    "quality_profile": "showcase",
+    "viewBox": [800, 450]
+  },
+  "lanes": [
+    { "id": "student", "label": "Estudiante" },
+    { "id": "system", "label": "Sistema" }
+  ],
+  "nodes": [
+    { "id": "start", "lane": "student", "col": 0, "type": "external", "label": "Iniciar", "width": 80 },
+    { "id": "load-scenario", "lane": "system", "col": 1, "type": "backend", "label": "Cargar escenario", "width": 120 },
+    { "id": "identify", "lane": "student", "col": 2, "type": "frontend", "label": "Identificar fallo", "width": 120 },
+    { "id": "fix", "lane": "student", "col": 3, "type": "frontend", "label": "Corregir fallo", "width": 100 },
+    { "id": "validate", "lane": "system", "col": 4, "type": "backend", "label": "Validar", "width": 80 },
+    { "id": "more", "lane": "student", "col": 5, "type": "external", "label": "¿Más?", "width": 60 }
+  ],
+  "edges": [
+    { "from": "start", "to": "load-scenario", "role": "main" },
+    { "from": "load-scenario", "to": "identify", "role": "main" },
+    { "from": "identify", "to": "fix", "role": "main" },
+    { "from": "fix", "to": "validate", "role": "main" },
+    { "from": "validate", "to": "more", "role": "main" },
+    { "from": "more", "to": "identify", "label": "Sí", "role": "branch" },
+    { "from": "more", "to": "start", "label": "No", "role": "return" }
+  ],
+  "mainPath": ["start", "load-scenario", "identify", "fix", "validate", "more"]
+}

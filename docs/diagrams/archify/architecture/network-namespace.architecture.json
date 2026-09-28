@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM — Namespace Network",
+    "subtitle": "Núcleo de simulación de red",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [700, 400]
+  },
+  "components": [
+    { "id": "tm", "type": "backend", "label": "TopologyManager", "sublabel": "Singleton Hub", "pos": [250, 150], "size": [120, 45], "tag": "~25 deps" },
+    { "id": "nn", "type": "database", "label": "NetworkNode", "sublabel": "Router/SW/PC", "pos": [100, 80], "size": [100, 45] },
+    { "id": "rt", "type": "database", "label": "RoutingTable", "sublabel": "RIP/OSPF", "pos": [100, 220], "size": [100, 45] },
+    { "id": "arp", "type": "database", "label": "ARPTable", "sublabel": "MAC↔IP", "pos": [250, 80], "size": [100, 45] },
+    { "id": "ipval", "type": "security", "label": "IPValidation", "sublabel": "Validación", "pos": [250, 220], "size": [100, 45] },
+    { "id": "vlan", "type": "security", "label": "VLAN", "sublabel": "Virtuales", "pos": [400, 80], "size": [80, 45] },
+    { "id": "acl", "type": "security", "label": "ACL", "sublabel": "Acceso", "pos": [400, 150], "size": [80, 45] },
+    { "id": "nat", "type": "security", "label": "NAT", "sublabel": "Traducción", "pos": [400, 220], "size": [80, 45] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "SimRedes.Network", "wraps": ["tm", "nn", "rt", "arp", "ipval", "vlan", "acl", "nat"], "pad": 20 }
+  ],
+  "connections": [
+    { "id": "c1", "from": "tm", "to": "nn", "label": "creates", "variant": "emphasis", "fromSide": "left", "toSide": "right" },
+    { "id": "c2", "from": "tm", "to": "ipval", "label": "validates", "fromSide": "bottom", "toSide": "top" },
+    { "id": "c3", "from": "nn", "to": "rt", "label": "owns", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [150, 139] },
+    { "id": "c4", "from": "nn", "to": "arp", "label": "owns", "fromSide": "right", "toSide": "left" },
+    { "id": "c5", "from": "tm", "to": "vlan", "fromSide": "right", "toSide": "left" },
+    { "id": "c6", "from": "tm", "to": "acl", "fromSide": "right", "toSide": "left" },
+    { "id": "c7", "from": "tm", "to": "nat", "fromSide": "right", "toSide": "left" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "TopologyManager", "items": ["Singleton.Instance", "~25 dependencias", "BFS pathfinding"] },
+    { "dot": "emerald", "title": "NetworkNode", "items": ["Router/Switch/PC", "RoutingTable + ARPTable", "~18 dependencias"] }
+  ]
+}

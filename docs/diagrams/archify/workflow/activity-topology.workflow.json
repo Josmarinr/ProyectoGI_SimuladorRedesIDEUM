@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Actividad: Construye la Topología",
+    "quality_profile": "showcase",
+    "viewBox": [800, 450]
+  },
+  "lanes": [
+    { "id": "student", "label": "Estudiante" },
+    { "id": "system", "label": "Sistema" }
+  ],
+  "nodes": [
+    { "id": "start", "lane": "student", "col": 0, "type": "external", "label": "Iniciar", "width": 80 },
+    { "id": "place", "lane": "student", "col": 1, "type": "frontend", "label": "Colocar disco", "width": 100 },
+    { "id": "detect", "lane": "system", "col": 2, "type": "backend", "label": "Detectar", "width": 80 },
+    { "id": "more", "lane": "student", "col": 3, "type": "external", "label": "¿Más?", "width": 60 },
+    { "id": "topology", "lane": "system", "col": 4, "type": "backend", "label": "Topología", "width": 80 },
+    { "id": "end", "lane": "student", "col": 5, "type": "external", "label": "Fin", "width": 60 }
+  ],
+  "edges": [
+    { "from": "start", "to": "place", "role": "main" },
+    { "from": "place", "to": "detect", "role": "main" },
+    { "from": "detect", "to": "more", "role": "main" },
+    { "from": "more", "to": "place", "label": "Sí", "role": "branch" },
+    { "from": "more", "to": "topology", "label": "No", "role": "main" },
+    { "from": "topology", "to": "end", "role": "main" }
+  ],
+  "mainPath": ["start", "place", "detect", "more", "topology", "end"]
+}

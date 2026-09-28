@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Clases Network",
+    "quality_profile": "showcase",
+    "viewBox": [800, 450]
+  },
+  "components": [
+    { "id": "topology-manager", "type": "backend", "label": "TopologyManager", "sublabel": "Singleton", "pos": [40, 100], "size": [160, 60] },
+    { "id": "network-node", "type": "backend", "label": "NetworkNode", "sublabel": "MonoBehaviour", "pos": [280, 100], "size": [160, 60] },
+    { "id": "network-link", "type": "backend", "label": "NetworkLink", "sublabel": "MonoBehaviour", "pos": [280, 250], "size": [160, 60] },
+    { "id": "routing-table", "type": "backend", "label": "RoutingTable", "sublabel": "List<RoutingEntry>", "pos": [520, 60], "size": [160, 60] },
+    { "id": "arp-table", "type": "backend", "label": "ARPTable", "sublabel": "Dictionary", "pos": [520, 200], "size": [160, 60] },
+    { "id": "ip-validation", "type": "backend", "label": "IPValidation", "sublabel": "Static methods", "pos": [520, 340], "size": [160, 60] }
+  ],
+  "connections": [
+    { "id": "c1", "from": "topology-manager", "to": "network-node", "label": "manages" },
+    { "id": "c2", "from": "topology-manager", "to": "network-link", "label": "creates" },
+    { "id": "c3", "from": "network-node", "to": "routing-table", "label": "has" },
+    { "id": "c4", "from": "network-node", "to": "arp-table", "label": "has", "labelAt": [460, 160] },
+    { "id": "c5", "from": "network-node", "to": "ip-validation", "label": "uses", "labelAt": [500, 340] }
+  ]
+}

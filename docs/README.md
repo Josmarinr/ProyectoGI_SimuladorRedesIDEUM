@@ -4,48 +4,117 @@
 
 ---
 
-## Diagramas UML
+## Estructura de Carpetas
+
+```
+docs/
+├── README.md                    # Este archivo
+├── stakeholders.md              # Análisis de stakeholders
+├── user-stories.md              # 24 historias de usuario
+├── requirements.md              # 20 RF + 10 RNF
+├── proposal-context.md          # Contexto propuesta académica
+│
+├── api/                         # 9 archivos de documentación de APIs
+├── manuals/                     # Manuales de usuario y desarrollador
+├── config/                      # Configuración del proyecto
+│   └── Config_TE.json           # Config TangibleEngine
+│
+├── diagrams/
+│   ├── mermaid/                 # 21 diagramas UML (fuentes)
+│   │   ├── packages/            # Subdiagramas de paquetes
+│   │   └── *.md                 # Diagramas Mermaid
+│   └── archify/                 # 9 diagramas interactivos (HTML)
+│       ├── rendered/            # HTMLs renderizados
+│       ├── architecture/        # JSONs de arquitectura
+│       ├── sequence/            # JSONs de secuencia
+│       └── workflow/            # JSONs de workflow
+│
+└── knowledge-graph/             # 9 archivos de grafo de conocimiento
+```
+
+---
+
+## Documentos de Requerimientos
+
+| Archivo | Contenido |
+|---------|-----------|
+| [`stakeholders.md`](stakeholders.md) | Stakeholders primarios/secundarios, intereses, matriz poder/interés |
+| [`user-stories.md`](user-stories.md) | 24 historias de usuario con criterios de aceptación |
+| [`requirements.md`](requirements.md) | 20 Requerimientos Funcionales (RF) + 10 No Funcionales (RNF) |
+
+---
+
+## Diagramas Archify (HTML Interactivo)
+
+> Diagramas HTML autocontenidos con zoom, búsqueda, temas dark/light y exportación.
+
+### Arquitectura
+| Archivo | Descripción |
+|---------|-------------|
+| [`diagrams/archify/rendered/use-cases.architecture.html`](diagrams/archify/rendered/use-cases.architecture.html) | Casos de uso del sistema |
+| [`diagrams/archify/rendered/deployment.architecture.html`](diagrams/archify/rendered/deployment.architecture.html) | Despliegue en mesa IDEUM |
+| [`diagrams/archify/rendered/components.architecture.html`](diagrams/archify/rendered/components.architecture.html) | Componentes del sistema |
+| [`diagrams/archify/rendered/class-network.architecture.html`](diagrams/archify/rendered/class-network.architecture.html) | Clases Network (Topology, Routing, IP) |
+| [`diagrams/archify/rendered/class-ui.architecture.html`](diagrams/archify/rendered/class-ui.architecture.html) | Clases UI (Factories, Menu, Components) |
+
+### Secuencia
+| Archivo | Descripción |
+|---------|-------------|
+| [`diagrams/archify/rendered/routing-config.sequence.html`](diagrams/archify/rendered/routing-config.sequence.html) | Configuración de ruta estática |
+
+### Workflow (Actividades)
+| Archivo | Descripción |
+|---------|-------------|
+| [`diagrams/archify/rendered/activity-topology.workflow.html`](diagrams/archify/rendered/activity-topology.workflow.html) | Actividad: Construye la Topología |
+| [`diagrams/archify/rendered/activity-faults.workflow.html`](diagrams/archify/rendered/activity-faults.workflow.html) | Actividad: Encuentra el Fallo |
+| [`diagrams/archify/rendered/activity-dynamic.workflow.html`](diagrams/archify/rendered/activity-dynamic.workflow.html) | Actividad: Enrutamiento Dinámico |
+
+---
+
+## Diagramas UML (Mermaid)
+
+> Diagramas en formato Markdown con código Mermaid. Se renderizan en GitHub y Obsidian.
 
 ### Diagramas de Casos de Uso (5 sub-diagramas)
 | Archivo | Sub-diagramas |
 |---------|--------------|
-| [`diagrams/01-use-case.md`](diagrams/01-use-case.md) | 01a: Gestión Simulación · 01b: Actividades · 01c: Enrutamiento · 01d: Config. Avanzada · 01e: Evaluación |
+| [`diagrams/mermaid/01-use-case.md`](diagrams/mermaid/01-use-case.md) | 01a: Gestión Simulación · 01b: Actividades · 01c: Enrutamiento · 01d: Config. Avanzada · 01e: Evaluación |
 
 ### Diagramas de Clases (13 sub-diagramas)
 | Archivo | Sub-diagramas |
 |---------|--------------|
-| [`diagrams/02-class-network.md`](diagrams/02-class-network.md) | 02a: Núcleo Red · 02b: Tablas/ARP/IP · 02c: VLAN/ACL/NAT |
-| [`diagrams/03-class-tangible.md`](diagrams/03-class-tangible.md) | Tangible Layer (managers, bridge, debug) |
-| [`diagrams/04-class-simulation.md`](diagrams/04-class-simulation.md) | 04a: Núcleo Simulación · 04b: Actividades · 04c: Protocolo Dinámico · 04d: Puntajes |
-| [`diagrams/05-class-ui.md`](diagrams/05-class-ui.md) | 05a: Factories · 05b: Controladores · 05c: Visualización · 05d: Navegación |
-| [`diagrams/06-packages.md`](diagrams/06-packages.md) | Paquetes/Namespaces |
-| [`diagrams/07-component-architecture.md`](diagrams/07-component-architecture.md) | Componentes y capas |
-| [`diagrams/08-deployment.md`](diagrams/08-deployment.md) | Despliegue IDEUM |
+| [`diagrams/mermaid/02-class-network.md`](diagrams/mermaid/02-class-network.md) | 02a: Núcleo Red · 02b: Tablas/ARP/IP · 02c: VLAN/ACL/NAT |
+| [`diagrams/mermaid/03-class-tangible.md`](diagrams/mermaid/03-class-tangible.md) | Tangible Layer (managers, bridge, debug) |
+| [`diagrams/mermaid/04-class-simulation.md`](diagrams/mermaid/04-class-simulation.md) | 04a: Núcleo Simulación · 04b: Actividades · 04c: Protocolo Dinámico · 04d: Puntajes |
+| [`diagrams/mermaid/05-class-ui.md`](diagrams/mermaid/05-class-ui.md) | 05a: Factories · 05b: Controladores · 05c: Visualización · 05d: Navegación |
+| [`diagrams/mermaid/06-packages.md`](diagrams/mermaid/06-packages.md) | Paquetes/Namespaces |
+| [`diagrams/mermaid/07-component-architecture.md`](diagrams/mermaid/07-component-architecture.md) | Componentes y capas |
+| [`diagrams/mermaid/08-deployment.md`](diagrams/mermaid/08-deployment.md) | Despliegue IDEUM |
 
 ### Diagramas de Secuencia
 | Archivo | Descripción |
 |---------|-------------|
-| [`diagrams/09-sequence-disc-placement.md`](diagrams/09-sequence-disc-placement.md) | Colocar disco físico → nodo visible |
-| [`diagrams/10-sequence-routing-config.md`](diagrams/10-sequence-routing-config.md) | Configurar ruta con discos 7-18 |
-| [`diagrams/11-sequence-connectivity.md`](diagrams/11-sequence-connectivity.md) | CheckConnectivity (BFS + VLAN + ACL + NAT) |
-| [`diagrams/12-sequence-menu-navigation.md`](diagrams/12-sequence-menu-navigation.md) | Navegación de menús (ciclo completo) |
-| [`diagrams/13-sequence-dynamic-routing.md`](diagrams/13-sequence-dynamic-routing.md) | Enrutamiento dinámico RIP/OSPF/EIGRP |
+| [`diagrams/mermaid/09-sequence-disc-placement.md`](diagrams/mermaid/09-sequence-disc-placement.md) | Colocar disco físico → nodo visible |
+| [`diagrams/mermaid/10-sequence-routing-config.md`](diagrams/mermaid/10-sequence-routing-config.md) | Configurar ruta con discos 7-18 |
+| [`diagrams/mermaid/11-sequence-connectivity.md`](diagrams/mermaid/11-sequence-connectivity.md) | CheckConnectivity (BFS + VLAN + ACL + NAT) |
+| [`diagrams/mermaid/12-sequence-menu-navigation.md`](diagrams/mermaid/12-sequence-menu-navigation.md) | Navegación de menús (ciclo completo) |
+| [`diagrams/mermaid/13-sequence-dynamic-routing.md`](diagrams/mermaid/13-sequence-dynamic-routing.md) | Enrutamiento dinámico RIP/OSPF/EIGRP |
 
 ### Diagramas de Actividad
 | Archivo | Descripción |
 |---------|-------------|
-| [`diagrams/14-activity-topology.md`](diagrams/14-activity-topology.md) | Actividad: Construye la Topología |
-| [`diagrams/15-activity-faults.md`](diagrams/15-activity-faults.md) | Actividad: Encuentra el Fallo |
-| [`diagrams/16-activity-bestroute.md`](diagrams/16-activity-bestroute.md) | Actividad: Simulación de Mejor Ruta |
-| [`diagrams/17-activity-static.md`](diagrams/17-activity-static.md) | Actividad: Enrutamiento Estático Tangible |
-| [`diagrams/18-activity-dynamic.md`](diagrams/18-activity-dynamic.md) | Actividad: Protocolo de Enrutamiento Dinámico Tangible |
+| [`diagrams/mermaid/14-activity-topology.md`](diagrams/mermaid/14-activity-topology.md) | Actividad: Construye la Topología |
+| [`diagrams/mermaid/15-activity-faults.md`](diagrams/mermaid/15-activity-faults.md) | Actividad: Encuentra el Fallo |
+| [`diagrams/mermaid/16-activity-bestroute.md`](diagrams/mermaid/16-activity-bestroute.md) | Actividad: Simulación de Mejor Ruta |
+| [`diagrams/mermaid/17-activity-static.md`](diagrams/mermaid/17-activity-static.md) | Actividad: Enrutamiento Estático Tangible |
+| [`diagrams/mermaid/18-activity-dynamic.md`](diagrams/mermaid/18-activity-dynamic.md) | Actividad: Protocolo de Enrutamiento Dinámico Tangible |
 
 ### Diagramas de Estado
 | Archivo | Descripción |
 |---------|-------------|
-| [`diagrams/19-state-routebuilder.md`](diagrams/19-state-routebuilder.md) | RouteBuilderState — ciclo de vida |
-| [`diagrams/20-state-protocol.md`](diagrams/20-state-protocol.md) | DynamicRoutingProtocol — estados |
-| [`diagrams/21-state-scoring.md`](diagrams/21-state-scoring.md) | ScoringSystem — sesión de puntaje |
+| [`diagrams/mermaid/19-state-routebuilder.md`](diagrams/mermaid/19-state-routebuilder.md) | RouteBuilderState — ciclo de vida |
+| [`diagrams/mermaid/20-state-protocol.md`](diagrams/mermaid/20-state-protocol.md) | DynamicRoutingProtocol — estados |
+| [`diagrams/mermaid/21-state-scoring.md`](diagrams/mermaid/21-state-scoring.md) | ScoringSystem — sesión de puntaje |
 
 ---
 
@@ -71,6 +140,30 @@
 |---------|-----------|-----------|
 | [`manuals/user-guide.md`](manuals/user-guide.md) | **Estudiantes** | Cómo usar el simulador: discos, actividades, IPs, puntajes |
 | [`manuals/dev-guide.md`](manuals/dev-guide.md) | **Desarrolladores** | Arquitectura, convenciones, cómo extender, tests, build |
+| [`manuals/Tangibles-3D-Printing.pdf`](manuals/Tangibles-3D-Printing.pdf) | **Hardware** | Guía de impresión 3D de discos tangibles |
+
+---
+
+## Knowledge Graph
+
+| Archivo | Contenido |
+|---------|-----------|
+| [`knowledge-graph/KNOWLEDGE-GRAPH.md`](knowledge-graph/KNOWLEDGE-GRAPH.md) | Grafo de conocimiento global del proyecto |
+| [`knowledge-graph/01-dependency-graph.md`](knowledge-graph/01-dependency-graph.md) | Dependencias entre archivos |
+| [`knowledge-graph/02-concept-map.md`](knowledge-graph/02-concept-map.md) | Mapa de conceptos → archivos, tests, skills |
+| [`knowledge-graph/03-entry-points.md`](knowledge-graph/03-entry-points.md) | Puntos de entrada por funcionalidad |
+| [`knowledge-graph/04-tests-map.md`](knowledge-graph/04-tests-map.md) | Cobertura de tests por archivo |
+| [`knowledge-graph/05-bugs-history.md`](knowledge-graph/05-bugs-history.md) | Historial de bugs corregidos |
+| [`knowledge-graph/06-skills-map.md`](knowledge-graph/06-skills-map.md) | Skills → archivos referenciados |
+| [`knowledge-graph/07-architectural-flows.md`](knowledge-graph/07-architectural-flows.md) | Flujos de datos (Mermaid) |
+
+---
+
+## Configuración
+
+| Archivo | Contenido |
+|---------|-----------|
+| [`config/Config_TE.json`](config/Config_TE.json) | Configuración del TangibleEngine SDK |
 
 ---
 
@@ -78,19 +171,16 @@
 
 | Métrica | Valor |
 |---------|:-----:|
-| Archivos de documentación | 33 |
+| Archivos de documentación | ~40 |
+| Diagramas Archify | 9 (HTML interactivo) |
 | Diagramas UML | 21 (Mermaid) |
+| Documentos de requerimientos | 3 (stakeholders, user stories, requirements) |
 | API endpoints documentados | 9 archivos |
-| Manuales | 2 (usuario + dev) |
+| Manuales | 3 (usuario + dev + hardware) |
 | Tests EditMode | **328** (18 suites: 4 Network + 4 Simulation + 2 Tangible + 8 UI) |
-| Skills (opencode) | 18 |
+| Skills (opencode) | 19 |
 | Agentes | 6 (main, architect, programmer, reviewer, tester, builder) |
 | Líneas de código fuente | ~12,500 |
-| Líneas de documentación | ~4,500 |
-| SceneSetup | ~635 líneas (refactorizado desde ~4,246) |
-| Warnings de compilación eliminados | ~200 |
-| Bugs corregidos (null safety + stale refs + TouchScript) | ~25 |
-| Build generado | `Build/SimuladorRedes.exe` (Windows x86_64) |
 | Bugs activos | **P2** — Líneas de conexión invisibles en discos físicos |
 
 ---

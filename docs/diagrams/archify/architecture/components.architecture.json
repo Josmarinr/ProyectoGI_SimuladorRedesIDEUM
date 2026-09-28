@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Componentes",
+    "quality_profile": "showcase",
+    "viewBox": [900, 400]
+  },
+  "components": [
+    { "id": "input", "type": "frontend", "label": "Input", "sublabel": "Package 1.19", "pos": [40, 120], "size": [140, 60] },
+    { "id": "tangible", "type": "frontend", "label": "Tangible", "sublabel": "Discs, Bridge", "pos": [240, 120], "size": [140, 60] },
+    { "id": "network", "type": "backend", "label": "Network", "sublabel": "Topology, Nodes", "pos": [440, 120], "size": [140, 60] },
+    { "id": "routing", "type": "backend", "label": "Routing", "sublabel": "Tables, ARP", "pos": [640, 120], "size": [140, 60] },
+    { "id": "ui", "type": "frontend", "label": "UI", "sublabel": "Panels, Menu", "pos": [240, 250], "size": [140, 60] },
+    { "id": "simulation", "type": "backend", "label": "Simulation", "sublabel": "Activities", "pos": [440, 250], "size": [140, 60] },
+    { "id": "scoring", "type": "backend", "label": "Scoring", "sublabel": "Points", "pos": [640, 250], "size": [140, 60] }
+  ],
+  "connections": [
+    { "id": "c1", "from": "input", "to": "tangible", "label": "events" },
+    { "id": "c2", "from": "tangible", "to": "network", "label": "detects" },
+    { "id": "c3", "from": "network", "to": "routing", "label": "uses" },
+    { "id": "c4", "from": "ui", "to": "simulation", "label": "controls" },
+    { "id": "c5", "from": "simulation", "to": "scoring", "label": "evaluates" }
+  ]
+}

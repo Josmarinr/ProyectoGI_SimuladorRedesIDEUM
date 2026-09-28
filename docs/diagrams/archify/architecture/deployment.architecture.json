@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Despliegue",
+    "quality_profile": "showcase",
+    "viewBox": [1000, 400]
+  },
+  "components": [
+    { "id": "ideum-table", "type": "external", "label": "Mesa IDEUM", "sublabel": "55\" 4K táctil", "pos": [40, 150], "size": [160, 60] },
+    { "id": "tangible-engine", "type": "backend", "label": "TangibleEngine", "sublabel": "SDK TCP :4949", "pos": [300, 80], "size": [160, 60] },
+    { "id": "unity-app", "type": "backend", "label": "Unity App", "sublabel": "SimuladorRedes", "pos": [300, 250], "size": [160, 60] },
+    { "id": "discs", "type": "external", "label": "Discos PUCs", "sublabel": "Router/Switch/PC", "pos": [40, 300], "size": [160, 60] },
+    { "id": "canvas", "type": "frontend", "label": "Canvas 4K", "sublabel": "4096x2160", "pos": [560, 150], "size": [160, 60] },
+    { "id": "build", "type": "cloud", "label": "Build", "sublabel": "Windows x86_64", "pos": [820, 150], "size": [160, 60] }
+  ],
+  "connections": [
+    { "id": "c1", "from": "ideum-table", "to": "tangible-engine", "label": "TUIO protocol", "fromSide": "right", "toSide": "left" },
+    { "id": "c2", "from": "discs", "to": "ideum-table", "label": "coloca sobre mesa", "fromSide": "top", "toSide": "bottom" },
+    { "id": "c3", "from": "tangible-engine", "to": "unity-app", "label": "TCP :4949", "fromSide": "bottom", "toSide": "top", "labelAt": [380, 180] },
+    { "id": "c4", "from": "unity-app", "to": "canvas", "label": "renderiza", "fromSide": "right", "toSide": "left" },
+    { "id": "c5", "from": "unity-app", "to": "build", "label": "compila", "fromSide": "right", "toSide": "left" }
+  ]
+}

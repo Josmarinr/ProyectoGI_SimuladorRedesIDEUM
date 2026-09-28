@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Actividad: Enrutamiento Dinámico",
+    "quality_profile": "showcase",
+    "viewBox": [900, 450]
+  },
+  "lanes": [
+    { "id": "student", "label": "Estudiante" },
+    { "id": "system", "label": "Sistema" }
+  ],
+  "nodes": [
+    { "id": "start", "lane": "student", "col": 0, "type": "external", "label": "Iniciar", "width": 80 },
+    { "id": "select-protocol", "lane": "student", "col": 1, "type": "frontend", "label": "Seleccionar protocolo", "width": 160 },
+    { "id": "configure", "lane": "system", "col": 2, "type": "backend", "label": "Configurar protocolo", "width": 140 },
+    { "id": "converge", "lane": "system", "col": 3, "type": "backend", "label": "Convergencia", "width": 100 },
+    { "id": "verify", "lane": "student", "col": 4, "type": "frontend", "label": "Verificar tablas", "width": 120 },
+    { "id": "end", "lane": "student", "col": 5, "type": "external", "label": "Fin", "width": 60 }
+  ],
+  "edges": [
+    { "from": "start", "to": "select-protocol", "role": "main" },
+    { "from": "select-protocol", "to": "configure", "role": "main" },
+    { "from": "configure", "to": "converge", "role": "main" },
+    { "from": "converge", "to": "verify", "role": "main" },
+    { "from": "verify", "to": "end", "role": "main" }
+  ],
+  "mainPath": ["start", "select-protocol", "configure", "converge", "verify", "end"]
+}

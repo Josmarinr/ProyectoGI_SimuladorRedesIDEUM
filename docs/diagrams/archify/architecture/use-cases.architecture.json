@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Casos de Uso",
+    "quality_profile": "showcase",
+    "viewBox": [1200, 500]
+  },
+  "components": [
+    { "id": "student", "type": "external", "label": "Estudiante", "sublabel": "Usuario principal", "pos": [40, 200], "size": [140, 60] },
+    { "id": "tangible", "type": "frontend", "label": "Tangible Layer", "sublabel": "Discos físicos IDEUM", "pos": [280, 100], "size": [160, 60] },
+    { "id": "ui", "type": "frontend", "label": "UI Layer", "sublabel": "Paneles y visualización", "pos": [280, 300], "size": [160, 60] },
+    { "id": "topology", "type": "backend", "label": "Topology Manager", "sublabel": "Nodos, enlaces, topología", "pos": [540, 100], "size": [160, 60] },
+    { "id": "routing", "type": "backend", "label": "Routing Engine", "sublabel": "Tablas, ARP, estático/dinámico", "pos": [540, 300], "size": [160, 60] },
+    { "id": "activities", "type": "backend", "label": "Activities", "sublabel": "7 actividades académicas", "pos": [800, 200], "size": [160, 60] },
+    { "id": "scoring", "type": "backend", "label": "Scoring System", "sublabel": "Puntaje y evaluación", "pos": [1040, 200], "size": [140, 60] }
+  ],
+  "connections": [
+    { "id": "c1", "from": "student", "to": "tangible", "label": "coloca discos", "fromSide": "right", "toSide": "left" },
+    { "id": "c2", "from": "student", "to": "ui", "label": "navega menú", "fromSide": "right", "toSide": "left" },
+    { "id": "c3", "from": "tangible", "to": "topology", "label": "detecta dispositivos", "fromSide": "right", "toSide": "left", "labelAt": [410, 170] },
+    { "id": "c4", "from": "tangible", "to": "routing", "label": "configura rutas", "fromSide": "right", "toSide": "left", "labelAt": [410, 230] },
+    { "id": "c5", "from": "topology", "to": "activities", "label": "ejecuta actividad", "fromSide": "right", "toSide": "left" },
+    { "id": "c6", "from": "routing", "to": "activities", "label": "evalúa rutas", "fromSide": "right", "toSide": "left" },
+    { "id": "c7", "from": "activities", "to": "scoring", "label": "calcula puntaje", "fromSide": "right", "toSide": "left" }
+  ]
+}

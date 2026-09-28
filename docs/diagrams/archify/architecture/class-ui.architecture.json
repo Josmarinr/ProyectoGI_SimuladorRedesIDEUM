@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Clases UI",
+    "quality_profile": "showcase",
+    "viewBox": [700, 250]
+  },
+  "components": [
+    { "id": "ui-panel-factory", "type": "frontend", "label": "UIPanelFactory", "sublabel": "Singleton", "pos": [40, 80], "size": [140, 60] },
+    { "id": "activity-panel-factory", "type": "frontend", "label": "ActivityPanelFactory", "sublabel": "Singleton", "pos": [40, 180], "size": [140, 60] },
+    { "id": "menu-navigator", "type": "frontend", "label": "MenuNavigator", "sublabel": "Singleton", "pos": [260, 130], "size": [140, 60] },
+    { "id": "ui-components", "type": "frontend", "label": "UIComponents", "sublabel": "Static", "pos": [480, 130], "size": [140, 60] }
+  ],
+  "connections": [
+    { "id": "c1", "from": "menu-navigator", "to": "ui-panel-factory", "label": "uses", "labelAt": [220, 100] },
+    { "id": "c2", "from": "menu-navigator", "to": "activity-panel-factory", "label": "uses", "labelAt": [220, 200] },
+    { "id": "c3", "from": "ui-panel-factory", "to": "ui-components", "label": "creates", "labelAt": [350, 100] },
+    { "id": "c4", "from": "activity-panel-factory", "to": "ui-components", "label": "creates", "labelAt": [350, 200] }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Prueba de Conectividad (Ping)",
+    "subtitle": "Verificación BFS + IP entre nodos",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "column_fit": "spread"
+  },
+  "participants": [
+    { "id": "user", "type": "external", "label": "Usuario" },
+    { "id": "pm", "type": "backend", "label": "PingCtrl" },
+    { "id": "tm", "type": "backend", "label": "TopoMgr" },
+    { "id": "pv", "type": "frontend", "label": "PingVis" }
+  ],
+  "messages": [
+    { "id": "m1", "from": "user", "to": "pm", "y": 160, "label": "TogglePing()", "variant": "emphasis" },
+    { "id": "m2", "from": "user", "to": "tm", "y": 220, "label": "Click src", "variant": "emphasis" },
+    { "id": "m3", "from": "tm", "to": "pm", "y": 280, "label": "HandleClick(src)" },
+    { "id": "m4", "from": "user", "to": "tm", "y": 340, "label": "Click dst", "variant": "emphasis" },
+    { "id": "m5", "from": "tm", "to": "pm", "y": 400, "label": "HandleClick(dst)" },
+    { "id": "m6", "from": "pm", "to": "tm", "y": 460, "label": "CheckConn(s,d)", "variant": "emphasis" },
+    { "id": "m7", "from": "tm", "to": "pm", "y": 520, "label": "bool result", "variant": "return" },
+    { "id": "m8", "from": "pm", "to": "pv", "y": 580, "label": "Animate(s,d,ok)", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Selección", "items": ["Toggle activa modo", "Click origen → destino"] },
+    { "dot": "emerald", "title": "Verificación", "items": ["BFS path físico", "IP válidas", "Misma subred"] }
+  ]
+}

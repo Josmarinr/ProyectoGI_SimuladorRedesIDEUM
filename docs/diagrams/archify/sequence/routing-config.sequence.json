@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "SimuladorRedes IDEUM - Configuración de Ruta Estática",
+    "quality_profile": "showcase",
+    "viewBox": [900, 600]
+  },
+  "participants": [
+    { "id": "student", "type": "external", "label": "Student", "sublabel": "User" },
+    { "id": "tangible", "type": "frontend", "label": "Tangible", "sublabel": "SDK" },
+    { "id": "route-builder", "type": "backend", "label": "RouteBuilder", "sublabel": "State" },
+    { "id": "routing-table", "type": "backend", "label": "RoutingTable", "sublabel": "Table" },
+    { "id": "topology", "type": "backend", "label": "Topology", "sublabel": "Manager" }
+  ],
+  "messages": [
+    { "from": "student", "to": "tangible", "y": 160, "label": "Place virtual disc (ID 4-18)", "variant": "emphasis" },
+    { "from": "tangible", "to": "route-builder", "y": 200, "label": "DetectDiscEvent(discId)" },
+    { "from": "route-builder", "to": "topology", "y": 260, "label": "GetRouterById(routerId)" },
+    { "from": "topology", "to": "route-builder", "y": 320, "label": "Router reference", "variant": "return" },
+    { "from": "student", "to": "route-builder", "y": 380, "label": "Configure dest, mask, nextHop" },
+    { "from": "route-builder", "to": "routing-table", "y": 440, "label": "AddRoute(dest, mask, nextHop)" },
+    { "from": "routing-table", "to": "route-builder", "y": 500, "label": "Route added", "variant": "return" }
+  ]
+}
