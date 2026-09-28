@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using SimRedes.UI;
 using SimRedes.Network;
-using SimRedes.Tangible;
 
 namespace SimRedes.Simulation
 {
@@ -11,7 +10,6 @@ namespace SimRedes.Simulation
     {
         private SceneSetup sceneSetup;
         private TopologyManager topology;
-        private DebugDiscSimulator discSim;
         private IPConfigController ipConfig;
         private DevicePanelController devicePanel;
 
@@ -19,7 +17,6 @@ namespace SimRedes.Simulation
         {
             sceneSetup = Object.FindAnyObjectByType<SceneSetup>();
             topology = Object.FindAnyObjectByType<TopologyManager>();
-            discSim = Object.FindAnyObjectByType<DebugDiscSimulator>();
             ipConfig = Object.FindAnyObjectByType<IPConfigController>();
             devicePanel = Object.FindAnyObjectByType<DevicePanelController>();
         }
@@ -92,45 +89,17 @@ namespace SimRedes.Simulation
             }
         }
 
+        /// <summary>
+        /// Vuelve al menu principal delegando en la ruta unica de limpieza
+        /// <see cref="SceneCleanupService.GoBackToMainMenu"/>.
+        /// </summary>
         public void GoBackToMainMenu()
         {
-            var cleanup = Object.FindAnyObjectByType<SceneCleanupService>();
-            if (cleanup != null)
-            {
-                var canvas = Object.FindAnyObjectByType<Canvas>();
-                if (canvas != null)
-                {
-                    cleanup.GoBackToMainMenu(canvas.transform, () => {
-                        if (sceneSetup != null) sceneSetup.CreateMainMenu(canvas.transform);
-                    });
-                }
-            }
-            else
-            {
-                if (discSim != null) discSim.enabled = false;
-
-                var visualizer = Object.FindAnyObjectByType<NodeVisualizer>();
-                if (visualizer != null) Destroy(visualizer.gameObject);
-
-                var topologyPanel = GameObject.Find("TopologyInfoPanel");
-                if (topologyPanel != null) Destroy(topologyPanel);
-
-                var devicesPanel = GameObject.Find("DevicesPanel");
-                if (devicesPanel != null) Destroy(devicesPanel);
-
-                var ipConfigPanel = GameObject.Find("IPConfigPanel");
-                if (ipConfigPanel != null) Destroy(ipConfigPanel);
-
-                var ipConfigBg = GameObject.Find("IPConfigBackground");
-                if (ipConfigBg != null) Destroy(ipConfigBg);
-
-                var statusPanel = GameObject.Find("StatusPanel");
-                if (statusPanel != null) Destroy(statusPanel);
-
-                var canvas = Object.FindAnyObjectByType<Canvas>();
-                if (canvas != null && sceneSetup != null)
-                    sceneSetup.CreateMainMenu(canvas.transform);
-            }
+            var cleanup = SceneCleanupService.GetOrCreate();
+            var canvas = Object.FindAnyObjectByType<Canvas>();
+            cleanup.GoBackToMainMenu(canvas != null ? canvas.transform : null, () => {
+                if (sceneSetup != null && canvas != null) sceneSetup.CreateMainMenu(canvas.transform);
+            });
 
             UnityEngine.Debug.Log("[SimulationControls] Volviendo al menu principal");
         }

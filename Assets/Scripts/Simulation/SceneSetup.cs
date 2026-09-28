@@ -216,12 +216,9 @@ namespace SimRedes.Simulation
                 gameManagerObj.AddComponent<TouchScriptDisabler>();
             if (gameManagerObj.GetComponent<PingVisualizer>() == null)
                 gameManagerObj.AddComponent<PingVisualizer>();
-            if (UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>() == null)
-            {
-                var cleanupObj = new GameObject("SceneCleanupService");
-                var cleanup = cleanupObj.AddComponent<SceneCleanupService>();
-                UnityEngine.Object.DontDestroyOnLoad(cleanupObj);
-            }
+            // Servicio de limpieza: creacion unica via GetOrCreate()
+            // (tambien lo usa el menu al montar la escena)
+            SceneCleanupService.GetOrCreate();
             if (gameManagerObj.GetComponent<LinkModeController>() == null)
                 gameManagerObj.AddComponent<LinkModeController>();
             if (gameManagerObj.GetComponent<PingModeController>() == null)
@@ -395,54 +392,12 @@ namespace SimRedes.Simulation
         /// <summary>
         /// Elimina cualquier panel de actividades, instrucciones o conectividad
         /// que haya quedado abierto al volver al menu principal.
+        /// Delega en la ruta unica de limpieza: <see cref="SceneCleanupService.DestroyPreviousPanels"/>.
         /// Conserva MenuNavigator para que el nuevo menu tenga animaciones.
         /// </summary>
         private void DestroyPreviousPanels()
         {
-            string[] panelNames = { "ActivitiesPanel", "InstructionsPanel", "ConnectivityPanel", "MainMenuPanel",
-                "TopologyInfoPanel", "BuildTopologyInfoPanel", "DiscLegendPanel", "FindFaultPanel", "ScenariosPanel",
-                "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel", "DynamicRoutingPanel",
-                // Paneles de config/actividad que abrian y podian quedar huerfanos (B5)
-                "VLANPanel", "ACLPanel", "NATPanel", "ARPPanel", "RoutingPanel",
-                "AddRoutePanel", "PingSelectionPanel", "TopologyExamplePanel" };
-            foreach (string name in panelNames)
-            {
-                GameObject panel = GameObject.Find(name);
-                if (panel != null)
-                {
-                    UIComp.SafeDestroyPanelSprites(panel);
-                    GameObject.Destroy(panel);
-                    Debug.Log($"[SceneSetup] Panel '{name}' destruido");
-                }
-            }
-
-            // Destruir todos los fondos ClickOutsideBG_* por prefijo: los nombres
-            // reales son ClickOutsideBG_VLANPanel / _ACLPanel / _NATPanel / etc.,
-            // no el nombre exacto "ClickOutsideBG" (B5).
-            // Cada fondo tiene SU PROPIO componente Canvas (CreateClickOutsideToClose),
-            // asi que partir de un unico Canvas podia devolver el de un fondo: la
-            // barrida solo veia ese subarbol y los demas fondos sobrevivian con
-            // raycastTarget=true y sortingOrder=50, tragandose los clics (M1).
-            // Se barren TODOS los RectTransform de la escena, incluidos inactivos.
-            var backdrops = UnityEngine.Object.FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (var rt in backdrops)
-            {
-                if (rt == null || !rt.name.StartsWith("ClickOutsideBG")) continue;
-                UIComp.SafeDestroyPanelSprites(rt.gameObject);
-                GameObject.Destroy(rt.gameObject);
-                Debug.Log($"[SceneSetup] Fondo '{rt.name}' destruido");
-            }
-
-            // Destruir MainMenuManager viejo (DestroyImmediate para evitar conflictos
-            // de singleton cuando se recrea el menu en el mismo frame)
-            var mm = UnityEngine.Object.FindAnyObjectByType<MainMenuManager>();
-            if (mm != null) GameObject.DestroyImmediate(mm.gameObject);
-
-            // Limpiar MenuNavigator si existe para evitar referencias colgadas
-            if (MenuNavigator.Instance != null)
-                MenuNavigator.Instance.ClearPanel();
-
-            // NO destruir MenuNavigator — se reutiliza para animaciones del nuevo menu
+            SceneCleanupService.GetOrCreate().DestroyPreviousPanels();
         }
 
         /// <summary>

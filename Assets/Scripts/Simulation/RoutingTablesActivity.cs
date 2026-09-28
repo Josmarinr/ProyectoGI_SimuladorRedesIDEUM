@@ -22,17 +22,13 @@ namespace SimRedes.Simulation
         private List<NetworkNode> routers = new List<NetworkNode>();
 
         /// <summary>
-        /// Inicializa la actividad: localiza o crea TopologyManager y actualiza la UI inicial.
+        /// Inicializa la actividad: resuelve TopologyManager via
+        /// <see cref="ActivityStartup.ResolveTopologyManager"/> (sin crear
+        /// singletons fantasma) y actualiza la UI inicial.
         /// </summary>
         private void Start()
         {
-            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
-            if (topologyManager == null)
-            {
-                var go = new GameObject("TopologyManager");
-                topologyManager = go.AddComponent<TopologyManager>();
-            }
-
+            topologyManager = ActivityStartup.ResolveTopologyManager();
             UpdateUI();
         }
 
@@ -56,7 +52,10 @@ namespace SimRedes.Simulation
         {
             routers.Clear();
 
-            var allNodes = topologyManager.GetAllNodes();
+            // Null-safe: sin TopologyManager (aun no existe en escena) se trata como lista vacia
+            var allNodes = topologyManager != null
+                ? topologyManager.GetAllNodes()
+                : new List<NetworkNode>();
             foreach (var node in allNodes)
             {
                 if (node.Type == SimRedes.Network.DeviceType.Router)

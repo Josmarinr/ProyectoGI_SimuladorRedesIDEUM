@@ -789,29 +789,18 @@ namespace SimRedes.Simulation
         }
 
         /// <summary>
-        /// Vuelve al menu principal. Utiliza SceneCleanupService si existe para limpiar la escena,
-        /// o crea el menu directamente via SceneSetup.CreateMainMenu.
+        /// Vuelve al menu principal delegando en la ruta unica de limpieza
+        /// <see cref="SceneCleanupService.GoBackToMainMenu"/>; el callback
+        /// recrea el menu via SceneSetup.CreateMainMenu.
         /// </summary>
         private void GoBackToMainMenu()
         {
-            var cleanup = UnityEngine.Object.FindAnyObjectByType<SceneCleanupService>();
-            if (cleanup != null)
-            {
-                var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
-                cleanup.GoBackToMainMenu(ct, () => {
-                    var ss = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
-                    if (ss != null && ct != null) ss.CreateMainMenu(ct);
-                });
-            }
-            else
-            {
+            var cleanup = SceneCleanupService.GetOrCreate();
+            var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
+            cleanup.GoBackToMainMenu(ct, () => {
                 var ss = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
-                if (ss != null)
-                {
-                    var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
-                    if (ct != null) ss.CreateMainMenu(ct);
-                }
-            }
+                if (ss != null && ct != null) ss.CreateMainMenu(ct);
+            });
         }
     }
 }

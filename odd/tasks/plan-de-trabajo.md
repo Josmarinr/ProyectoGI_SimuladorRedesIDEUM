@@ -118,7 +118,7 @@ $UNITY -runTests -testPlatform EditMode \
 - [x] **C0** código muerto
 - [x] **C1** helpers puros
 - [x] **C2** primitivas UI
-- [ ] **C3** scaffolding actividades
+- [x] **C3** scaffolding actividades
 - [ ] **C4** input unificado
 - [ ] **C5** god classes
 - [ ] **C6** singletons/eventos

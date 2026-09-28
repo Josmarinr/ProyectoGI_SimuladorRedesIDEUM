@@ -27,13 +27,7 @@ namespace SimRedes.Simulation
 
         private void Start()
         {
-            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
-            if (topologyManager == null)
-            {
-                var go = new GameObject("TopologyManager");
-                topologyManager = go.AddComponent<TopologyManager>();
-            }
-
+            topologyManager = ActivityStartup.ResolveTopologyManager();
             UpdateUI();
         }
 

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using SimRedes.Network;
 using SimRedes.Simulation;
 
 namespace SimRedes.UI
@@ -255,13 +254,9 @@ namespace SimRedes.UI
 
         private void StartSimulation()
         {
-            var topology = Object.FindAnyObjectByType<TopologyManager>();
-            if (topology == null)
-            {
-                var tObj = new GameObject("TopologyManager");
-                topology = tObj.AddComponent<TopologyManager>();
-            }
-
+            // NOTA: no se crea TopologyManager aqui. SceneSetup.SetupManagers() es
+            // quien lo instancia al iniciar la simulacion; el fallback anterior
+            // new GameObject("TopologyManager") solo generaba singletons fantasma.
             // Asegurar que existe el contenedor GameManager (usado por ActivityLoader)
             if (GameObject.Find("GameManager") == null)
             {

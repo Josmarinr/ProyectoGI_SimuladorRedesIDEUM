@@ -22,17 +22,13 @@ namespace SimRedes.Simulation
         private Canvas canvasRef;
 
         /// <summary>
-        /// Inicializa la actividad: localiza o crea TopologyManager, obtiene referencia al Canvas y actualiza la UI.
+        /// Inicializa la actividad: resuelve TopologyManager via
+        /// <see cref="ActivityStartup.ResolveTopologyManager"/> (sin crear
+        /// singletons fantasma), obtiene referencia al Canvas y actualiza la UI.
         /// </summary>
         private void Start()
         {
-            topologyManager = Object.FindAnyObjectByType<TopologyManager>();
-            if (topologyManager == null)
-            {
-                var go = new GameObject("TopologyManager");
-                topologyManager = go.AddComponent<TopologyManager>();
-            }
-
+            topologyManager = ActivityStartup.ResolveTopologyManager();
             canvasRef = Object.FindAnyObjectByType<Canvas>();
             UpdateUI();
         }
@@ -64,7 +60,7 @@ namespace SimRedes.Simulation
         {
             if (selectedRouter == null)
             {
-                var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+                var routers = GetRouters();
                 if (routers.Count > 0)
                     selectedRouter = routers[0];
             }
@@ -91,7 +87,7 @@ namespace SimRedes.Simulation
                 return;
             }
 
-            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+            var routers = GetRouters();
             if (routers.Count == 0)
             {
                 ShowFeedback("Añade un router primero (tecla 1)");
@@ -118,7 +114,7 @@ namespace SimRedes.Simulation
         {
             if (selectedRouter == null)
             {
-                var routers2 = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+                var routers2 = GetRouters();
                 if (routers2.Count > 0)
                     selectedRouter = routers2[0];
             }
@@ -192,7 +188,7 @@ namespace SimRedes.Simulation
 
             string content = "=== RUTAS ESTÁTICAS ===\n\n";
 
-            var routers = topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
+            var routers = GetRouters();
             if (routers.Count == 0)
             {
                 content += "No hay routers configurados.\n" +
@@ -227,6 +223,17 @@ namespace SimRedes.Simulation
             content += "\nAÑADIR RUTA / TEST = Botones | ESC = Menú";
 
             routesText.text = content;
+        }
+
+        /// <summary>
+        /// Retorna los routers actuales de la topologia. Si todavia no hay
+        /// TopologyManager en la escena, retorna una lista vacia en vez de fallar.
+        /// </summary>
+        /// <returns>Lista con los nodos de tipo Router (vacia si no hay manager).</returns>
+        private List<NetworkNode> GetRouters()
+        {
+            if (topologyManager == null) return new List<NetworkNode>();
+            return topologyManager.GetAllNodes().FindAll(n => n.Type == SimRedes.Network.DeviceType.Router);
         }
 
         /// <summary>
