@@ -167,6 +167,11 @@ namespace SimRedes.Tangible
                         Destroy(child.gameObject);
                     }
                 }
+
+                // P2/H4: barrido directo de hijos sin pasar por OnNodeRemoved:
+                // vaciar el cache de iconos para que DrawLinks no saltee los
+                // enlaces con entradas stale (ver NodeVisualizer.ResetVisuals).
+                visualizer.ResetVisuals();
             }
 
             positionIndex = 0;

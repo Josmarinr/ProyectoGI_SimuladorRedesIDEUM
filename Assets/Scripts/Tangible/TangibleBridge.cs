@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TE;
 
 namespace SimRedes.Tangible
@@ -28,6 +29,21 @@ namespace SimRedes.Tangible
         [Header("Canvas Reference Resolution (de SceneSetup)")]
         [SerializeField] private float canvasWidth = 4096f;
         [SerializeField] private float canvasHeight = 2160f;
+
+        [Header("Touch Frame (TUIO) - IDEUM")]
+        // Tamano nativo del touch frame IDEUM: TangibleEngine reporta en pixeles de
+        // este frame (proporcionales a la pantalla completa), NO en pixeles de
+        // ventana. Usar Screen.width/Display.main como denominador fue una regresion
+        // previa (docs/manuals/dev-guide.md "Conversion de Coordenadas" y
+        // docs/knowledge-graph/05-bugs-history.md "Coordenadas TUIO").
+        // Si el telemetro [LinkDiag] (ver NodeVisualizer) muestra un error de
+        // ESCALA en la mesa, ajustar este valor aqui; el de ORIGEN (esquina vs
+        // centro) ya esta resuelto por ConvertToCanvasPosition.
+        [SerializeField] private Vector2 touchFrameSize = new Vector2(1920f, 1080f);
+
+        // CanvasScaler activo cacheado: se re-resuelve si se destruye/recrea
+        // (Unity-null check). Evita un Find por cada evento TUIO.
+        private CanvasScaler cachedCanvasScaler;
 
         /// <summary>
         /// Se suscribe a los eventos de TangibleEngine (anadir/mover/quitar)
@@ -229,22 +245,56 @@ namespace SimRedes.Tangible
         }
 
         /// <summary>
-        /// Convierte coordenadas TUIO (TangibleEngine) a coordenadas del Canvas (4096x2160).
-        /// TangibleEngine siempre reporta en coordenadas del touch frame IDEUM (1920x1080),
-        /// independientemente de la resolucion de pantalla.
+        /// Convierte coordenadas TUIO (TangibleEngine) a coordenadas CENTRADAS del
+        /// canvas: (0,0) = centro de la mesa/pantalla.
+        ///
+        /// Convencion unica de node.Position (P2/H1): todos los escritores usan
+        /// centro-relativo (DebugDiscSimulator, ActivityHudFactory, ScenarioLoader,
+        /// FindFaultActivity) y los iconos se anclan con (0.5,0.5) en
+        /// NodeVisualizer, de modo que (0,0) debe ser el centro.
+        ///
+        /// Supuestos documentados:
+        /// - Lado del touch frame: TE reporta en pixeles nativos del frame IDEUM
+        ///   (touchFrameSize, 1920x1080 por defecto) proporcionales a la pantalla;
+        ///   NO en pixeles de pantalla/ventana (evidencia: dev-guide.md, 05-bugs-history.md).
+        /// - Lado del canvas: leido del CanvasScaler activo (fallback:
+        ///   canvasWidth/canvasHeight serializados 4096x2160), porque node.Position
+        ///   y anchoredPosition viven en unidades de referencia del canvas.
         /// </summary>
-        /// <param name="screenPosition">Posicion en pixeles TUIO (1920x1080).</param>
-        /// <returns>Posicion escalada al espacio del Canvas (4096x2160).</returns>
+        /// <param name="screenPosition">Posicion en pixeles del touch frame (esquina inferior izquierda).</param>
+        /// <returns>Posicion relativa al centro del canvas.</returns>
         private Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
         {
-            // TE/TUIO siempre reporta en 1920x1080 (resolucion del touch frame IDEUM)
-            const float TUIO_WIDTH = 1920f;
-            const float TUIO_HEIGHT = 1080f;
+            Vector2 canvasSize = ResolveCanvasReferenceResolution();
+            Vector2 frameSize = touchFrameSize;
+            if (frameSize.x <= 0f || frameSize.y <= 0f)
+                frameSize = new Vector2(1920f, 1080f); // guard: touchFrameSize editable no debe dividir en cero
 
-            return new Vector2(
-                screenPosition.x * (canvasWidth / TUIO_WIDTH),
-                screenPosition.y * (canvasHeight / TUIO_HEIGHT)
+            // 1) Escalar del frame del touch al canvas (origen esquina inf-izq).
+            Vector2 cornerOrigin = new Vector2(
+                screenPosition.x * (canvasSize.x / frameSize.x),
+                screenPosition.y * (canvasSize.y / frameSize.y)
             );
+
+            // 2) Re-centrar: convencion centro-relativa ((0,0) = centro del canvas).
+            return cornerOrigin - canvasSize * 0.5f;
+        }
+
+        /// <summary>
+        /// Resuelve la resolucion de referencia del canvas activo. Busca el
+        /// CanvasScaler (solo existe en el canvas raiz) cacheandolo; si no hay
+        /// ninguno, usa el fallback serializado canvasWidth/canvasHeight.
+        /// </summary>
+        /// <returns>Resolucion de referencia del canvas en unidades de referencia.</returns>
+        private Vector2 ResolveCanvasReferenceResolution()
+        {
+            if (cachedCanvasScaler == null)
+                cachedCanvasScaler = UnityEngine.Object.FindAnyObjectByType<CanvasScaler>();
+
+            if (cachedCanvasScaler != null)
+                return cachedCanvasScaler.referenceResolution;
+
+            return new Vector2(canvasWidth, canvasHeight);
         }
 
         /// <summary>

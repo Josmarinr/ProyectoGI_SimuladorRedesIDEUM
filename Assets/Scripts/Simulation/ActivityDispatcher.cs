@@ -265,15 +265,28 @@ namespace SimRedes.Simulation
                 gameManagerObj.AddComponent<TopologyManager>();
             }
 
-            if (UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>() == null)
+            // P2: contenedores como RectTransform con anclas centradas
+            // (NodeVisualizer.CreateContainer) + guard H5: solo se reutiliza una
+            // instancia valida (con sus contenedores); una instancia incompleta o
+            // pendiente de destruccion se reemplaza en vez de reutilizarse.
+            var foundVisualizer = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
+            bool usableVisualizer = foundVisualizer != null
+                && foundVisualizer.nodeContainer != null
+                && foundVisualizer.linkContainer != null;
+
+            if (!usableVisualizer)
             {
+                if (foundVisualizer != null)
+                {
+                    if (Application.isPlaying) UnityEngine.Object.Destroy(foundVisualizer.gameObject);
+                    else UnityEngine.Object.DestroyImmediate(foundVisualizer.gameObject);
+                }
+
                 var visObj = new GameObject("NodeVisualizer");
                 visObj.transform.SetParent(UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform, false);
                 var vis = visObj.AddComponent<NodeVisualizer>();
-                vis.nodeContainer = new GameObject("NodeContainer").transform;
-                vis.nodeContainer.SetParent(visObj.transform, false);
-                vis.linkContainer = new GameObject("LinkContainer").transform;
-                vis.linkContainer.SetParent(visObj.transform, false);
+                vis.nodeContainer = NodeVisualizer.CreateContainer("NodeContainer", visObj.transform);
+                vis.linkContainer = NodeVisualizer.CreateContainer("LinkContainer", visObj.transform);
             }
 
             if (UnityEngine.Object.FindAnyObjectByType<PingVisualizer>() == null)

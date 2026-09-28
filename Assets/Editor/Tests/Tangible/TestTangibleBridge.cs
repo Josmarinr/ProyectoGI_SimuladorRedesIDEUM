@@ -2,6 +2,7 @@ using NUnit.Framework;
 using SimRedes.Tangible;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tests.EditMode.Tangible
 {
@@ -9,6 +10,8 @@ namespace Tests.EditMode.Tangible
     /// Tests for TangibleBridge.
     /// Tests pattern mapping, coordinate conversion, mapping state, and null safety.
     /// Does NOT depend on TE.TangibleEngine runtime (Start() is avoided in null-safety tests).
+    /// P2: conversion assertions use the CENTER-RELATIVE convention ((0,0) = canvas
+    /// center) — a deliberate behavior change, see the comments in each test.
     /// </summary>
     public class TestTangibleBridge
     {
@@ -18,6 +21,17 @@ namespace Tests.EditMode.Tangible
         [SetUp]
         public void SetUp()
         {
+            // P2: ConvertToCanvasPosition now reads the active CanvasScaler resolution
+            // when one exists (fallback: serialized 4096x2160). To keep the absolute
+            // assertions of the conversion tests deterministic in EditMode, remove any
+            // residual CanvasScaler leaked by other fixtures. The rest of the tests in
+            // this fixture do not depend on the canvas, so this is harmless for them.
+            foreach (var scaler in Object.FindObjectsByType<CanvasScaler>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                Object.DestroyImmediate(scaler);
+            }
+
             bridgeGo = new GameObject("TangibleBridge");
             bridge = bridgeGo.AddComponent<TangibleBridge>();
             // IMPORTANT: Do NOT call Start() — it subscribes to TE.TangibleEngine events
@@ -149,47 +163,69 @@ namespace Tests.EditMode.Tangible
         [Test]
         public void ConvertToCanvasPosition_ZeroDisplay_UsesFallback()
         {
-            // In EditMode, Display.main.systemWidth may be 0.
-            // The code falls back to Screen.currentResolution, then to 1920x1080.
-            // Just verify that the method does not crash and returns a valid Vector2.
+            // P2/H1 — DELIBERATE ASSERTION CHANGE (old convention: corner-origin
+            // canvas pixels, "result must be non-negative"). ConvertToCanvasPosition
+            // now returns CENTER-RELATIVE canvas coordinates ((0,0) = canvas center),
+            // so values below the center are negative by design.
+            // In EditMode there is no active CanvasScaler ( SetUp removes strays), so
+            // the serialized fallback 4096x2160 applies; the touch frame is assumed
+            // 1920x1080 (IDEUM frame, see TouchFrame header in TangibleBridge).
+            // Method name kept for continuity: the "fallback" verified is now
+            // canvasWidth/canvasHeight instead of Display.main.
             Vector2 result = Vector2.zero;
             Assert.DoesNotThrow(() =>
             {
                 result = InvokeConvertToCanvasPosition(new Vector2(100, 200));
             });
-            Assert.IsTrue(result.x > 0 || result.y > 0,
-                "Converted coordinates should be non-negative");
+            float expectedX = 100f * (4096f / 1920f) - 4096f / 2f;
+            float expectedY = 200f * (2160f / 1080f) - 2160f / 2f;
+            Assert.AreEqual(expectedX, result.x, 0.01f,
+                "X must be scaled to canvas units AND re-centered (P2 center-relative convention)");
+            Assert.AreEqual(expectedY, result.y, 0.01f,
+                "Y must be scaled to canvas units AND re-centered (P2 center-relative convention)");
         }
 
         [Test]
         public void ConvertToCanvasPosition_ScreenToCanvas()
         {
-            // (960, 540) in a 1920x1080 display maps proportionally to 4096x2160 canvas.
-            // The exact result depends on what Screen.currentResolution returns in EditMode.
-            // Verify the ratio is maintained.
+            // P2/H1 — DELIBERATE ASSERTION CHANGE (old convention: "X should be
+            // positive"). The center of the touch frame (960,540) — i.e. the center
+            // of the IDEUM table — must map EXACTLY to (0,0) of the canvas.
+            // This holds for ANY canvas resolution: 960*(W/1920) - W/2 == 0.
             Vector2 result = Vector2.zero;
             Assert.DoesNotThrow(() =>
             {
                 result = InvokeConvertToCanvasPosition(new Vector2(960, 540));
             });
-            Assert.IsTrue(result.x > 0, "X should be positive");
-            Assert.IsTrue(result.y > 0, "Y should be positive");
+            Assert.AreEqual(0f, result.x, 0.001f,
+                "Touch-frame center X must map to canvas center 0 (P2 center-relative convention)");
+            Assert.AreEqual(0f, result.y, 0.001f,
+                "Touch-frame center Y must map to canvas center 0 (P2 center-relative convention)");
         }
 
         [Test]
         public void ConvertToCanvasPosition_EdgeCoordinates()
         {
-            // (0,0) should always map to (0,0)
-            Vector2 zero = InvokeConvertToCanvasPosition(Vector2.zero);
-            Assert.AreEqual(0f, zero.x, 0.001f, "(0,0) screen should map to (0,0) canvas");
-            Assert.AreEqual(0f, zero.y, 0.001f, "(0,0) screen should map to (0,0) canvas");
+            // P2/H1 — DELIBERATE ASSERTION CHANGE (old convention: "(0,0) screen
+            // should map to (0,0) canvas"). Under the center-relative convention the
+            // touch-frame corners map to the canvas half-extents RELATIVE TO CENTER:
+            // (0,0) → (-2048,-1080) and (1920,1080) → (2048,1080) with the 4096x2160
+            // fallback. Also kept the original intent that large coordinates work.
+            Vector2 origin = InvokeConvertToCanvasPosition(Vector2.zero);
+            Assert.AreEqual(-2048f, origin.x, 0.01f,
+                "(0,0) frame corner must map to -half canvas X (center-relative)");
+            Assert.AreEqual(-1080f, origin.y, 0.01f,
+                "(0,0) frame corner must map to -half canvas Y (center-relative)");
 
-            // Large coordinates should also work without crashing
-            Vector2 large;
+            Vector2 far = Vector2.zero;
             Assert.DoesNotThrow(() =>
             {
-                large = InvokeConvertToCanvasPosition(new Vector2(1920, 1080));
+                far = InvokeConvertToCanvasPosition(new Vector2(1920, 1080));
             });
+            Assert.AreEqual(2048f, far.x, 0.01f,
+                "(1920,1080) frame corner must map to +half canvas X (center-relative)");
+            Assert.AreEqual(1080f, far.y, 0.01f,
+                "(1920,1080) frame corner must map to +half canvas Y (center-relative)");
         }
 
         // ================================================================

@@ -26,7 +26,7 @@
 
 ### P2 — ALTO: Líneas de Conexión Invisibles
 
-**Estado**: Persiste sin solución completa.
+**Estado**: En fix — ver commit fix/p2. Diagnóstico: H1 espacio de coordenadas (esquina vs centro) + H2 íconos no seguían el arrastre; telemetry F9 para confirmar en mesa.
 
 | Intento | Archivo modificado | Cambio |
 |---|---|---|

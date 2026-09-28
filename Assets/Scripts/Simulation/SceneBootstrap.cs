@@ -206,26 +206,37 @@ namespace SimRedes.Simulation
 
         /// <summary>
         /// Crea u obtiene el NodeVisualizer y sus contenedores de nodos y enlaces
-        /// bajo el transform del Canvas.
+        /// bajo el transform del Canvas. Los contenedores se crean con
+        /// <see cref="NodeVisualizer.CreateContainer"/> (RectTransform con anclas
+        /// centradas, P2). Solo se reutiliza una instancia valida (con sus
+        /// contenedores): una instancia incompleta o pendiente de destruccion se
+        /// reemplaza en vez de reutilizarse (P2/H5).
         /// </summary>
         /// <param name="ct">Transform del Canvas donde se insertara el visualizador.</param>
         public void CreateVisualizer(Transform ct)
         {
-            if (UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>() == null)
+            var found = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
+            bool usable = found != null && found.nodeContainer != null && found.linkContainer != null;
+
+            if (!usable)
             {
+                if (found != null)
+                {
+                    if (Application.isPlaying) UnityEngine.Object.Destroy(found.gameObject);
+                    else UnityEngine.Object.DestroyImmediate(found.gameObject);
+                }
+
                 var visObj = new GameObject("NodeVisualizer");
                 visObj.transform.SetParent(ct, false);
                 visObj.transform.SetAsLastSibling(); // Renderizar encima de otros paneles
                 var vis = visObj.AddComponent<NodeVisualizer>();
-                vis.nodeContainer = new GameObject("NodeContainer").transform;
-                vis.nodeContainer.SetParent(visObj.transform, false);
-                vis.linkContainer = new GameObject("LinkContainer").transform;
-                vis.linkContainer.SetParent(visObj.transform, false);
+                vis.nodeContainer = NodeVisualizer.CreateContainer("NodeContainer", visObj.transform);
+                vis.linkContainer = NodeVisualizer.CreateContainer("LinkContainer", visObj.transform);
                 owner.visualizer = vis;
             }
             else
             {
-                owner.visualizer = UnityEngine.Object.FindAnyObjectByType<NodeVisualizer>();
+                owner.visualizer = found;
             }
         }
 

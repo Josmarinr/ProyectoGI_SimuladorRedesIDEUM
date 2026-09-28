@@ -73,6 +73,11 @@ namespace SimRedes.Simulation
                 if (visualizer.linkContainer != null)
                     foreach (Transform child in visualizer.linkContainer)
                         Object.Destroy(child.gameObject);
+                // P2/H4: este barrido de hijos es DIRECTO (no pasa por OnNodeRemoved,
+                // p.ej. cuando el visualizer esta suscrito a otra instancia o a ninguna):
+                // hay que vaciar tambien el cache de iconos o DrawLinks salteaba los
+                // enlaces en silencio con entradas stale.
+                visualizer.ResetVisuals();
             }
             UIComponents.ClearTextureCache();
         }
