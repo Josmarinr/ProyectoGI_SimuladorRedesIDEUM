@@ -744,67 +744,6 @@ namespace SimRedes.UI
         }
 
         /// <summary>
-        /// Crea un campo de entrada de texto estilizado para configuracion de red.
-        /// Incluye imagen de fondo, texto de placeholder y el InputField.
-        /// </summary>
-        /// <param name="parent">Transform padre.</param>
-        /// <param name="placeholder">Texto placeholder del campo.</param>
-        /// <param name="leftX">Posicion X del borde izquierdo.</param>
-        /// <param name="rightX">Posicion X del borde derecho.</param>
-        /// <param name="yPos">Posicion Y del campo.</param>
-        /// <param name="font">Fuente a utilizar.</param>
-        /// <returns>InputField creado.</returns>
-        internal static InputField CreateConfigField(Transform parent, string placeholder, float leftX, float rightX, float yPos, Font font)
-        {
-            var inputObj = new GameObject("ConfigField");
-            inputObj.transform.SetParent(parent, false);
-            var inputRect = inputObj.AddComponent<RectTransform>();
-            inputRect.anchorMin = new Vector2(0.5f, 0.5f);
-            inputRect.anchorMax = new Vector2(0.5f, 0.5f);
-            inputRect.anchoredPosition = new Vector2((leftX + rightX) / 2, yPos);
-            inputRect.sizeDelta = new Vector2(rightX - leftX, 35);
-
-            var inputImg = inputObj.AddComponent<Image>();
-            inputImg.color = new Color(0.2f, 0.25f, 0.3f, 0.9f);
-
-            var inputField = inputObj.AddComponent<InputField>();
-            inputField.targetGraphic = inputImg;
-
-            var textObj = new GameObject("Text");
-            textObj.transform.SetParent(inputObj.transform, false);
-            var textRect = textObj.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(8, 3);
-            textRect.offsetMax = new Vector2(-8, -3);
-            var textComp = textObj.AddComponent<Text>();
-            textComp.text = "";
-            textComp.font = font;
-            textComp.fontSize = 14;
-            textComp.color = Color.white;
-            textComp.raycastTarget = false;
-            textComp.alignment = TextAnchor.MiddleLeft;
-            inputField.textComponent = textComp;
-
-            var placeholderObj = new GameObject("Placeholder");
-            placeholderObj.transform.SetParent(inputObj.transform, false);
-            var placeholderRect = placeholderObj.AddComponent<RectTransform>();
-            placeholderRect.anchorMin = Vector2.zero;
-            placeholderRect.anchorMax = Vector2.one;
-            placeholderRect.offsetMin = new Vector2(8, 3);
-            placeholderRect.offsetMax = new Vector2(-8, -3);
-            var placeholderComp = placeholderObj.AddComponent<Text>();
-            placeholderComp.text = placeholder;
-            placeholderComp.font = font;
-            placeholderComp.fontSize = 14;
-            placeholderComp.color = new Color(0.5f, 0.5f, 0.5f, 0.7f);
-            placeholderComp.alignment = TextAnchor.MiddleLeft;
-            inputField.placeholder = placeholderComp;
-
-            return inputField;
-        }
-
-        /// <summary>
         /// Crea un dropdown (lista desplegable) con las opciones indicadas.
         /// Configura template, caption, texto y flecha.
         /// </summary>

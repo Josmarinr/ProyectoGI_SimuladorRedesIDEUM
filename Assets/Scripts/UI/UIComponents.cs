@@ -243,6 +243,27 @@ namespace SimRedes.UI
         }
 
         /// <summary>
+        /// Construye un ColorBlock con la tripleta de colores de la paleta indicada
+        /// explicitamente (normal, hover y presionado), sin derivar valores.
+        /// Los estados no indicados (deshabilitado, seleccionado) y la duracion de
+        /// transicion quedan en cero: es el comportamiento del bloque manual que usaba
+        /// el panel de escenarios antes de la consolidacion.
+        /// </summary>
+        /// <param name="normalColor">Color en estado normal.</param>
+        /// <param name="highlightedColor">Color en estado hover.</param>
+        /// <param name="pressedColor">Color al presionar.</param>
+        /// <returns>ColorBlock con los tres estados asignados y colorMultiplier en 1.</returns>
+        public static ColorBlock GetButtonColors(Color normalColor, Color highlightedColor, Color pressedColor)
+        {
+            var colors = new ColorBlock();
+            colors.normalColor = normalColor;
+            colors.highlightedColor = highlightedColor;
+            colors.pressedColor = pressedColor;
+            colors.colorMultiplier = 1f;
+            return colors;
+        }
+
+        /// <summary>
         /// Crea un texto informativo centrado en una posicion dada del Canvas.
         /// </summary>
         /// <param name="parent">Transform padre del Canvas.</param>
@@ -777,18 +798,47 @@ namespace SimRedes.UI
 
         /// <summary>
         /// Crea un campo de entrada de texto con fondo, texto y placeholder configurados.
+        /// Es la implementacion canonica de InputField del proyecto: consolido las tres
+        /// variantes historicas (este metodo, UIPanelFactory.CreateConfigField y
+        /// ConfigPanelFactory.CreateInputFieldText) preservando cada llamada tal cual.
         /// </summary>
         /// <param name="parent">Transform padre del Canvas.</param>
         /// <param name="name">Nombre del GameObject del campo.</param>
         /// <param name="position">Posicion anclada del campo.</param>
         /// <param name="size">Dimensiones del campo.</param>
-        /// <param name="defaultValue">Valor inicial del campo.</param>
-        /// <param name="placeholder">Texto de placeholder cuando esta vacio.</param>
+        /// <param name="defaultValue">Valor inicial asignado a InputField.text.</param>
+        /// <param name="placeholder">Texto de placeholder; null no crea el hijo Placeholder.</param>
         /// <param name="font">Fuente del texto.</param>
-        /// <param name="fontSize">Tamano de fuente.</param>
+        /// <param name="fontSize">Tamano de fuente (texto y placeholder).</param>
+        /// <param name="withBackground">Si crea el Image de fondo (false = campo sin fondo visual).</param>
+        /// <param name="backgroundImageColor">Color del fondo; null usa (0.15,0.17,0.20,1).</param>
+        /// <param name="placeholderColor">Color del placeholder; null usa (0.4,0.4,0.4,1).</param>
+        /// <param name="textColor">Color del texto; null usa Colors.textPrimary.</param>
+        /// <param name="textPadding">Inset del texto/placeholder; null usa (4,2).</param>
+        /// <param name="setTargetGraphic">Si asigna targetGraphic al Image de fondo explicitamente.</param>
+        /// <param name="placeholderRaycastTarget">raycastTarget del hijo Placeholder.</param>
+        /// <param name="imageType">Tipo de Image del fondo (solo difiere con sprite; se conserva por paridad).</param>
+        /// <param name="initializeLabel">true: asigna text tras conectar textComponent para que
+        /// UpdateLabel inicialice el Text y oculte el placeholder si hay valor (secuencia de
+        /// CreateInputField/CreateConfigField). false: asigna text ANTES de conectar el Text,
+        /// dejando el hijo Text sin sincronizar (secuencia historica de CreateInputFieldText).</param>
+        /// <param name="characterLimit">Limite de caracteres; 0 conserva el valor por defecto.
+        /// Solo tiene sentido con initializeLabel=false, donde se aplica antes de conectar el Text.</param>
+        /// <param name="contentType">Tipo de contenido; Standard conserva el valor por defecto.</param>
         /// <returns>Componente InputField creado.</returns>
         public static InputField CreateInputField(Transform parent, string name, Vector2 position, Vector2 size,
-            string defaultValue, string placeholder, Font font, int fontSize)
+            string defaultValue, string placeholder, Font font, int fontSize,
+            bool withBackground = true,
+            Color? backgroundImageColor = null,
+            Color? placeholderColor = null,
+            Color? textColor = null,
+            Vector2? textPadding = null,
+            bool setTargetGraphic = false,
+            bool placeholderRaycastTarget = false,
+            Image.Type imageType = Image.Type.Sliced,
+            bool initializeLabel = true,
+            int characterLimit = 0,
+            InputField.ContentType contentType = InputField.ContentType.Standard)
         {
             var inputObj = new GameObject(name);
             inputObj.transform.SetParent(parent, false);
@@ -798,10 +848,17 @@ namespace SimRedes.UI
             inputRect.anchoredPosition = position;
             inputRect.sizeDelta = size;
 
-            // Background
-            var bgImage = inputObj.AddComponent<Image>();
-            bgImage.color = new Color(0.15f, 0.17f, 0.20f, 1f);
-            bgImage.type = Image.Type.Sliced;
+            // Fondo opcional. Se crea ANTES del InputField para que Selectable.Awake
+            // (si corre) tome este Image como targetGraphic, igual que en las variantes historicas.
+            Image bgImage = null;
+            if (withBackground)
+            {
+                bgImage = inputObj.AddComponent<Image>();
+                bgImage.color = backgroundImageColor ?? new Color(0.15f, 0.17f, 0.20f, 1f);
+                bgImage.type = imageType;
+            }
+
+            Vector2 padding = textPadding ?? new Vector2(4, 2);
 
             // Text component
             var textObj = new GameObject("Text");
@@ -809,36 +866,61 @@ namespace SimRedes.UI
             var textRect = textObj.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(4, 2);
-            textRect.offsetMax = new Vector2(-4, -2);
+            textRect.offsetMin = padding;
+            textRect.offsetMax = -padding;
             var inputText = textObj.AddComponent<Text>();
-            inputText.text = defaultValue;
-            inputText.color = Colors.textPrimary;
+            inputText.color = textColor ?? Colors.textPrimary;
             inputText.fontSize = fontSize;
             inputText.font = font;
             inputText.alignment = TextAnchor.MiddleLeft;
             inputText.raycastTarget = false;
 
-            // Placeholder
-            var placeholderObj = new GameObject("Placeholder");
-            placeholderObj.transform.SetParent(inputObj.transform, false);
-            var phRect = placeholderObj.AddComponent<RectTransform>();
-            phRect.anchorMin = Vector2.zero;
-            phRect.anchorMax = Vector2.one;
-            phRect.offsetMin = new Vector2(4, 2);
-            phRect.offsetMax = new Vector2(-4, -2);
-            var phText = placeholderObj.AddComponent<Text>();
-            phText.text = placeholder;
-            phText.color = new Color(0.4f, 0.4f, 0.4f, 1f);
-            phText.fontSize = fontSize;
-            phText.font = font;
-            phText.alignment = TextAnchor.MiddleLeft;
-            phText.raycastTarget = false;
+            // Placeholder opcional
+            Text phText = null;
+            if (placeholder != null)
+            {
+                var placeholderObj = new GameObject("Placeholder");
+                placeholderObj.transform.SetParent(inputObj.transform, false);
+                var phRect = placeholderObj.AddComponent<RectTransform>();
+                phRect.anchorMin = Vector2.zero;
+                phRect.anchorMax = Vector2.one;
+                phRect.offsetMin = padding;
+                phRect.offsetMax = -padding;
+                phText = placeholderObj.AddComponent<Text>();
+                phText.text = placeholder;
+                phText.color = placeholderColor ?? new Color(0.4f, 0.4f, 0.4f, 1f);
+                phText.fontSize = fontSize;
+                phText.font = font;
+                phText.alignment = TextAnchor.MiddleLeft;
+                phText.raycastTarget = placeholderRaycastTarget;
+            }
 
             var inputField = inputObj.AddComponent<InputField>();
-            inputField.textComponent = inputText;
-            inputField.placeholder = phText;
-            inputField.text = defaultValue;
+            if (setTargetGraphic && bgImage != null)
+                inputField.targetGraphic = bgImage;
+
+            if (initializeLabel)
+            {
+                // Secuencia historica de CreateInputField/CreateConfigField: conectar el Text
+                // y el placeholder primero; al asignar text, UpdateLabel rellena el Text y
+                // habilita/deshabilita el placeholder segun el valor.
+                inputField.textComponent = inputText;
+                if (phText != null) inputField.placeholder = phText;
+                inputField.text = defaultValue;
+                if (characterLimit > 0) inputField.characterLimit = characterLimit;
+                if (contentType != InputField.ContentType.Standard) inputField.contentType = contentType;
+            }
+            else
+            {
+                // Secuencia historica de CreateInputFieldText: text y limites se aplican
+                // ANTES de conectar el Text, de modo que UpdateLabel es no-op y el hijo
+                // Text queda vacio (el label se sincroniza despues, en runtime).
+                inputField.text = defaultValue;
+                if (characterLimit > 0) inputField.characterLimit = characterLimit;
+                if (contentType != InputField.ContentType.Standard) inputField.contentType = contentType;
+                inputField.textComponent = inputText;
+                if (phText != null) inputField.placeholder = phText;
+            }
 
             return inputField;
         }

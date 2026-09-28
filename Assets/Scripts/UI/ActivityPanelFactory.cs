@@ -774,12 +774,7 @@ namespace SimRedes.UI
                 descText.alignment = TextAnchor.MiddleCenter;
 
                 var btn = itemBg.AddComponent<Button>();
-                ColorBlock colors = new ColorBlock();
-                colors.normalColor = UIColors.surfaceElevated;
-                colors.highlightedColor = UIColors.buttonHover;
-                colors.pressedColor = UIColors.buttonNormal;
-                colors.colorMultiplier = 1f;
-                btn.colors = colors;
+                btn.colors = UIComp.GetButtonColors(UIColors.surfaceElevated, UIColors.buttonHover, UIColors.buttonNormal);
                 btn.onClick.AddListener(() => onScenarioClick?.Invoke(scenarioIndex));
             }
 

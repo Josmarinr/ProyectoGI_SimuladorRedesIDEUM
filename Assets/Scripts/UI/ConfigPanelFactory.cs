@@ -425,16 +425,34 @@ namespace SimRedes.UI
             UIComp.CreateMenuTitle(panelObj.transform, "Nueva Ruta Estatica", 20, new Vector2(0, 195), font);
 
             float fieldY = 155, labelX = -130, inputX = 60;
+            float fieldLeftX = inputX - 30, fieldRightX = inputX + 90;
+            Color configFieldBg = new Color(0.2f, 0.25f, 0.3f, 0.9f);
+            Color configFieldPlaceholderColor = new Color(0.5f, 0.5f, 0.5f, 0.7f);
             UIComp.CreateInfoText(panelObj.transform, "Red Destino:", new Vector2(labelX, fieldY), font, 13, UIColors.textSecondary, false);
-            var destInput = UIPanelFactory.CreateConfigField(panelObj.transform, "192.168.0.0", inputX - 30, inputX + 90, fieldY, font);
+            var destInput = UIComp.CreateInputField(panelObj.transform, "ConfigField",
+                new Vector2((fieldLeftX + fieldRightX) / 2, fieldY), new Vector2(fieldRightX - fieldLeftX, 35),
+                "", "192.168.0.0", font, 14,
+                backgroundImageColor: configFieldBg, placeholderColor: configFieldPlaceholderColor,
+                textColor: Color.white, textPadding: new Vector2(8, 3),
+                setTargetGraphic: true, placeholderRaycastTarget: true, imageType: Image.Type.Simple);
 
             fieldY -= 65;
             UIComp.CreateInfoText(panelObj.transform, "Mask:", new Vector2(labelX, fieldY), font, 13, UIColors.textSecondary, false);
-            var maskInput = UIPanelFactory.CreateConfigField(panelObj.transform, "255.255.255.0", inputX - 30, inputX + 90, fieldY, font);
+            var maskInput = UIComp.CreateInputField(panelObj.transform, "ConfigField",
+                new Vector2((fieldLeftX + fieldRightX) / 2, fieldY), new Vector2(fieldRightX - fieldLeftX, 35),
+                "", "255.255.255.0", font, 14,
+                backgroundImageColor: configFieldBg, placeholderColor: configFieldPlaceholderColor,
+                textColor: Color.white, textPadding: new Vector2(8, 3),
+                setTargetGraphic: true, placeholderRaycastTarget: true, imageType: Image.Type.Simple);
 
             fieldY -= 65;
             UIComp.CreateInfoText(panelObj.transform, "Next Hop:", new Vector2(labelX, fieldY), font, 13, UIColors.textSecondary, false);
-            var nextHopInput = UIPanelFactory.CreateConfigField(panelObj.transform, "192.168.1.1", inputX - 30, inputX + 90, fieldY, font);
+            var nextHopInput = UIComp.CreateInputField(panelObj.transform, "ConfigField",
+                new Vector2((fieldLeftX + fieldRightX) / 2, fieldY), new Vector2(fieldRightX - fieldLeftX, 35),
+                "", "192.168.1.1", font, 14,
+                backgroundImageColor: configFieldBg, placeholderColor: configFieldPlaceholderColor,
+                textColor: Color.white, textPadding: new Vector2(8, 3),
+                setTargetGraphic: true, placeholderRaycastTarget: true, imageType: Image.Type.Simple);
 
             fieldY -= 65;
             UIComp.CreateInfoText(panelObj.transform, "Interfaz:", new Vector2(labelX, fieldY), font, 13, UIColors.textSecondary, false);
@@ -519,18 +537,10 @@ namespace SimRedes.UI
             UIComp.CreateMenuTitle(panelObj.transform, "Configuracion VLAN", 24, new Vector2(0, 220), font);
             UIComp.CreateInfoText(panelObj.transform, "CREAR NUEVA VLAN:", new Vector2(-180, 165), font, 16, UIColors.textAccent, false);
 
-            var vlanInputObj = new GameObject("VLANInput");
-            vlanInputObj.transform.SetParent(panelObj.transform, false);
-            var vlanInputRect = vlanInputObj.AddComponent<RectTransform>();
-            vlanInputRect.anchorMin = new Vector2(0.5f, 0.5f);
-            vlanInputRect.anchorMax = new Vector2(0.5f, 0.5f);
-            vlanInputRect.anchoredPosition = new Vector2(50, 135);
-            vlanInputRect.sizeDelta = new Vector2(150, 30);
-            var vlanInput = vlanInputObj.AddComponent<InputField>();
-            vlanInput.text = "10";
-            vlanInput.characterLimit = 4;
-            vlanInput.contentType = InputField.ContentType.IntegerNumber;
-            CreateInputFieldText(vlanInput, font, 16, UIColors.textPrimary);
+            var vlanInput = UIComp.CreateInputField(panelObj.transform, "VLANInput",
+                new Vector2(50, 135), new Vector2(150, 30), "10", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false,
+                characterLimit: 4, contentType: InputField.ContentType.IntegerNumber);
 
             Button createVlanBtn = UIComp.CreateMenuButton(panelObj.transform, "CreateVlanBtn", "CREAR", new Vector2(160, 135), new Vector2(80, 35), font, 14);
             createVlanBtn.onClick.AddListener(() => {
@@ -551,18 +561,10 @@ namespace SimRedes.UI
             GameObject dropdownObj = UIPanelFactory.CreateDropdown(panelObj.transform, nodeNames, font, new Vector2(0, 55), new Vector2(250, 30));
             var dropdown = dropdownObj.GetComponent<UnityEngine.UI.Dropdown>();
 
-            var vlanSelectObj = new GameObject("VLANSelect");
-            vlanSelectObj.transform.SetParent(panelObj.transform, false);
-            var vlanSelectRect = vlanSelectObj.AddComponent<RectTransform>();
-            vlanSelectRect.anchorMin = new Vector2(0.5f, 0.5f);
-            vlanSelectRect.anchorMax = new Vector2(0.5f, 0.5f);
-            vlanSelectRect.anchoredPosition = new Vector2(80, 10);
-            vlanSelectRect.sizeDelta = new Vector2(100, 30);
-            var vlanSelect = vlanSelectObj.AddComponent<InputField>();
-            vlanSelect.text = "10";
-            vlanSelect.characterLimit = 4;
-            vlanSelect.contentType = InputField.ContentType.IntegerNumber;
-            CreateInputFieldText(vlanSelect, font, 16, UIColors.textPrimary);
+            var vlanSelect = UIComp.CreateInputField(panelObj.transform, "VLANSelect",
+                new Vector2(80, 10), new Vector2(100, 30), "10", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false,
+                characterLimit: 4, contentType: InputField.ContentType.IntegerNumber);
 
             Button assignBtn = UIComp.CreateMenuButton(panelObj.transform, "AssignBtn", "ASIGNAR", new Vector2(150, 10), new Vector2(90, 35), font, 14);
             assignBtn.onClick.AddListener(() => {
@@ -596,33 +598,6 @@ namespace SimRedes.UI
                 var bg = GameObject.Find("ClickOutsideBG_VLANPanel");
                 if (bg != null) UnityEngine.Object.Destroy(bg);
             });
-        }
-
-        /// <summary>
-        /// Crea el componente Text hijo de un InputField con la fuente, tamano y color especificados.
-        /// </summary>
-        /// <param name="field">InputField padre.</param>
-        /// <param name="font">Fuente a utilizar.</param>
-        /// <param name="fontSize">Tamano de la fuente.</param>
-        /// <param name="color">Color del texto.</param>
-        /// <returns>Componente Text creado.</returns>
-        private static Text CreateInputFieldText(InputField field, Font font, int fontSize, Color color)
-        {
-            var textObj = new GameObject("Text");
-            textObj.transform.SetParent(field.transform, false);
-            var textRect = textObj.AddComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(8, 3);
-            textRect.offsetMax = new Vector2(-8, -3);
-            var textComp = textObj.AddComponent<Text>();
-            textComp.font = font;
-            textComp.fontSize = fontSize;
-            textComp.color = color;
-            textComp.alignment = TextAnchor.MiddleLeft;
-            textComp.raycastTarget = false;
-            field.textComponent = textComp;
-            return textComp;
         }
 
         /// <summary>
@@ -709,16 +684,9 @@ namespace SimRedes.UI
             UIComp.CreateMenuTitle(panelObj.transform, "Configuracion ACL", 24, new Vector2(0, 240), font);
             UIComp.CreateInfoText(panelObj.transform, "NOMBRE ACL:", new Vector2(-200, 190), font, 14, UIColors.textSecondary, false);
 
-            var nameObj = new GameObject("ACLNameInput");
-            nameObj.transform.SetParent(panelObj.transform, false);
-            var nameRect = nameObj.AddComponent<RectTransform>();
-            nameRect.anchorMin = new Vector2(0.5f, 0.5f);
-            nameRect.anchorMax = new Vector2(0.5f, 0.5f);
-            nameRect.anchoredPosition = new Vector2(50, 190);
-            nameRect.sizeDelta = new Vector2(180, 30);
-            var nameInput = nameObj.AddComponent<InputField>();
-            nameInput.text = "MI_ACL";
-            CreateInputFieldText(nameInput, font, 16, UIColors.textPrimary);
+            var nameInput = UIComp.CreateInputField(panelObj.transform, "ACLNameInput",
+                new Vector2(50, 190), new Vector2(180, 30), "MI_ACL", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             UIComp.CreateInfoText(panelObj.transform, "ACCION:", new Vector2(-200, 150), font, 14, UIColors.textSecondary, false);
 
@@ -729,29 +697,15 @@ namespace SimRedes.UI
 
             UIComp.CreateInfoText(panelObj.transform, "IP ORIGEN:", new Vector2(-200, 110), font, 14, UIColors.textSecondary, false);
 
-            var srcObj = new GameObject("SRCInput");
-            srcObj.transform.SetParent(panelObj.transform, false);
-            var srcRect = srcObj.AddComponent<RectTransform>();
-            srcRect.anchorMin = new Vector2(0.5f, 0.5f);
-            srcRect.anchorMax = new Vector2(0.5f, 0.5f);
-            srcRect.anchoredPosition = new Vector2(50, 110);
-            srcRect.sizeDelta = new Vector2(150, 30);
-            var srcInput = srcObj.AddComponent<InputField>();
-            srcInput.text = "any";
-            CreateInputFieldText(srcInput, font, 16, UIColors.textPrimary);
+            var srcInput = UIComp.CreateInputField(panelObj.transform, "SRCInput",
+                new Vector2(50, 110), new Vector2(150, 30), "any", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             UIComp.CreateInfoText(panelObj.transform, "IP DESTINO:", new Vector2(-200, 70), font, 14, UIColors.textSecondary, false);
 
-            var dstObj = new GameObject("DSTInput");
-            dstObj.transform.SetParent(panelObj.transform, false);
-            var dstRect = dstObj.AddComponent<RectTransform>();
-            dstRect.anchorMin = new Vector2(0.5f, 0.5f);
-            dstRect.anchorMax = new Vector2(0.5f, 0.5f);
-            dstRect.anchoredPosition = new Vector2(50, 70);
-            dstRect.sizeDelta = new Vector2(150, 30);
-            var dstInput = dstObj.AddComponent<InputField>();
-            dstInput.text = "any";
-            CreateInputFieldText(dstInput, font, 16, UIColors.textPrimary);
+            var dstInput = UIComp.CreateInputField(panelObj.transform, "DSTInput",
+                new Vector2(50, 70), new Vector2(150, 30), "any", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             Button addRuleBtn = UIComp.CreateMenuButton(panelObj.transform, "AddRuleBtn", "AGREGAR REGLA", new Vector2(150, 30), new Vector2(130, 38), font, 14);
             addRuleBtn.onClick.AddListener(() => {
@@ -866,16 +820,9 @@ namespace SimRedes.UI
             UIComp.CreateMenuTitle(panelObj.transform, "Configuracion NAT", 24, new Vector2(0, 240), font);
             UIComp.CreateInfoText(panelObj.transform, "IP PUBLICA (Router):", new Vector2(-180, 190), font, 14, UIColors.textSecondary, false);
 
-            var pubIpObj = new GameObject("PublicIPInput");
-            pubIpObj.transform.SetParent(panelObj.transform, false);
-            var pubIpRect = pubIpObj.AddComponent<RectTransform>();
-            pubIpRect.anchorMin = new Vector2(0.5f, 0.5f);
-            pubIpRect.anchorMax = new Vector2(0.5f, 0.5f);
-            pubIpRect.anchoredPosition = new Vector2(50, 190);
-            pubIpRect.sizeDelta = new Vector2(160, 30);
-            var pubIpInput = pubIpObj.AddComponent<InputField>();
-            pubIpInput.text = topology.NAT.GetRouterIP();
-            CreateInputFieldText(pubIpInput, font, 16, UIColors.textPrimary);
+            var pubIpInput = UIComp.CreateInputField(panelObj.transform, "PublicIPInput",
+                new Vector2(50, 190), new Vector2(160, 30), topology.NAT.GetRouterIP(), null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             Button setPubBtn = UIComp.CreateMenuButton(panelObj.transform, "SetPubBtn", "SET", new Vector2(180, 190), new Vector2(60, 30), font, 12);
             setPubBtn.onClick.AddListener(() => { topology.NAT.SetPublicIP(pubIpInput.text); });
@@ -889,16 +836,9 @@ namespace SimRedes.UI
 
             UIComp.CreateInfoText(panelObj.transform, "IP INTERNA:", new Vector2(-180, 105), font, 14, UIColors.textSecondary, false);
 
-            var intIpObj = new GameObject("IntIPInput");
-            intIpObj.transform.SetParent(panelObj.transform, false);
-            var intIpRect = intIpObj.AddComponent<RectTransform>();
-            intIpRect.anchorMin = new Vector2(0.5f, 0.5f);
-            intIpRect.anchorMax = new Vector2(0.5f, 0.5f);
-            intIpRect.anchoredPosition = new Vector2(50, 105);
-            intIpRect.sizeDelta = new Vector2(160, 30);
-            var intIpInput = intIpObj.AddComponent<InputField>();
-            intIpInput.text = "192.168.1.10";
-            CreateInputFieldText(intIpInput, font, 16, UIColors.textPrimary);
+            var intIpInput = UIComp.CreateInputField(panelObj.transform, "IntIPInput",
+                new Vector2(50, 105), new Vector2(160, 30), "192.168.1.10", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             var extIpLabelObj = new GameObject("ExtIPLabel");
             extIpLabelObj.transform.SetParent(panelObj.transform, false);
@@ -913,16 +853,9 @@ namespace SimRedes.UI
             extIpLabel.fontSize = 14;
             extIpLabel.color = UIColors.textSecondary;
 
-            var extIpObj = new GameObject("ExtIPInput");
-            extIpObj.transform.SetParent(panelObj.transform, false);
-            var extIpRect = extIpObj.AddComponent<RectTransform>();
-            extIpRect.anchorMin = new Vector2(0.5f, 0.5f);
-            extIpRect.anchorMax = new Vector2(0.5f, 0.5f);
-            extIpRect.anchoredPosition = new Vector2(50, 60);
-            extIpRect.sizeDelta = new Vector2(160, 30);
-            var extIpInput = extIpObj.AddComponent<InputField>();
-            extIpInput.text = "200.100.50.10";
-            CreateInputFieldText(extIpInput, font, 16, UIColors.textPrimary);
+            var extIpInput = UIComp.CreateInputField(panelObj.transform, "ExtIPInput",
+                new Vector2(50, 60), new Vector2(160, 30), "200.100.50.10", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false);
 
             var portLabelObj = new GameObject("PortLabel");
             portLabelObj.transform.SetParent(panelObj.transform, false);
@@ -937,18 +870,10 @@ namespace SimRedes.UI
             portLabel.fontSize = 14;
             portLabel.color = UIColors.textSecondary;
 
-            var portObj = new GameObject("PortInput");
-            portObj.transform.SetParent(panelObj.transform, false);
-            var portRect = portObj.AddComponent<RectTransform>();
-            portRect.anchorMin = new Vector2(0.5f, 0.5f);
-            portRect.anchorMax = new Vector2(0.5f, 0.5f);
-            portRect.anchoredPosition = new Vector2(50, 20);
-            portRect.sizeDelta = new Vector2(100, 30);
-            var portInput = portObj.AddComponent<InputField>();
-            portInput.text = "80";
-            portInput.characterLimit = 5;
-            portInput.contentType = InputField.ContentType.IntegerNumber;
-            CreateInputFieldText(portInput, font, 16, UIColors.textPrimary);
+            var portInput = UIComp.CreateInputField(panelObj.transform, "PortInput",
+                new Vector2(50, 20), new Vector2(100, 30), "80", null, font, 16,
+                withBackground: false, textPadding: new Vector2(8, 3), initializeLabel: false,
+                characterLimit: 5, contentType: InputField.ContentType.IntegerNumber);
 
             Button addNatBtn = UIComp.CreateMenuButton(panelObj.transform, "AddNatBtn", "AGREGAR NAT", new Vector2(150, -10), new Vector2(120, 38), font, 14);
             addNatBtn.onClick.AddListener(() => {

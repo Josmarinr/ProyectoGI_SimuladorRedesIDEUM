@@ -134,5 +134,38 @@ namespace Tests.EditMode.UI
             Assert.AreEqual("DiscLegendPanel", panel.name);
             Assert.IsNotNull(panel.transform.Find("BackBtn"));
         }
+
+        [Test]
+        public void CreateConnectivityPanel_HasExpectedChildStructure()
+        {
+            var refs = UIPanelFactory.CreateConnectivityPanel(
+                canvas.transform,
+                onBack: null
+            );
+
+            GameObject panel = refs.panelObj;
+            Assert.AreEqual("ConnectivityPanel", panel.name);
+
+            // Estructura fija: 10 hijos directos con nombres unicos
+            Assert.AreEqual(10, panel.transform.childCount);
+            Assert.IsNotNull(panel.transform.Find("MenuTitle"));
+            Assert.IsNotNull(panel.transform.Find("SourceNode"));
+            Assert.IsNotNull(panel.transform.Find("Arrow"));
+            Assert.IsNotNull(panel.transform.Find("DestNode"));
+            Assert.IsNotNull(panel.transform.Find("PingButton"));
+            Assert.IsNotNull(panel.transform.Find("ResultDisplay"));
+            Assert.IsNotNull(panel.transform.Find("ResultText"));
+            Assert.IsNotNull(panel.transform.Find("StatusText"));
+            Assert.IsNotNull(panel.transform.Find("HintText"));
+            Assert.IsNotNull(panel.transform.Find("BackBtn"));
+
+            // Presencia de componentes Text y Button en posiciones clave
+            Assert.IsNotNull(panel.transform.Find("SourceNode").GetComponent<Text>());
+            Assert.IsNotNull(panel.transform.Find("DestNode").GetComponent<Text>());
+            Assert.IsNotNull(panel.transform.Find("PingButton").GetComponent<Button>());
+            Assert.IsNotNull(panel.transform.Find("BackBtn").GetComponent<Button>());
+            Assert.IsNotNull(panel.transform.Find("ResultDisplay")
+                .transform.Find("ResultIcon").GetComponent<Text>());
+        }
     }
 }
