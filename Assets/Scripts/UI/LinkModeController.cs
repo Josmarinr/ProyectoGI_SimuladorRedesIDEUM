@@ -121,7 +121,10 @@ namespace SimRedes.UI
 
         public void HandleNodeLinkClick(int discId)
         {
-            if (TopologyManager.Instance == null) return;
+            // C6: una sola lectura del singleton por invocacion (antes era
+            // check-then-re-fetch: 3 accesos a Instance en el mismo metodo).
+            var tm = TopologyManager.Instance;
+            if (tm == null) return;
 
             if (currentLinkMode == "connect")
             {
@@ -134,7 +137,7 @@ namespace SimRedes.UI
                 else if (linkModeFirstNode != discId)
                 {
                     UnhighlightAll();
-                    TopologyManager.Instance.AddLink(linkModeFirstNode, discId);
+                    tm.AddLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace creado entre {linkModeFirstNode} y {discId}");
                     // Forzar redibujado de enlaces visuales
                     var visualizer = GetVisualizer();
@@ -155,7 +158,7 @@ namespace SimRedes.UI
                 else if (linkModeFirstNode != discId)
                 {
                     UnhighlightAll();
-                    TopologyManager.Instance.RemoveLink(linkModeFirstNode, discId);
+                    tm.RemoveLink(linkModeFirstNode, discId);
                     Debug.Log($"[LinkMode] Enlace eliminado entre {linkModeFirstNode} y {discId}");
                     // Forzar redibujado de enlaces visuales
                     var visualizer = GetVisualizer();

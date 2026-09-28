@@ -28,6 +28,24 @@ namespace SimRedes.UI
         // Firma de la composicion de nodos con la que se construyo el panel actual.
         private string lastBuiltSignature = "";
 
+        // C6: cache del TopologyManager para los accesos por evento/timer del panel
+        // (los mas densos del archivo). Unity == invalida la referencia sola cuando
+        // el manager se destruye o cambia de escena: si la cache esta muerta o vacia
+        // se re-resuelve desde el singleton en la siguiente llamada.
+        private TopologyManager topologyCache;
+
+        /// <summary>
+        /// Devuelve el TopologyManager activo usando una referencia cacheada que se
+        /// re-resuelve automaticamente cuando es null o destruida. Evita volver al
+        /// singleton en cada evento/timer sin arriesgar una referencia colgada.
+        /// </summary>
+        /// <returns>TopologyManager vivo, o null si aun no existe.</returns>
+        private TopologyManager ResolveTopology()
+        {
+            if (topologyCache == null) topologyCache = TopologyManager.Instance;
+            return topologyCache;
+        }
+
         private void Update()
         {
             scoreUpdateTimer += Time.deltaTime;
@@ -111,8 +129,9 @@ namespace SimRedes.UI
             lastDeviceClickTime = now;
             lastDeviceClickIndex = index;
 
-            if (TopologyManager.Instance == null) return;
-            var nodes = TopologyManager.Instance.GetAllNodes();
+            var tm = ResolveTopology();
+            if (tm == null) return;
+            var nodes = tm.GetAllNodes();
             if (index >= nodes.Count) return;
 
             var node = nodes[index];
@@ -161,9 +180,10 @@ namespace SimRedes.UI
         {
             if (selectedNodeForRemoval == -1) return;
 
-            if (TopologyManager.Instance != null)
+            var tm = ResolveTopology();
+            if (tm != null)
             {
-                TopologyManager.Instance.RemoveNode(selectedNodeForRemoval);
+                tm.RemoveNode(selectedNodeForRemoval);
                 Debug.Log($"[DevicePanelController] Nodo eliminado: {selectedNodeForRemoval}");
             }
 
@@ -213,7 +233,7 @@ namespace SimRedes.UI
         /// </summary>
         private void ConsumeRefreshRequest()
         {
-            var tm = TopologyManager.Instance;
+            var tm = ResolveTopology();
             if (tm == null)
             {
                 // Topologia aun no disponible: re-marcar la solicitud, porque
@@ -272,7 +292,7 @@ namespace SimRedes.UI
             }
 
             Font arialFont = UIComp.GetFont();
-            var tm = TopologyManager.Instance;
+            var tm = ResolveTopology();
             if (tm == null) return;
             
             var allNodes = tm.GetAllNodes();
@@ -305,7 +325,7 @@ namespace SimRedes.UI
         /// </summary>
         private void TopologyInfoPanelSync()
         {
-            var tm = TopologyManager.Instance;
+            var tm = ResolveTopology();
             if (tm == null) return;
             var nodes = tm.GetAllNodes();
             int routers = nodes.Count(n => n.Type == Network.DeviceType.Router);
@@ -384,11 +404,14 @@ namespace SimRedes.UI
             var devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            var tm = TopologyManager.Instance;
+            var tm = ResolveTopology();
             if (tm == null) return;
 
             var nodes = tm.GetAllNodes();
             int maxItems = nodes.Count;
+
+            // C6: singleton leido una sola vez en vez de en cada iteracion del loop.
+            var linkCtrl = LinkModeController.Instance;
 
             for (int i = 0; i < maxItems; i++)
             {
@@ -401,7 +424,6 @@ namespace SimRedes.UI
                 var node = nodes[i];
 
                 // Determinar si este nodo es el primero seleccionado en modo CONEXION/DESCONEXION
-                var linkCtrl = LinkModeController.Instance;
                 bool isLinkModeFirst = (linkCtrl != null && linkCtrl.IsLinkModeActive() && linkCtrl.GetLinkModeFirstNode() == node.DiscId);
                 bool isSelectedForRemoval = (selectedNodeForRemoval == node.DiscId);
 
@@ -458,10 +480,13 @@ namespace SimRedes.UI
             var devicesPanel = GameObject.Find("DevicesPanel")?.transform;
             if (devicesPanel == null) return;
 
-            var tm = TopologyManager.Instance;
+            var tm = ResolveTopology();
             if (tm == null) return;
 
             var nodes = tm.GetAllNodes();
+
+            // C6: singleton leido una sola vez en vez de en cada iteracion del loop.
+            var linkCtrl = LinkModeController.Instance;
 
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -471,7 +496,6 @@ namespace SimRedes.UI
                 var node = nodes[i];
                 bool isSelected = (selectedNodeForRemoval == node.DiscId);
 
-                var linkCtrl = LinkModeController.Instance;
                 bool isLinkModeFirst = (linkCtrl != null && linkCtrl.IsLinkModeActive() && linkCtrl.GetLinkModeFirstNode() == node.DiscId);
 
                 var nameObj = itemObj.Find("Name");

@@ -139,8 +139,10 @@ namespace SimRedes.Simulation
 
             // Limpiar MenuNavigator si existe para evitar referencias colgadas.
             // NO destruirlo: se reutiliza para dar animaciones al nuevo menu.
-            if (MenuNavigator.Instance != null)
-                MenuNavigator.Instance.ClearPanel();
+            // C6: una sola lectura del singleton (antes: check + re-fetch).
+            var navigator = MenuNavigator.Instance;
+            if (navigator != null)
+                navigator.ClearPanel();
         }
 
         /// <summary>

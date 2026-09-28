@@ -47,10 +47,13 @@ namespace SimRedes.Simulation
             topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager != null)
             {
+                // C6b: handlers con nombre en vez de lambdas, para poder
+                // desuscribirlos en OnDestroy (antes quedaban huerfanos en el
+                // publicador y retenian este componente destruido).
                 topologyManager.OnTopologyChanged += OnTopologyChanged;
-                topologyManager.OnNodeAdded += (node) => { DetectTopologyType(); UpdateUI(); };
-                topologyManager.OnNodeRemoved += (node) => { DetectTopologyType(); UpdateUI(); };
-                topologyManager.OnLinkAdded += (link) => { DetectTopologyType(); UpdateUI(); };
+                topologyManager.OnNodeAdded += OnNodeStructureChanged;
+                topologyManager.OnNodeRemoved += OnNodeStructureChanged;
+                topologyManager.OnLinkAdded += OnLinkStructureChanged;
             }
 
             FindUITexts();
@@ -111,6 +114,28 @@ namespace SimRedes.Simulation
             {
                 DetectTopologyType();
             }
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Se invoca al agregar o eliminar un nodo: redetecta la topologia y
+        /// actualiza la UI (mismo comportamiento que la lambda original de C6b).
+        /// </summary>
+        /// <param name="node">Nodo agregado o eliminado.</param>
+        private void OnNodeStructureChanged(NetworkNode node)
+        {
+            DetectTopologyType();
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Se invoca al agregar un enlace: redetecta la topologia y actualiza la UI
+        /// (mismo comportamiento que la lambda original de C6b).
+        /// </summary>
+        /// <param name="link">Enlace agregado.</param>
+        private void OnLinkStructureChanged(NetworkLink link)
+        {
+            DetectTopologyType();
             UpdateUI();
         }
 
@@ -299,13 +324,18 @@ namespace SimRedes.Simulation
         }
 
         /// <summary>
-        /// Limpia la suscripcion al evento OnTopologyChanged al destruirse el componente.
+        /// Desuscribe todos los handlers de eventos de TopologyManager al destruirse
+        /// el componente, para que no queden delegates huerfanos que retengan esta
+        /// instancia destruida (C6b).
         /// </summary>
         private void OnDestroy()
         {
             if (topologyManager != null)
             {
                 topologyManager.OnTopologyChanged -= OnTopologyChanged;
+                topologyManager.OnNodeAdded -= OnNodeStructureChanged;
+                topologyManager.OnNodeRemoved -= OnNodeStructureChanged;
+                topologyManager.OnLinkAdded -= OnLinkStructureChanged;
             }
         }
 

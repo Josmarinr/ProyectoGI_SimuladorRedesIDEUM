@@ -194,7 +194,13 @@ namespace SimRedes.Simulation
                 var scoringObj = new GameObject("ScoringSystem");
                 scoringObj.AddComponent<ScoringSystem>();
             }
-            ScoringSystem.Instance?.StartSession("Simulacion Libre");
+            // C6: check de Unity (== null) en vez de `?.`. El null-conditional usa
+            // igualdad de referencia y salta el operador == sobrecargado de Unity,
+            // asi que con una instancia destruida (ScoringSystem no limpia Instance
+            // en OnDestroy) StartSession se invocaria sobre un objeto muerto.
+            var scoringInstance = ScoringSystem.Instance;
+            if (scoringInstance != null)
+                scoringInstance.StartSession("Simulacion Libre");
 
             if (gameManagerObj.GetComponent<BuildTopologyActivity>() == null)
                 gameManagerObj.AddComponent<BuildTopologyActivity>();

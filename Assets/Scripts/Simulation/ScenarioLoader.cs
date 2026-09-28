@@ -48,13 +48,16 @@ namespace SimRedes.Simulation
             if (gameManager.GetComponent<PredefinedScenarios>() == null)
                 gameManager.AddComponent<PredefinedScenarios>();
 
-            if (PredefinedScenarios.Instance == null)
+            // C6: una sola lectura del singleton (antes: check en Instance y luego
+            // re-fetch de Instance para GetScenarios).
+            var predefined = PredefinedScenarios.Instance;
+            if (predefined == null)
             {
                 UnityEngine.Debug.LogError("[Scenarios] PredefinedScenarios.Instance es null");
                 return;
             }
 
-            var scenarios = PredefinedScenarios.Instance.GetScenarios();
+            var scenarios = predefined.GetScenarios();
             if (scenarios.Count == 0)
             {
                 scenarios.Add(new PredefinedScenarios.NetworkScenario
@@ -135,21 +138,35 @@ namespace SimRedes.Simulation
             if (gameManagerObj.GetComponent<SimulationControls>() == null)
                 gameManagerObj.AddComponent<SimulationControls>();
 
-            var scenario = PredefinedScenarios.Instance.GetScenario(scenarioIndex);
+            // C6: guard nulo antes de dereferenciar. AddComponent no invoca Awake
+            // en EditMode (ni antes del Awake del primer frame), asi que Instance
+            // puede seguir siendo null aunque el componente exista.
+            var predefined = PredefinedScenarios.Instance;
+            if (predefined == null)
+            {
+                UnityEngine.Debug.LogError("[Scenarios] PredefinedScenarios.Instance es null");
+                return;
+            }
+
+            var scenario = predefined.GetScenario(scenarioIndex);
             if (scenario == null)
             {
                 UnityEngine.Debug.LogError($"[Scenarios] Escenario {scenarioIndex} no encontrado");
                 return;
             }
 
-            if (ScoringSystem.Instance != null)
-                ScoringSystem.Instance.StartSession(scenario.name);
-            else
+            // C6: una sola lectura + check de Unity (== null detecta instancias
+            // destruidas; ScoringSystem no limpia Instance en OnDestroy, asi que
+            // el viejo `?.` podria invocar sobre un objeto destruido).
+            var scoring = ScoringSystem.Instance;
+            if (scoring == null)
             {
                 var scoringObj = new GameObject("ScoringSystem");
                 scoringObj.AddComponent<ScoringSystem>();
-                ScoringSystem.Instance.StartSession(scenario.name);
+                scoring = ScoringSystem.Instance; // Awake corre en runtime; en EditMode puede seguir null
             }
+            if (scoring != null)
+                scoring.StartSession(scenario.name);
 
             UnityEngine.Debug.Log($"[Scenarios] Cargando escenario: {scenario.name}");
             ShowScenarioInfo(scenario);
