@@ -103,8 +103,8 @@ Assets/
 │   │   └── DebugDiscSimulator.cs  - Simulador de debug (teclado)
 │   │
 │   ├── Simulation/        # Actividades académicas
-│   │   ├── SceneSetup.cs           - Orquestador de escena (~379L, refactorizado)
-│   │   ├── ActivityLoader.cs       - Carga actividades + escenarios (~800L)
+│   │   ├── SceneSetup.cs           - Fachada de escena (270L)
+│   │   ├── ActivityLoader.cs       - Fachada de actividades (114L)
 │   │   ├── SceneCleanupService.cs  - Limpieza y GoBackToMainMenu (singleton)
 │   │   ├── BuildTopologyActivity.cs - Detección de topología
 │   │   ├── FindFaultActivity.cs    - Simulación de fallos
@@ -115,16 +115,13 @@ Assets/
 │   │   ├── ScoringSystem.cs        - Sistema de puntajes
 │   │   ├── SimulationControls.cs   - Control de ESC y botones
 │   │   ├── PingVisualizer.cs       - Animación visual de ping
-│   │   ├── GameManager.cs          - Gestor del juego
 │   │   └── TouchScriptDisabler.cs  - Oculta cursores táctiles
 │   │
 │   └── UI/                # Interfaz de usuario
 │       ├── MainMenuManager.cs      - Gestor del menú principal
 │       ├── MenuNavigator.cs        - Navegación por teclado + mouse
 │       ├── NodeVisualizer.cs       - Visualización de nodos (circulares)
-│       ├── TopologyVisualizer.cs   - Visualizador de topología
 │       ├── ConnectivityTestPanel.cs - Panel de ping
-│       ├── ActivityPanel.cs        - Panel de actividades
 │       ├── LinkModeController.cs   - Modo CONEXIÓN/DESCONEXIÓN (extraído de SceneSetup)
 │       ├── PingModeController.cs   - Modo ping + selector de nodos
 │       ├── IPConfigController.cs   - Panel IP (configuración de nodos)
@@ -370,9 +367,11 @@ Presiona **Play** en Unity y usa las teclas del teclado numérico o teclas alfan
 
 ## Auto-Configuración de Escena (Refactorizada)
 
-`Assets/Scripts/Simulation/SceneSetup.cs` (~379L) es el orquestador que delega en:  
-- **ActivityLoader.cs** (~800L): Carga actividades y escenarios
-- **SceneCleanupService.cs** (singleton): Limpieza y retorno al menú principal
+`Assets/Scripts/Simulation/SceneSetup.cs` (270L) es la fachada que delega en:  
+- **SceneBootstrap.cs** (296L): Arranque de escena — resolución, cámara, canvas, managers, visualizador
+- **SceneNavigation.cs** (159L): Menús y transiciones de paneles
+- **ActivityLoader.cs** (114L): Fachada de actividades → `ActivityDispatcher` (299L), `ActivityHudFactory` (286L), `ScenarioLoader` (290L)
+- **SceneCleanupService.cs** (singleton): Ruta única de limpieza (`GetOrCreate`) y retorno al menú principal
 - **5 UI Controllers** extraídos:
   - `LinkModeController.cs` — Modo CONEXIÓN/DESCONEXIÓN
   - `PingModeController.cs` — Modo ping + selector de nodos
@@ -381,7 +380,7 @@ Presiona **Play** en Unity y usa las teclas del teclado numérico o teclas alfan
   - `NodeInteractionController.cs` — Click en nodos (fachada)
 - **UIPanelFactory.cs** + **UIComponents.cs**: Creación de paneles y helpers visuales
 
-Originalmente SceneSetup tenía ~4250 líneas; tras dos refactors quedó en ~379L con responsabilidades claras.
+Originalmente SceneSetup tenía ~4250 líneas; tras los refactors (incluido el split C5) quedó en 270L como fachada.
 
 ## IDEUMConfigurator
 
@@ -565,10 +564,10 @@ Los agentes los usan automáticamente como referencia durante implementación, r
 
 - El namespace principal es `SimRedes` seguido de sub-namespaces: `Network`, `Tangible`, `Simulation`, `UI`
 - Todos los scripts usan `UnityEngine.Debug.Log` para logging
-- SceneSetup (~379L) se ejecuta automáticamente al hacer Play y delega en ActivityLoader, SceneCleanupService y 5 controllers
+- SceneSetup (270L) se ejecuta automáticamente al hacer Play y delega en SceneBootstrap, SceneNavigation, ActivityLoader y 5 controllers
 - El código está diseñado para Spanish-speaking users (mensajes en español)
 - MenuNavigator.cs maneja la navegación por teclado y mouse de todos los paneles
-- SimulationControls.cs maneja ESC, P (ping) y el botón de volver al menú
+- SimulationControls.cs maneja ESC, P (ping), R (eliminar) y el botón de volver al menú
 - TangibleDiscManager genera IDs únicos (BASE_DISC_ID + counter) para evitar colisiones
 - TangibleBridge conecta con TangibleEngine para detectar discos físicos en IDEUM
 - BuildTopologyActivity incluye FindUITexts() para auto-encontrar referencias UI por nombre
@@ -590,7 +589,7 @@ Los agentes los usan automáticamente como referencia durante implementación, r
   - `IPConfigController` — maneja el panel de configuración IP y teclado numérico
   - `DevicePanelController` — maneja el panel de dispositivos y el score visible
   - `NodeInteractionController` — fachada que orquesta clicks en nodos según modo activo
-- **ActivityLoader** centraliza la lógica de carga de 7 actividades + 5 escenarios (~800L)
+- **ActivityLoader** es la fachada (114L) de carga de 7 actividades + 5 escenarios; delega en ActivityDispatcher, ActivityHudFactory y ScenarioLoader
 - **SceneCleanupService** es un singleton que maneja la destrucción ordenada al salir
 - **Input System**: Activo en modo Both (`activeInputHandler = 2`). El código legacy con `Input.GetKeyDown()` funciona junto con el nuevo Input System Package. Para código nuevo, usar `UnityEngine.InputSystem`.
 - **Tests**: 399 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.

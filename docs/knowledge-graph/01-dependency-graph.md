@@ -47,7 +47,14 @@ graph TB
         SIMC[SimulationControls]
         SCS[SceneCleanupService]
         AL[ActivityLoader]
+        AD[ActivityDispatcher]
+        AHF[ActivityHudFactory]
+        SL[ScenarioLoader]
         SS[SceneSetup]
+        SB[SceneBootstrap]
+        SN[SceneNavigation]
+        AST[ActivityStartup]
+        FFS[FindFaultScenarios]
     end
 
     subgraph "UI"
@@ -130,11 +137,15 @@ graph TB
     FFA --> UIC
     FFA --> IPC
     FFA --> TDM
+    FFA --> FFS
     SIMC --> SS
     SIMC --> TM
-    SIMC --> DDS
     SIMC --> IPC
     SIMC --> DPC
+    SIMC --> PV
+    SIMC --> RTA
+    SIMC --> SCS
+    SIMC --> UIC
     SCS --> TM
     SCS --> NV
     SCS --> PV
@@ -156,49 +167,101 @@ graph TB
     SCS --> RTA
     SCS --> SRA
     SCS --> BRA
+    SCS --> BTA
+    SCS --> FFA
+    SCS --> MMM
+    SCS --> MN
     AL --> TM
-    AL --> NN
-    AL --> DC
-    AL --> NV
-    AL --> PV
-    AL --> DRP
-    AL --> RP
-    AL --> PRED
-    AL --> SC
+    AL --> AD
+    AL --> AHF
+    AL --> SL
     AL --> SCS
-    AL --> UPF
-    AL --> APF
-    AL --> CPF
-    AL --> LM
-    AL --> PM
-    AL --> DPC
     AL --> SS
-    AL --> UIC
     SS --> TM
     SS --> NN
-    SS --> NL
     SS --> IPV
-    SS --> DC
-    SS --> TDM
-    SS --> TB
-    SS --> DEH
-    SS --> DDS
-    SS --> SIMC
-    SS --> TS
-    SS --> PV
-    SS --> SCS
     SS --> NV
     SS --> NIC
     SS --> DPC
-    SS --> AL
+    SS --> IPC
     SS --> LM
     SS --> PM
-    SS --> IPC
-    SS --> UPF
-    SS --> MN
-    SS --> MMM
+    SS --> PV
     SS --> UIC
-    SS --> CTP
+    SS --> AL
+    SS --> SB
+    SS --> SN
+
+    %% C5: componentes extraídos
+    AD --> AL
+    AD --> TM
+    AD --> APF
+    AD --> BRA
+    AD --> BTA
+    AD --> CTP
+    AD --> DRA
+    AD --> FFA
+    AD --> MMM
+    AD --> MN
+    AD --> NV
+    AD --> PV
+    AD --> RTA
+    AD --> SC
+    AD --> SIMC
+    AD --> SRA
+    AD --> UIC
+    AD --> UPF
+
+    AHF --> AL
+    AHF --> CPF
+    AHF --> DDS
+    AHF --> DPC
+    AHF --> LM
+    AHF --> PM
+    AHF --> SCS
+    AHF --> TDM
+    AHF --> TM
+    AHF --> UIC
+    AHF --> UPF
+
+    SL --> AL
+    SL --> APF
+    SL --> DPC
+    SL --> NN
+    SL --> PRED
+    SL --> RT
+    SL --> SS
+    SL --> SC
+    SL --> SIMC
+    SL --> TM
+    SL --> UIC
+
+    SB --> AL
+    SB --> DDS
+    SB --> DPC
+    SB --> DEH
+    SB --> IPC
+    SB --> LM
+    SB --> NIC
+    SB --> NV
+    SB --> PM
+    SB --> PV
+    SB --> SCS
+    SB --> SS
+    SB --> SIMC
+    SB --> TB
+    SB --> TDM
+    SB --> TM
+    SB --> TS
+    SB --> UIC
+
+    SN --> MMM
+    SN --> SCS
+    SN --> SS
+    SN --> UIC
+    SN --> UPF
+
+    AST --> TM
 
     %% UI dependencies
     MN --> UIC
@@ -290,7 +353,7 @@ graph TB
 | `DiscEventHandler.cs` | TangibleDiscManager, RouteBuilderState, TopologyManager, NetworkNode, DynamicRoutingActivity, RoutingProtocols |
 | `DebugDiscSimulator.cs` | TangibleDiscManager, TopologyManager, LinkModeController, NodeVisualizer |
 
-### Simulation/ (16 archivos)
+### Simulation/ (23 archivos)
 
 | Archivo | Depende de |
 |---|---|
@@ -305,11 +368,18 @@ graph TB
 | `StaticRoutingActivity.cs` | TopologyManager, NetworkNode, IPValidation, ConfigPanelFactory, UIComponents |
 | `DynamicRoutingActivity.cs` | TopologyManager, NetworkNode, DynamicRoutingProtocol, RoutingProtocols |
 | `DynamicRoutingProtocol.cs` | TopologyManager, NetworkNode, NetworkLink, IPValidation, RoutingTable, PingVisualizer, UIComponents |
-| `FindFaultActivity.cs` | TopologyManager, NetworkNode, DiscConfiguration, IPValidation, UIComponents, IPConfigController, TangibleDiscManager |
-| `SimulationControls.cs` | SceneSetup, TopologyManager, DebugDiscSimulator, IPConfigController, DevicePanelController |
-| `SceneCleanupService.cs` | TopologyManager, NodeVisualizer, PingVisualizer, DebugDiscSimulator, TangibleDiscManager, TangibleBridge, DiscEventHandler, SimulationControls, ConnectivityTestPanel, ScoringSystem, DynamicRoutingActivity, DynamicRoutingProtocol, LinkModeController, PingModeController, IPConfigController, DevicePanelController, NodeInteractionController, UIComponents, RoutingTablesActivity, StaticRoutingActivity, BestRouteActivity |
-| `ActivityLoader.cs` | TopologyManager, NetworkNode, DiscConfiguration, NodeVisualizer, PingVisualizer, DynamicRoutingProtocol, RoutingProtocols, PredefinedScenarios, ScoringSystem, SceneCleanupService, UIPanelFactory, ActivityPanelFactory, ConfigPanelFactory, LinkModeController, PingModeController, DevicePanelController, SceneSetup, UIComponents |
-| `SceneSetup.cs` | TopologyManager, NetworkNode, NetworkLink, IPValidation, DiscConfiguration, TangibleDiscManager, TangibleBridge, DiscEventHandler, DebugDiscSimulator, SimulationControls, TouchScriptDisabler, PingVisualizer, SceneCleanupService, NodeVisualizer, NodeInteractionController, DevicePanelController, ActivityLoader, LinkModeController, PingModeController, IPConfigController, UIPanelFactory, MenuNavigator, MainMenuManager, UIComponents, ConnectivityTestPanel |
+| `FindFaultActivity.cs` | TopologyManager, NetworkNode, DiscConfiguration, IPValidation, UIComponents, IPConfigController, TangibleDiscManager, FindFaultScenarios |
+| `SimulationControls.cs` | SceneSetup, TopologyManager, SceneCleanupService, IPConfigController, DevicePanelController, PingVisualizer, RoutingTablesActivity, UIComponents |
+| `SceneCleanupService.cs` | TopologyManager, NodeVisualizer, PingVisualizer, DebugDiscSimulator, TangibleDiscManager, TangibleBridge, DiscEventHandler, SimulationControls, ConnectivityTestPanel, ScoringSystem, BuildTopologyActivity, FindFaultActivity, DynamicRoutingActivity, DynamicRoutingProtocol, LinkModeController, PingModeController, IPConfigController, DevicePanelController, NodeInteractionController, UIComponents, RoutingTablesActivity, StaticRoutingActivity, BestRouteActivity, MainMenuManager, MenuNavigator |
+| `ActivityLoader.cs` | TopologyManager, ActivityDispatcher, ActivityHudFactory, ScenarioLoader, SceneCleanupService, SceneSetup |
+| `SceneSetup.cs` | TopologyManager, NetworkNode, IPValidation, ActivityLoader, UIComponents, NodeVisualizer, PingVisualizer, LinkModeController, PingModeController, IPConfigController, DevicePanelController, NodeInteractionController, SceneBootstrap, SceneNavigation |
+| `SceneBootstrap.cs` | SceneSetup, TopologyManager, SceneCleanupService, SimulationControls, TangibleDiscManager, TangibleBridge, DiscEventHandler, DebugDiscSimulator, TouchScriptDisabler, UIComponents, NodeVisualizer, PingVisualizer, LinkModeController, PingModeController, IPConfigController, DevicePanelController, NodeInteractionController, ActivityLoader |
+| `SceneNavigation.cs` | SceneSetup, SceneCleanupService, UIPanelFactory, UIComponents, MainMenuManager |
+| `ActivityDispatcher.cs` | ActivityLoader, TopologyManager, UIPanelFactory, ActivityPanelFactory, UIComponents, BuildTopologyActivity, FindFaultActivity, BestRouteActivity, RoutingTablesActivity, StaticRoutingActivity, DynamicRoutingActivity, ScoringSystem, SimulationControls, ConnectivityTestPanel, NodeVisualizer, PingVisualizer, MenuNavigator, MainMenuManager |
+| `ActivityHudFactory.cs` | ActivityLoader, TopologyManager, TangibleDiscManager, DebugDiscSimulator, SceneCleanupService, UIPanelFactory, ConfigPanelFactory, UIComponents, NodeVisualizer, LinkModeController, PingModeController, DevicePanelController |
+| `ScenarioLoader.cs` | ActivityLoader, SceneSetup, TopologyManager, NetworkNode, RoutingTable, PredefinedScenarios, ScoringSystem, SimulationControls, ActivityPanelFactory, UIComponents, DevicePanelController |
+| `ActivityStartup.cs` | TopologyManager |
+| `FindFaultScenarios.cs` | *(ninguno — leaf)* |
 
 ### UI/ (15 archivos)
 
@@ -343,15 +413,15 @@ graph TB
 
 | # | Archivo | Count | Dependencias clave |
 |---|---|---|---|
-| 1 | `SceneSetup.cs` | ~30 | TopologyManager, ActivityLoader, UIPanelFactory, 6 controllers, 6 Tangible/Network |
-| 2 | `ActivityLoader.cs` | ~20 | TopologyManager, 3 factories, DynamicRoutingProtocol, ScoringSystem |
-| 3 | `SceneCleanupService.cs` | ~18 | TopologyManager, todos los controllers, todas las actividades |
-| 4 | `DynamicRoutingProtocol.cs` | ~7 | TopologyManager, IPValidation, PingVisualizer, RoutingTable |
-| 5 | `DiscEventHandler.cs` | ~6 | TangibleDiscManager, TopologyManager, DynamicRoutingActivity |
+| 1 | `SceneCleanupService.cs` | 25 | TopologyManager, todos los controllers, actividades y menús |
+| 2 | `ActivityDispatcher.cs` | 18 | ActivityLoader, actividades 0-5, factories, UIComponents |
+| 3 | `SceneBootstrap.cs` | 18 | SceneSetup, TopologyManager, Tangible, controllers |
+| 4 | `SceneSetup.cs` | 14 | SceneBootstrap, SceneNavigation, ActivityLoader, controllers |
+| 5 | `ActivityHudFactory.cs` | 12 | ActivityLoader, factories, controllers, TangibleDiscManager |
 
 ---
 
 ## Archivos Hoja (Sin Dependencias Salientes)
 
-11 archivos no dependen de ningún otro archivo del proyecto:
-`IPValidation`, `DiscConfiguration`, `ACLManager`, `NATManager`, `TangibleDiscManager`, `PointerClickHandler`, `TouchScriptDisabler`, `PredefinedScenarios`, `ScoringSystem`, `IDEUMConfigurator`, `MemoryDiagnostics`
+12 archivos no dependen de ningún otro archivo del proyecto:
+`IPValidation`, `DiscConfiguration`, `ACLManager`, `NATManager`, `TangibleDiscManager`, `PointerClickHandler`, `TouchScriptDisabler`, `PredefinedScenarios`, `ScoringSystem`, `IDEUMConfigurator`, `MemoryDiagnostics`, `FindFaultScenarios`

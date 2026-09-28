@@ -76,7 +76,7 @@
 **Cuándo usar**: Escenarios predefinidos, carga de escenarios.
 **Archivos referenciados**:
 - `Assets/Scripts/Simulation/PredefinedScenarios.cs`
-- `Assets/Scripts/Simulation/ActivityLoader.cs` (`LoadScenario()`)
+- `Assets/Scripts/Simulation/ScenarioLoader.cs` (`LoadScenario()`)
 
 ---
 

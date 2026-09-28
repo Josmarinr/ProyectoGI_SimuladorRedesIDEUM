@@ -6,16 +6,14 @@
 sequenceDiagram
     participant Student as Estudiante
     participant Act as DynamicRoutingActivity
-    participant AL as ActivityLoader
     participant DRP as DynamicRoutingProtocol
     participant R1 as Router1.RoutingTable
     participant R2 as Router2.RoutingTable
     participant Panel as UI Panel
 
     Student->>Act: Selecciona protocolo RIP
-    Act->>AL: StartDynamicProtocol(panel)
-    AL->>AL: Valida ≥2 routers en topología
-    AL->>DRP: new DynamicRoutingProtocol(RIP)
+    Act->>Act: StartProtocol(panel) — valida ≥2 routers en topología
+    Act->>DRP: AddComponent DynamicRoutingProtocol (RIP)
     DRP->>DRP: InitializeRouterStates()
     Note right of DRP: Cada router calcula su red conocida<br/>Router1: 192.168.1.0/24<br/>Router2: 192.168.2.0/24
     DRP->>DRP: StartCoroutine(RunProtocolLoop(routers))
@@ -93,6 +91,6 @@ IDLE → RUNNING → CONVERGED → (opcional) STOPPED
 |---------|-----|
 | `Assets/Scripts/Simulation/DynamicRoutingProtocol.cs` | Motor de protocolo (coroutine) |
 | `Assets/Scripts/Simulation/DynamicRoutingActivity.cs` | UI de la actividad |
-| `Assets/Scripts/Simulation/ActivityLoader.cs` | `StartDynamicProtocol()` / `StopDynamicProtocol()` |
-| `Assets/Scripts/Simulation/RoutingProtocols.cs` | `RoutingSimulator` estático + `PathCalculation` |
+| `Assets/Scripts/Simulation/DynamicRoutingActivity.cs` | `StartProtocol(panel)` / `StopProtocol(panel)` |
+| `Assets/Scripts/Simulation/RoutingProtocols.cs` | `RoutingSimulator` estático |
 | `Assets/Scripts/Network/RoutingTable.cs` | `AddRipRoute()` / `AddOspfRoute()` |

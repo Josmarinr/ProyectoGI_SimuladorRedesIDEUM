@@ -64,7 +64,7 @@
 - **Skill**: `unity-ui-buttons`, `unity-scene-setup`
 
 ### "Quiero cambiar el menú principal"
-- **Archivos**: `UIPanelFactory.cs` → `CreateMainMenu()`, `MainMenuManager.cs`
+- **Archivos**: `UIPanelFactory.cs` → `CreateMainMenu()`, `SceneNavigation.cs` (muestra/recrea el menú), `MainMenuManager.cs`
 - **Test**: `TestUIPanelFactory.cs`
 - **Skill**: `menu-navigation`
 
@@ -118,25 +118,25 @@
 
 ### "Quiero agregar una actividad nueva"
 1. Crear archivo en `Assets/Scripts/Simulation/`
-2. Agregar en `ActivityLoader.cs` → `SelectActivity(n)` (case nuevo)
+2. Agregar en `ActivityDispatcher.cs` → `SelectActivity(n)` (case nuevo; se invoca vía la fachada `ActivityLoader`)
 3. Crear panel en `ActivityPanelFactory.cs`
 4. Agregar botón en `UIPanelFactory.cs` → `CreateActivitiesPanel()`
 5. Agregar test en `TestActivityLoader.cs`
 
 ### "Quiero modificar FindFaultActivity"
-- **Archivo**: `FindFaultActivity.cs` (455 líneas)
+- **Archivo**: `FindFaultActivity.cs` (363 líneas)
 - **Escenarios**: `OnDiscButtonClicked()`, `OnNextClicked()`, `OnPrevClicked()`
 - **Test**: `TestActivityLoader.cs` (indirecto)
 - **Skill**: `topology-detection`
 
 ### "Quiero modificar DynamicRoutingActivity"
-- **Archivo**: `DynamicRoutingActivity.cs` (278 líneas)
+- **Archivo**: `DynamicRoutingActivity.cs` (317 líneas)
 - **Config**: `SetProtocol()`, `StartProtocol()`, `StopProtocol()`
 - **Test**: `TestDynamicRoutingProtocol.cs` (24 tests)
 - **Skill**: `dynamic-routing`
 
 ### "Quiero modificar StaticRoutingActivity"
-- **Archivo**: `StaticRoutingActivity.cs` (246 líneas)
+- **Archivo**: `StaticRoutingActivity.cs` (252 líneas)
 - **Métodos**: `AddRoute()`, `ShowAddRoutePanel()`, `TestRouting()`
 - **Skill**: `network-tables`
 
@@ -147,7 +147,7 @@
 ### "Quiero agregar un escenario nuevo"
 - **Archivo**: `PredefinedScenarios.cs` → `GetScenarios()`
 - **Estructura**: `NetworkScenario` con devices, links, ipConfigs, faults, objectives, hints
-- **Carga**: `ActivityLoader.cs` → `LoadScenario()`
+- **Carga**: `ScenarioLoader.cs` → `LoadScenario()` (vía fachada `ActivityLoader`)
 - **Test**: `TestPredefinedScenarios.cs` (13 tests)
 - **Skill**: `predefined-scenarios`
 
@@ -170,8 +170,8 @@
 3. Revisar `05-bugs-history.md` para bugs similares
 
 ### "Un panel no aparece"
-1. Verificar que `SceneSetup.SetupCanvas()` creó el Canvas
-2. Verificar que el EventSystem existe (`SetupEventSystem()`)
+1. Verificar que `SceneBootstrap.SetupScene()` (vía `SceneSetup.SetupScene()`) creó el Canvas
+2. Verificar que el EventSystem existe (creado por `SceneBootstrap.SetupEventSystem()`)
 3. Verificar que `RefreshDevicesPanel()` fue llamado
 
 ### "Los discos no aparecen"

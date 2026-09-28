@@ -90,15 +90,14 @@ public void HandleTangibleRemoved(Tangible tangible)
 Remueve el disco usando el mapping `tangibleIdToUniqueId`.
 
 ```csharp
-public DiscType MapPatternToDiscType(int patternId)
+private int MapPatternToDiscType(int patternId)
 ```
-Mapea PatternId (1-6) a tipos de disco.
+Mapea PatternId **1-3** (Router, Switch, PC) a `DiscType` y retorna `-1` (disco ignorado) fuera de rango. Solo los discos físicos llegan desde TangibleEngine.
 
 ```csharp
-public Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
+private Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
 ```
-Convierte coordenadas TUIO (1920x1080) a coordenadas del canvas (4096x2160).
-Usa constantes fijas `TUIO_WIDTH=1920`, `TUIO_HEIGHT=1080` en lugar de `Display.main.systemWidth/Height` (que con fullscreen devuelve 4096x2160 en vez de la resolución del touch frame).
+Escala desde el touch frame (`touchFrameSize`, serializado, 1920x1080 por defecto) hacia la `CanvasScaler.referenceResolution` activa (fallback 4096x2160) y **re-centra** el resultado: convención **centro-relativa**, `(0,0)` = centro del canvas. No usa `Display.main.systemWidth/Height` (en fullscreen devolvía 4096x2160 y descolocaba los discos).
 
 ---
 

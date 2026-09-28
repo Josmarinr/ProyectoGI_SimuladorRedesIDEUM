@@ -3,7 +3,7 @@
 ```mermaid
 graph TB
     subgraph SIM["SimRedes"]
-        ROOT[SceneSetup<br/>GameManager]
+        ROOT[SceneSetup]
     end
 
     subgraph NET["SimRedes.Network"]

@@ -21,15 +21,14 @@ Los diagramas se dividen en archivos individuales para facilitar su lectura:
 
 ## Resumen de Namespaces
 
-| Namespace | Clases | Propósito |
-|-----------|--------|-----------|
-| `SimRedes` | 4 | Raíz: SceneSetup, GameManager, helpers |
-| `SimRedes.Network` | 11 | Núcleo de networking: nodos, enlaces, tablas, IP |
+| Namespace | Archivos | Propósito |
+|-----------|:--------:|-----------|
+| `SimRedes.Network` | 10 | Núcleo de networking: nodos, enlaces, tablas, IP |
 | `SimRedes.Tangible` | 5 | Integración con hardware IDEUM |
-| `SimRedes.Simulation` | 14 | Actividades, escenarios, puntajes, protocolos |
-| `SimRedes.UI` | 14 | Paneles, visualización, controladores de interacción |
+| `SimRedes.Simulation` | 23 | Actividades, escenarios, puntajes, protocolos |
+| `SimRedes.UI` | 15 | Paneles, visualización, controladores de interacción |
 | `SimRedes.Core` | 1 | Utilidades transversales (MemoryDiagnostics) |
-| `Tests.EditMode.*` | 4 | Tests unitarios EditMode |
+| `Tests.EditMode.*` | 30 | Tests unitarios EditMode (Network, Tangible, Simulation, UI) |
 
 ## Archivos Relacionados
 

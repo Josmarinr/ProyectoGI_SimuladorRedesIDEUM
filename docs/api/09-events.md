@@ -8,11 +8,11 @@
 
 | Evento | Tipo | Publicador | Suscriptores |
 |--------|------|------------|--------------|
-| `OnNodeAdded` | `Action<NetworkNode>` | `AddNode()` | `NodeVisualizer`, `BuildTopologyActivity`, `TopologyVisualizer`, `SceneSetup` |
-| `OnNodeRemoved` | `Action<NetworkNode>` | `RemoveNode()` | `NodeVisualizer`, `BuildTopologyActivity`, `TopologyVisualizer` |
-| `OnLinkAdded` | `Action<NetworkLink>` | `AddLink()` | `BuildTopologyActivity`, `TopologyVisualizer` |
+| `OnNodeAdded` | `Action<NetworkNode>` | `AddNode()` | `NodeVisualizer`, `BuildTopologyActivity`, `SceneSetup` |
+| `OnNodeRemoved` | `Action<NetworkNode>` | `RemoveNode()` | `NodeVisualizer`, `BuildTopologyActivity` |
+| `OnLinkAdded` | `Action<NetworkLink>` | `AddLink()` | `BuildTopologyActivity` |
 | `OnLinkRemoved` | `Action<NetworkLink>` | `RemoveLink()` | — (no listeners directos) |
-| `OnTopologyChanged` | `Action` | Todos los anteriores | `SceneSetup` → `DevicePanelController`, `NodeVisualizer`, `BuildTopologyActivity`, `TopologyVisualizer` |
+| `OnTopologyChanged` | `Action` | Todos los anteriores | `SceneSetup` → `DevicePanelController`, `NodeVisualizer`, `BuildTopologyActivity` |
 
 ## TangibleDiscManager Events
 
@@ -36,8 +36,8 @@
 
 | Evento | Tipo | Publicador | Suscriptores |
 |--------|------|------------|--------------|
-| `OnProtocolLog` | `Action<string>` | `RunProtocolLoop()` | `ActivityLoader` (lambdas → panel UI) |
-| `OnConvergence` | `Action` | `RunProtocolLoop()` | `ActivityLoader` (lambdas → panel UI) |
+| `OnProtocolLog` | `Action<string>` | `RunProtocolLoop()` | `DynamicRoutingActivity` (lambdas → panel UI) |
+| `OnConvergence` | `Action` | `RunProtocolLoop()` | `DynamicRoutingActivity` (lambdas → panel UI) |
 
 ## Diagrama de Flujo de Eventos
 
@@ -70,7 +70,6 @@ graph LR
     subgraph "UI Layer"
         NV[NodeVisualizer]
         BT[BuildTopologyActivity]
-        TV[TopologyVisualizer]
         DP[DevicePanelController]
     end
 
@@ -92,20 +91,18 @@ graph LR
 
     TM_ADD --> NV
     TM_ADD --> BT
-    TM_ADD --> TV
 
     TM_REM --> NV
     TM_REM --> BT
 
     TM_LADD --> BT
-    TM_LADD --> TV
 
     TM_CHG --> DP
     TM_CHG --> NV
     TM_CHG --> BT
 
-    DRP_LOG --> ActivityLoader --> PanelUI
-    DRP_CONV --> ActivityLoader --> PanelUI
+    DRP_LOG --> DynamicRoutingActivity --> PanelUI
+    DRP_CONV --> DynamicRoutingActivity --> PanelUI
 ```
 
 ## Reglas de Subscripción

@@ -9,7 +9,6 @@ graph LR
         UIC[UIComponents]
         NV[NodeVisualizer]
         PV[PingVisualizer]
-        TV[TopologyVisualizer]
         MN[MenuNavigator]
         MMM[MainMenuManager]
         LMC[LinkModeController]

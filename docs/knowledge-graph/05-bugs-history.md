@@ -26,7 +26,7 @@
 
 ### P2 — ALTO: Líneas de Conexión Invisibles
 
-**Estado**: En fix — ver commit fix/p2. Diagnóstico: H1 espacio de coordenadas (esquina vs centro) + H2 íconos no seguían el arrastre; telemetry F9 para confirmar en mesa.
+**Estado**: Fix aplicado en `572e6b8` (H1 espacio de coordenadas + H2 íconos/arrastre) — pendiente verificación en mesa con telemetría F9.
 
 | Intento | Archivo modificado | Cambio |
 |---|---|---|
@@ -203,7 +203,7 @@
 |---|---|---|
 | **Campo stale** | LinkModeController, DevicePanelController | Usar `Singleton.Instance` en vez de cachear |
 | **Sin cleanup** | RAM, texturas, sprites | `DestroyImmediate` en cada ciclo, cache de texturas |
-| **Sin EventSystem** | UI no responde | Verificar `SetupEventSystem()` en SceneSetup |
+| **Sin EventSystem** | UI no responde | Verificar `SceneBootstrap.SetupEventSystem()` (se crea vía `SceneSetup.SetupScene()`) |
 | **Doble procesamiento** | TouchScript | Deshabilitar en Editor via TouchScriptDisabler |
 | **Coordenadas incorrectas** | TUIO → Canvas | Usar constantes fijas, no `Display.main` |
 | **Atlas fragmentado** | Fuentes, glifos | Cache singleton en `GetFont()` |

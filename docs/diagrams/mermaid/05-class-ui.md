@@ -17,7 +17,7 @@ classDiagram
         +CreateConnectivityPanel() ConnectivityPanelRefs
         +CreateInstructionsPanel() GameObject
         +CreateDiscLegendPanel() GameObject
-        +CreateTopologyExamplePanel() GameObject
+        +static ToggleTopologyExamplePanel(canvas, font) void
     }
 
     class ActivityPanelFactory {
@@ -80,7 +80,7 @@ classDiagram
     class IPConfigController {
         +ShowIPConfigPanel(node, discId) void
         +IsIPConfigPanelOpen() bool
-        +CloseIPConfigPanelPublic() void
+        +CloseIPConfigPanel() void
         +GetCurrentIPConfigNodeDiscId() int
     }
 
@@ -113,20 +113,19 @@ classDiagram
         -Dictionary~int,GameObject~ nodeObjects
         +Transform nodeContainer
         +Transform linkContainer
+        +static CreateContainer(name, parent) RectTransform
+        +ResetVisuals() void
         +DrawLinks() void
+        +UpdateNodeLabel(discId, newLabel) void
         +SelectNodeByDiscId(discId) void
         -CreateNodeVisual(node) void
         -CreateLinkLine(from, to) void
     }
 
     class PingVisualizer {
-        +ShowPingAnimation(src, dst) void
-        +ShowPingResult(success) void
-    }
-
-    class TopologyVisualizer {
-        +DrawTopology(type) void
-        +HighlightDevice(discId) void
+        +static Instance
+        +AnimatePing(srcDiscId, destDiscId, onComplete) void
+        +IsAnimating() bool
     }
 
     NodeVisualizer --> PingVisualizer
@@ -139,20 +138,22 @@ classDiagram
 ```mermaid
 classDiagram
     class MenuNavigator {
+        +static Instance
         +SetupPanel(panel, onBack) void
-        +NavigateTo(panel) void
+        +ClearPanel() void
+        -SelectAndInvoke(index) void
     }
 
     class MainMenuManager {
         +GameObject mainMenuPanel
-        +ShowMenu() void
-        +HideMenu() void
+        +ShowMainMenu() void
+        -HideAllPanels() void
     }
 
     class ConnectivityTestPanel {
-        +Show() void
-        +Hide() void
-        +TestConnectivity(src, dst) void
+        +Initialize(source, dest, result, icon, pingBtn, status) void
+        -ExecutePing() void
+        +ResetStats() void
     }
 
     class IDEUMConfigurator {

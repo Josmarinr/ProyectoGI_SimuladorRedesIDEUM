@@ -5,46 +5,91 @@
 
 ---
 
-## DC-04a: Núcleo de Simulación (SceneSetup, Loader, Cleanup)
+## DC-04a: Núcleo de Simulación (fachadas SceneSetup/ActivityLoader + componentes C5)
 
 ```mermaid
 classDiagram
     class SceneSetup {
         -Canvas canvas
-        -Camera cam
+        -SceneBootstrap bootstrap
+        -SceneNavigation navigation
         +SetupScene() void
         +SetupManagers() void
-        +CreateVisualizer() void
-        +CreateMainMenu() void
-        +DestroyMainMenu() void
-        +SetupResolution() void
-        +SetupCamera() void
-        +SetupCanvas() Canvas
-        +SetupEventSystem() void
+        +CreateVisualizer(ct) void
+        +CreateMainMenu(ct) void
+        +SubscribeToTopologyEvents() void
+        +SelectActivity(index) void
+        +HandleNodeClick(discId) void
+        +ToggleLinkMode(mode) void
+        +ExitApplication() void
+    }
+
+    class SceneBootstrap {
+        +SetupSceneCore() void
+        +EnsureCameraSetup() void
+        +SetupManagers() void
+        +CreateVisualizer(ct) void
+        +CacheReferences() void
+        +SubscribeToTopologyEvents() void
+        -SetupResolution() void
+        -SetupCamera() void
+        -SetupCanvas() Canvas
+        -SetupEventSystem() void
+    }
+
+    class SceneNavigation {
+        +CreateMainMenu(ct) void
+        +StartSimulation() void
+        +ShowActivities(ct) void
+        +ShowConnectivity(ct) void
+        +ShowInstructions(ct) void
+        +ShowDiscLegend(ct) void
+        -DestroyMainMenu() void
     }
 
     class ActivityLoader {
-        +StartSimulation(ct) void
+        +SetSelectedProtocol(protocol) void
         +SelectActivity(index) void
+        +StartSimulation(ct) void
         +ShowConnectivityPanel(ct) void
-        +GoBackToMainMenu() void
-        -AddDeviceAtSpawn(type) void
-        -CreateSimulationHUDPanel(ct) void
+        #GoBackToMainMenu() void
         -EnsureTopology() void
+    }
+
+    class ActivityDispatcher {
+        +SelectActivity(index) void
+        +StartSimulation(ct) void
+        +ShowConnectivityPanel(ct) void
+        -EnsureManagersForConnectivity() void
+    }
+
+    class ActivityHudFactory {
+        +CreateSimulationHUDPanel(ct) void
+        +CreateNetworkAdvancedPanel(type) void
+        +AddDeviceAtSpawn(type) void
+    }
+
+    class ScenarioLoader {
+        +CreateScenariosPanel(ct) void
+        +LoadScenario(index) void
+        +BuildScenarioTopology(scenario) void
     }
 
     class SceneCleanupService {
         +static Instance
+        +static GetOrCreate() SceneCleanupService
         +ClearSimulation(topology, visualizer, discSim) void
-        +GoBackToMainMenu(callback) void
+        +DestroyPreviousPanels() void
+        +GoBackToMainMenu(ct, callback) void
     }
 
-    class GameManager {
-    }
-
+    SceneSetup --> SceneBootstrap
+    SceneSetup --> SceneNavigation
     SceneSetup --> ActivityLoader
     SceneSetup --> SceneCleanupService
-    ActivityLoader --> GameManager
+    ActivityLoader --> ActivityDispatcher
+    ActivityLoader --> ActivityHudFactory
+    ActivityLoader --> ScenarioLoader
 ```
 
 ---
@@ -54,31 +99,36 @@ classDiagram
 ```mermaid
 classDiagram
     class SimulationControls {
-        +RemoveSelectedNodePublic() void
+        +static ShouldRemoveSelectedNodeOnR() bool
+        +static ShouldSkipMainMenuSweep(canvas, sceneSetup) bool
+        +GoBackToMainMenu() void
     }
 
     class BuildTopologyActivity {
-        +DetectTopologyType() void
-        +UpdateUI() void
+        -DetectTopologyType() void
+        -UpdateUI() void
+        +GetCurrentTopology() TopologyType
     }
 
     class FindFaultActivity {
         +LoadScenario(index) void
-        +CheckSolution() void
+        -ValidateSolution(scenario) bool
         +OnDiscButtonClicked() void
     }
 
     class RoutingTablesActivity {
-        +RefreshTableUI() void
+        +RefreshRoutingTables() void
+        +bool IsRefreshPanelVisible
     }
 
     class BestRouteActivity {
-        +LoadScenario(scenarioData) void
-        +SelectBestRoute() void
+        -ShowScenario(index) void
+        -OnRouteSelected(optionIndex) void
+        +NextScenario() void
     }
 
     class StaticRoutingActivity {
-        +AddStaticRoute() void
+        +AddRoute(destNetwork, mask, nextHop, outInterface) void
         +TestRouting() void
     }
 
@@ -90,19 +140,29 @@ classDiagram
     }
 
     class PredefinedScenarios {
-        +LoadScenario(index) void
-        +BuildScenarioTopology(index) void
-        +GetCurrentScenario() ScenarioData
+        +GetScenario(index) NetworkScenario
+        +GetScenarioCount() int
     }
 
-    ActivityLoader --> BuildTopologyActivity
-    ActivityLoader --> FindFaultActivity
-    ActivityLoader --> RoutingTablesActivity
-    ActivityLoader --> BestRouteActivity
-    ActivityLoader --> StaticRoutingActivity
-    ActivityLoader --> DynamicRoutingActivity
-    ActivityLoader --> PredefinedScenarios
-    ActivityLoader --> SimulationControls
+    class ActivityDispatcher {
+        +SelectActivity(index) void
+        +StartSimulation(ct) void
+        +ShowConnectivityPanel(ct) void
+    }
+
+    class ScenarioLoader {
+        +LoadScenario(index) void
+        +BuildScenarioTopology(scenario) void
+    }
+
+    ActivityDispatcher --> BuildTopologyActivity
+    ActivityDispatcher --> FindFaultActivity
+    ActivityDispatcher --> RoutingTablesActivity
+    ActivityDispatcher --> BestRouteActivity
+    ActivityDispatcher --> StaticRoutingActivity
+    ActivityDispatcher --> DynamicRoutingActivity
+    ActivityDispatcher --> SimulationControls
+    ScenarioLoader --> PredefinedScenarios
 ```
 
 ---
@@ -112,29 +172,47 @@ classDiagram
 ```mermaid
 classDiagram
     class DynamicRoutingProtocol {
-        +StartRIP() void
-        +StartOSPF() void
-        +StartEIGRP() void
-        +Stop() void
-        -ConvergeNetwork() void
-        -BuildRoutingTable() void
-        +GetRoutes() List~RoutingEntry~
+        +ProtocolType protocol
+        +event OnProtocolLog
+        +event OnConvergence
+        +StartProtocol() void
+        +StopProtocol() void
+        +IsRunning() bool
+        +IsConverged() bool
+        +GetProtocolStatus() string
+        +GetRouters() List~NetworkNode~
+        +GetRouterRoutesSummary(router) string
+        +SimulateConvergence(onComplete) void
     }
 
     class RoutingSimulator {
-        +SimulatePacket(origin, dest) void
-        +GetPath(origin, dest) List~NetworkNode~
+        <<static>>
+        +ActiveProtocol RoutingProtocol
+        +SetProtocol(protocol) void
+        +SimulateRIPAdvertisement(router, ads) void
+        +SimulateOSPFAdvertisement(router, ads) void
+        +SimulateEIGRPAdvertisement(router, ads) void
+        +SimulatePacketForwarding(router, destIP) bool
+        +GetRoutingTableSummary(router) string
     }
 
-    class PathCalculation {
-        +CalculateBestPath(routes, dest) RoutingEntry
-        +LongestPrefixMatch(table, ip) RoutingEntry
-        +CompareMetrics(entry1, entry2) int
+    class RoutingTable {
+        +FindBestRoute(destIP) RoutingEntry
+        +AddRipRoute(...) void
+        +AddOspfRoute(...) void
+        +AddEigrpRoute(...) void
+        +FormatRouteLine(entry) string$
     }
 
-    DynamicRoutingProtocol --> RoutingSimulator
-    RoutingSimulator --> PathCalculation
+    DynamicRoutingProtocol --> RoutingTable : escribe/lee rutas de sus routers
+    RoutingSimulator ..> RoutingTable : resume tablas
 ```
+
+> Notas: la selección de protocolo (RIP/OSPF/EIGRP) vive en `protocol`,
+> no en `StartRIP/StartOSPF/StartEIGRP` (no existen). El Longest Prefix Match
+> está en `RoutingTable.FindBestRoute`, no en una clase `PathCalculation`
+> (esa clase nunca existió en el código). `RoutingSimulator` es `static`
+> y vive en `RoutingProtocols.cs`.
 
 ---
 
@@ -144,26 +222,42 @@ classDiagram
 classDiagram
     class ScoringSystem {
         +static Instance
-        +StartSession(activity) void
-        +AddPoints(type, points) void
+        +StartSession(activityName) void
+        +AddTaskCompleted(taskDescription) void
+        +AddFaultFound(faultDescription) void
+        +AddRouteConfigured(routeInfo) void
+        +AddPingSuccess(source, destination) void
         +GetCurrentScore() int
-        +GetGrade() string
-        +GetSessionSummary() SessionSummary
+        +GetGrade() int
+        +GetSessionSummary() string
     }
 
     class PredefinedScenarios {
-        +LoadScenario(index) void
-        +GetScenarioInfo(index) ScenarioInfo
+        +static Instance
+        +GetScenarioCount() int
+        +GetScenario(index) NetworkScenario
+        +GetScenarios() List~NetworkScenario~
+        +GetScenariosByDifficulty(d) List~NetworkScenario~
     }
 ```
+
+> Nota: los puntos se registran con los métodos `Add*` específicos
+> (`AddTaskCompleted`, `AddFaultFound`, `AddRouteConfigured`, `AddPingSuccess`);
+> no existe `AddPoints(type, points)`. La carga/aplicación de un escenario vive
+> en `ScenarioLoader` (`LoadScenario`/`BuildScenarioTopology`), no en
+> `PredefinedScenarios`, que solo es el catálogo.
 
 ---
 
 ## Archivos Relacionados
 
-- `Assets/Scripts/Simulation/SceneSetup.cs` — Orquestador
-- `Assets/Scripts/Simulation/ActivityLoader.cs` — Carga de actividades
-- `Assets/Scripts/Simulation/SceneCleanupService.cs` — Limpieza de escena
+- `Assets/Scripts/Simulation/SceneSetup.cs` — Fachada de escena (delega en SceneBootstrap/SceneNavigation)
+- `Assets/Scripts/Simulation/SceneBootstrap.cs` — Raíz de composición (canvas, managers, eventos)
+- `Assets/Scripts/Simulation/SceneNavigation.cs` — Menú y paneles
+- `Assets/Scripts/Simulation/ActivityLoader.cs` — Fachada de actividades
+- `Assets/Scripts/Simulation/ActivityDispatcher.cs` — Despacho de actividades 0-6
+- `Assets/Scripts/Simulation/ScenarioLoader.cs` — Carga y construcción de escenarios
+- `Assets/Scripts/Simulation/SceneCleanupService.cs` — Limpieza de escena (ruta única)
 - `Assets/Scripts/Simulation/BuildTopologyActivity.cs` — Actividad 0
 - `Assets/Scripts/Simulation/FindFaultActivity.cs` — Actividad 1
 - `Assets/Scripts/Simulation/RoutingTablesActivity.cs` — Actividad 2
@@ -174,5 +268,4 @@ classDiagram
 - `Assets/Scripts/Simulation/PredefinedScenarios.cs` — Escenarios
 - `Assets/Scripts/Simulation/ScoringSystem.cs` — Sistema de puntajes
 - `Assets/Scripts/Simulation/SimulationControls.cs` — Controles de simulación
-- `Assets/Scripts/Simulation/RoutingSimulator.cs` — Simulador de enrutamiento
-- `Assets/Scripts/Simulation/PathCalculation.cs` — Cálculo de rutas
+- `Assets/Scripts/Simulation/RoutingProtocols.cs` — `RoutingSimulator` (estático) + enum `RoutingProtocol`

@@ -195,7 +195,7 @@
 | Aspecto | Archivo | Ubicación |
 |---|---|---|
 | **Datos** | `PredefinedScenarios.cs` | 5 escenarios (Estrella, Dos Routers, Anillo, Árbol, Fallos) |
-| **Carga** | `ActivityLoader.cs` | `LoadScenario()` |
+| **Carga** | `ScenarioLoader.cs` | `LoadScenario()` |
 | **Test** | `TestPredefinedScenarios.cs` | 13 tests |
 | **Skill** | `predefined-scenarios` | Scenario structure |
 

@@ -6,14 +6,19 @@
 
 ## ActivityLoader
 
-> **Archivo**: `Assets/Scripts/Simulation/ActivityLoader.cs` (~800L)
+> **Archivo**: `Assets/Scripts/Simulation/ActivityLoader.cs` (114L)
 
-Dispatcher central de actividades. Delegado por `SceneSetup` para cargar y gestionar actividades.
+Fachada central de actividades (split C5). La usa `SceneSetup`; conserva la superficie pública histórica y delega la implementación en `ActivityDispatcher.cs` (despacho, 299L), `ActivityHudFactory.cs` (HUD, 286L) y `ScenarioLoader.cs` (escenarios, 290L).
+
+```csharp
+public void SetSelectedProtocol(string protocol)
+```
+Almacena el protocolo de enrutamiento dinámico seleccionado ("RIP", "OSPF" o "EIGRP").
 
 ```csharp
 public void SelectActivity(int index)
 ```
-Carga la actividad según el índice:
+Delega en `ActivityDispatcher.SelectActivity(index)`. Despacha la actividad según el índice:
 - `0` → `BuildTopologyActivity` — Detección de topología
 - `1` → `FindFaultActivity` — Encontrar y reparar fallos
 - `2` → `RoutingTablesActivity` — Visualizar tablas de enrutamiento
@@ -25,39 +30,24 @@ Carga la actividad según el índice:
 ```csharp
 public void StartSimulation(Transform canvasTransform)
 ```
-Inicia modo simulación libre. Crea `TopologyInfoPanel`, `ScoringSystem`, y `BuildTopologyActivity`.
+Delega en `ActivityDispatcher.StartSimulation()`: crea el HUD de simulación y los componentes base (`BuildTopologyActivity`, `SimulationControls`, `ScoringSystem`).
 
 ```csharp
-public void ShowConnectivityPanel()
+public void ShowConnectivityPanel(Transform canvasTransform)
 ```
-Abre panel de pruebas de conectividad autosuficiente. Usa `EnsureManagersForConnectivity()` para crear managers si no existen.
+Delega en `ActivityDispatcher.ShowConnectivityPanel()`: crea los gestores si no existen (su helper privado `EnsureManagersForConnectivity()`) y configura el `ConnectivityTestPanel`.
 
 ```csharp
+// Implementación real: ScenarioLoader.cs
 public void LoadScenario(int scenarioIndex)
 ```
-Carga un escenario preconfigurado (0-4). Configura nodos, enlaces, IPs y fallos.
+Delegado en `ScenarioLoader.LoadScenario()`. Carga un escenario preconfigurado (0-4): gestores, HUD, sesión de puntuación, nodos, enlaces, IPs y fallos.
 
 ### Métodos de Enrutamiento Dinámico
 
-```csharp
-public void StartDynamicProtocol(DynamicRoutingPanelRefs panel)
-```
-Inicia el protocolo dinámico. Valida ≥2 routers, crea `DynamicRoutingProtocol`, conecta eventos.
+El ciclo de UI del protocolo vive en `DynamicRoutingActivity.cs` — `SetProtocol()`, `StartProtocol(GameObject panel)`, `StopProtocol(GameObject panel)`, `ClearAllRoutes(GameObject panel)`, `ShowRoutes()` — y el despacho lo hace `ActivityDispatcher`. El motor (`DynamicRoutingProtocol.cs`) expone `StartProtocol()`, `StopProtocol()`, `GetProtocolStatus()`, `GetRouterRoutesSummary()`, etc.
 
-```csharp
-public void StopDynamicProtocol()
-```
-Detiene el protocolo dinámico.
-
-```csharp
-public void ClearDynamicRoutes()
-```
-Limpia rutas dinámicas de todos los routers.
-
-```csharp
-public void ShowAllRouterRoutes()
-```
-Muestra tablas de enrutamiento de todos los routers en el panel.
+> Los métodos `StartDynamicProtocol` / `StopDynamicProtocol` / `ClearDynamicRoutes` / `ShowAllRouterRoutes` ya no existen: fueron eliminados en el split C5 (fachada + dispatcher).
 
 ---
 

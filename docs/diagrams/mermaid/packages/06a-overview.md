@@ -2,11 +2,6 @@
 
 ```mermaid
 graph TB
-    subgraph S1["SimRedes"]
-        SceneSetup
-        GameManager
-    end
-
     subgraph S2["SimRedes.Network"]
         TopologyManager
         IPValidation
@@ -19,6 +14,7 @@ graph TB
     end
 
     subgraph S4["SimRedes.Simulation"]
+        SceneSetup
         ActivityLoader
         ScoringSystem
         DynamicRoutingProtocol
@@ -44,12 +40,6 @@ graph TB
         TestRoutingTable
     end
 
-    S1 --> S2
-    S1 --> S5
-    S1 --> S4
-    S1 --> S3
-    S1 --> S6
-
     S3 --> S2
     S3 --> TE
 
@@ -58,8 +48,6 @@ graph TB
     S4 --> S3
 
     S5 --> S2
-
-    S6 --> S1
 
     S8 --> S2
     S8 --> S3

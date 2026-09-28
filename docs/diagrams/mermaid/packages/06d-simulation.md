@@ -4,6 +4,14 @@
 graph LR
     subgraph S4["SimRedes.Simulation"]
         AL[ActivityLoader]
+        SCH[SceneSetup]
+        AD[ActivityDispatcher]
+        AHF[ActivityHudFactory]
+        SL[ScenarioLoader]
+        SB[SceneBootstrap]
+        SN[SceneNavigation]
+        AST[ActivityStartup]
+        FFS[FindFaultScenarios]
         SCS[SceneCleanupService]
         BTA[BuildTopologyActivity]
         FFA[FindFaultActivity]
@@ -16,18 +24,27 @@ graph LR
         SS[ScoringSystem]
         SC[SimulationControls]
         RS[RoutingSimulator]
-        PC[PathCalculation]
     end
 
-    AL --> BTA
-    AL --> FFA
-    AL --> RTA
-    AL --> BRA
-    AL --> SRA
-    AL --> DRA
+    AL --> AD
+    AL --> AHF
+    AL --> SL
+    SCH --> SB
+    SCH --> SN
+    SCH --> SCS
+    RTA --> AST
+    SRA --> AST
+    DRA --> AST
+    FFA --> FFS
+
+    AD --> BTA
+    AD --> FFA
+    AD --> RTA
+    AD --> BRA
+    AD --> SRA
+    AD --> DRA
 
     DRA --> DRP
-    DRP --> RS
 
     SS --> SC
     PS --> BTA

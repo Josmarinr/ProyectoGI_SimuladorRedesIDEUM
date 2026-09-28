@@ -14,16 +14,16 @@ sequenceDiagram
 
     User->>SS: App inicia
     SS->>SS: Awake()
-    SS->>SS: SetupResolution() → 1920x1080
-    SS->>SS: SetupCamera() → Ortho, size 540
-    SS->>SS: SetupCanvas() → 4096x2160, Expand
+    SS->>SS: [SceneBootstrap] SetupResolution() → 1920x1080
+    SS->>SS: [SceneBootstrap] SetupCamera() → Ortho, size 540
+    SS->>SS: [SceneBootstrap] SetupCanvas() → 4096x2160, Expand
     SS->>Menu: CreateMainMenu()
     Note over Menu: 5 opciones
 
     alt Opción 1: INICIAR SIMULACIÓN
         User->>Menu: Click "INICIAR SIMULACIÓN"
         Menu->>SS: StartSimulation()
-        SS->>SS: DestroyMainMenu() [DestroyImmediate]
+        SS->>SS: DestroyMainMenu() [SceneNavigation] [SceneNavigation, DestroyImmediate]
         SS->>SS: SetupManagers()
         Note over SS: Crea TopologyManager, TangibleDiscManager,<br/>5 Controllers, SimulationControls, etc.
         SS->>SS: CreateVisualizer()
@@ -35,7 +35,7 @@ sequenceDiagram
     alt Opción 2: ACTIVIDADES
         User->>Menu: Click "ACTIVIDADES"
         Menu->>SS: ShowActivities()
-        SS->>SS: DestroyMainMenu()
+        SS->>SS: DestroyMainMenu() [SceneNavigation]
         SS->>SS: CreateActivitiesPanel()
         Note over SS: 7 botones + VOLVER
 
@@ -50,7 +50,7 @@ sequenceDiagram
     alt Opción 3: PRUEBAS Y CONEXIONES
         User->>Menu: Click "PRUEBAS Y CONEXIONES"
         Menu->>SS: ShowConnectivity()
-        SS->>SS: DestroyMainMenu()
+        SS->>SS: DestroyMainMenu() [SceneNavigation]
         SS->>AL: EnsureManagersForConnectivity()
         AL->>AL: CreateConnectivityPanel()
         Note over SIM: Modo pruebas sin SimulationControls
@@ -59,11 +59,11 @@ sequenceDiagram
     alt Opción 4: CÓMO USAR
         User->>Menu: Click "CÓMO USAR"
         Menu->>SS: ShowInstructions()
-        SS->>SS: DestroyMainMenu()
+        SS->>SS: DestroyMainMenu() [SceneNavigation]
         SS->>MNV: SetupPanel(panel, onEscape→CreateMainMenu)
         Note over MNV: Panel 2 columnas con instrucciones
         User->>MNV: Presiona ESC o VOLVER
-        MNV->>SS: CreateMainMenuPublic()
+        MNV->>SS: CreateMainMenu()
     end
 
     alt Opción 5: SALIR
@@ -77,7 +77,7 @@ sequenceDiagram
     SIM->>SCS: GoBackToMainMenu(canvas, callback)
     SCS->>SCS: Destruye managers (TopologyManager, etc.)
     SCS->>SCS: Destruye paneles (por nombre)
-    SCS->>SS: callback → CreateMainMenuPublic()
+    SCS->>SS: callback → CreateMainMenu()
     SS->>Menu: CreateMainMenu()
     Note over Menu: Todo limpio, menú reconstruido
 ```

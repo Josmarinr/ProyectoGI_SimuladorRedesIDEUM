@@ -155,10 +155,10 @@ Los discos 7-18 no crean nodos en la topología. Al colocarlos sobre un router, 
 
 ### Coordenadas TE → Canvas
 
-- TE reporta en píxeles de pantalla física (1920x1080 en IDEUM)
-- Canvas/cámara configurados en 4096x2160 (SceneSetup)
-- `ConvertToCanvasPosition()` escala coordenadas usando `Display.main.systemWidth/Height`
-- Ej: toque al centro (960,540) → canvas (2048,1080)
+- TE reporta en píxeles del touch frame (`touchFrameSize`, 1920x1080 por defecto)
+- Canvas: `CanvasScaler.referenceResolution` (4096x2160, Expand)
+- `ConvertToCanvasPosition()` escala frame → canvas y **re-centra**: convención centro-relativa, (0,0) = centro del canvas
+- Ej: toque al centro (960,540) → escalado (2048,1080) → re-centro (0,0)
 
 ## 4. Controles de Debug
 
@@ -199,8 +199,8 @@ Colors.activeLinkMode   // Verde cuando CONNECTAR/DESCONECTAR está activo
 
 | Archivo | Descripción |
 |---------|-------------|
-| `SceneSetup.cs` | Orquestador de escena (~379L, refactorizado) |
-| `ActivityLoader.cs` | Carga actividades + escenarios (~800L, NUEVO) |
+| `SceneSetup.cs` | Fachada de escena (270L) → delega en SceneBootstrap/SceneNavigation |
+| `ActivityLoader.cs` | Fachada de actividades (114L) → ActivityDispatcher/ActivityHudFactory/ScenarioLoader |
 | `SceneCleanupService.cs` | Limpieza y GoBackToMainMenu (singleton, NUEVO) |
 | `LinkModeController.cs` | Modo CONEXIÓN/DESCONEXIÓN (NUEVO) |
 | `PingModeController.cs` | Modo ping + selector de nodos (NUEVO) |

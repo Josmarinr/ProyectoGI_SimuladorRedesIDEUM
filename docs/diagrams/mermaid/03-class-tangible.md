@@ -22,8 +22,9 @@ classDiagram
 
     class TangibleBridge {
         -Dictionary~int, int~ tangibleIdToUniqueId
-        +MapPatternToDiscType(pattern) DiscType
-        +ConvertToCanvasPosition(screenPos) Vector2
+        -Vector2 touchFrameSize (1920x1080 por defecto)
+        -MapPatternToDiscType(patternId) int
+        -ConvertToCanvasPosition(screenPosition) Vector2
         +HandleTangibleAdded(tangible) void
         +HandleTangibleUpdated(tangible) void
         +HandleTangibleRemoved(tangible) void
@@ -83,7 +84,10 @@ classDiagram
 Mesa IDEUM → TE Service → TangibleEngine → TangibleBridge → TangibleDiscManager → DiscEventHandler → TopologyManager
 ```
 
-## Discos Físicos (IDs 1-6)
+## Discos (IDs 1-6): físicos 1-3 + virtuales 4-6
+
+> TangibleEngine solo acepta patrones **1-3** (discos físicos); los IDs 4-6 son discos
+> virtuales generados por `DebugDiscSimulator`/actividades.
 
 | ID | Tipo | Color | Creación |
 |:--:|------|-------|----------|

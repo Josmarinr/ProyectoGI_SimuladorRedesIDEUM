@@ -23,23 +23,23 @@ sequenceDiagram
     Note right of TB: PatternId 1 → DiscType.Router
 
     TB->>TB: ConvertToCanvasPosition((500,400))
-    Note right of TB: Escala 1920x1080 → 4096x2160<br/>Resultado: (1067, 800)
+    Note right of TB: Escala touchFrame 1920x1080 → Canvas 4096x2160 y re-centro<br/>(convención centro-relativa: (0,0)=centro) → Resultado: (-981, -280)
 
-    TB->>TDM: SimulateDiscPlaced(DiscType.Router, (1067,800))
+    TB->>TDM: SimulateDiscPlaced(DiscType.Router, (-981,-280))
     Note right of TDM: uniqueId = BASE_DISC_ID + counter<br/>= 100 + 0 = 100
 
     TDM-->>TB: return 100
     TB->>TB: tangibleIdToUniqueId[42] = 100
 
-    TDM->>DEH: OnDiscPlaced(100, (1067,800))
+    TDM->>DEH: OnDiscPlaced(100, (-981,-280))
 
     DEH->>DEH: IsRoutingConfigDisc(Router)
     Note right of DEH: Router es ID 1, NO es routing → procede
 
-    DEH->>TM: AddNode(discId=100, DeviceType.Router, pos=(1067,800))
+    DEH->>TM: AddNode(discId=100, DeviceType.Router, pos=(-981,-280))
 
     TM->>TM: Crear NetworkNode
-    Note right of TM: node.Id = auto<br/>node.DiscId = 100<br/>node.Type = Router<br/>node.Position = (1067,800)
+    Note right of TM: node.Id = auto<br/>node.DiscId = 100<br/>node.Type = Router<br/>node.Position = (-981,-280)
 
     TM-->>DEH: return node
     TM->>NV: OnNodeAdded(node)

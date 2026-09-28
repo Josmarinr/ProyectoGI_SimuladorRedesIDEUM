@@ -36,7 +36,7 @@ Mesa IDEUM (discos fisicos + touch)
       |
 TangibleEngine SDK (TUIO, TCP puerto 4949)
       |
-TangibleBridge (mapea tangibleId -> uniqueId, convierte coordenadas 1920x1080 -> 4096x2160)
+TangibleBridge (mapea tangibleId -> uniqueId, convierte touch frame 1920x1080 -> canvas centro-relativo)
       |
 TopologyManager (singleton central: nodos, enlaces, pathfinding, eventos)
       |
@@ -187,15 +187,15 @@ TopologyManager expone eventos que el resto del sistema consume:
 
 | Archivo | Lineas | Rol |
 |---------|:------:|-----|
-| Assets/Scripts/Network/TopologyManager.cs | ~718 | Singleton central de red |
-| Assets/Scripts/Simulation/SceneSetup.cs | ~606 | Inicializacion de escena y UI global |
-| Assets/Scripts/Simulation/ActivityLoader.cs | ~843 | Cargador de actividades y protocolos |
-| Assets/Scripts/UI/UIPanelFactory.cs | ~953 | Creacion de paneles de navegacion |
-| Assets/Scripts/UI/ActivityPanelFactory.cs | ~857 | Paneles de actividades |
-| Assets/Scripts/UI/ConfigPanelFactory.cs | ~882 | Paneles de configuracion |
-| Assets/Scripts/UI/UIComponents.cs | ~907 | Componentes UI reutilizables |
-| Assets/Scripts/Tangible/TangibleBridge.cs | ~225 | Puente con mesa IDEUM |
-| Assets/Scripts/Tangible/DiscEventHandler.cs | ~407 | Eventos de discos y auto-conexion |
-| Assets/Scripts/Simulation/DynamicRoutingProtocol.cs | ~487 | Protocolos dinamicos RIP/OSPF/EIGRP |
-| Assets/Scripts/UI/DevicePanelController.cs | ~387 | Panel de dispositivos |
-| Assets/Scripts/UI/NodeVisualizer.cs | ~311 | Visualizacion de nodos y enlaces |
+| Assets/Scripts/Network/TopologyManager.cs | ~732 | Singleton central de red |
+| Assets/Scripts/Simulation/SceneSetup.cs | ~270 | Fachada de escena (C5) |
+| Assets/Scripts/Simulation/ActivityLoader.cs | ~114 | Fachada de actividades (dispatcher/HUD/escenarios) |
+| Assets/Scripts/UI/UIPanelFactory.cs | ~830 | Creacion de paneles de navegacion |
+| Assets/Scripts/UI/ActivityPanelFactory.cs | ~859 | Paneles de actividades |
+| Assets/Scripts/UI/ConfigPanelFactory.cs | ~972 | Paneles de configuracion |
+| Assets/Scripts/UI/UIComponents.cs | ~928 | Componentes UI reutilizables |
+| Assets/Scripts/Tangible/TangibleBridge.cs | ~325 | Puente con mesa IDEUM |
+| Assets/Scripts/Tangible/DiscEventHandler.cs | ~418 | Eventos de discos y auto-conexion |
+| Assets/Scripts/Simulation/DynamicRoutingProtocol.cs | ~465 | Protocolos dinamicos RIP/OSPF/EIGRP |
+| Assets/Scripts/UI/DevicePanelController.cs | ~579 | Panel de dispositivos |
+| Assets/Scripts/UI/NodeVisualizer.cs | ~520 | Visualizacion de nodos y enlaces |

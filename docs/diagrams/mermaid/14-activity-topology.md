@@ -53,4 +53,4 @@ Default             → "Bus" (línea lineal)
 
 - `Assets/Scripts/Simulation/BuildTopologyActivity.cs` — Lógica de detección
 - `Assets/Scripts/UI/UIPanelFactory.cs` — `CreateBuildTopologyInfoPanel()`
-- `Assets/Scripts/UI/TopologyVisualizer.cs` — Visualización de enlaces
+- `Assets/Scripts/UI/NodeVisualizer.cs` — Visualización de nodos y enlaces (`DrawLinks`)

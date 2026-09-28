@@ -158,7 +158,7 @@ rm -rf Library/
 
 | Namespace | Contenido |
 |-----------|-----------|
-| `SimRedes` | SceneSetup, GameManager, PointerClickHandler |
+| `SimRedes` | *(vacío — SceneSetup y PointerClickHandler migraron a `SimRedes.Simulation`)* |
 | `SimRedes.Network` | TopologyManager, NetworkNode, RoutingTable, VLAN, ACL, NAT |
 | `SimRedes.Tangible` | TangibleDiscManager, TangibleBridge, DiscEventHandler |
 | `SimRedes.Simulation` | ActivityLoader, 7 Activities, DynamicRoutingProtocol, Scoring |
@@ -210,9 +210,16 @@ Assets/
 │   │   └── DebugDiscSimulator.cs     # Simulación por teclado
 │   │
 │   ├── Simulation/           # ~23 archivos — Actividades y orquestación
-│   │   ├── SceneSetup.cs           # Orquestador (~623L, refactorizado desde ~4,246L)
-│   │   ├── ActivityLoader.cs       # Dispatcher (~900L)
-│   │   ├── SceneCleanupService.cs  # Singleton de limpieza
+│   │   ├── SceneSetup.cs           # Fachada de escena (270L)
+│   │   ├── SceneBootstrap.cs       # Arranque: resolución, cámara, canvas, managers (296L)
+│   │   ├── SceneNavigation.cs      # Menús y transiciones de paneles (159L)
+│   │   ├── ActivityLoader.cs       # Fachada de actividades (114L)
+│   │   ├── ActivityDispatcher.cs   # Despacho de actividades 0-6 (299L)
+│   │   ├── ActivityHudFactory.cs   # HUD de simulación (286L)
+│   │   ├── ScenarioLoader.cs       # Escenarios predefinidos (290L)
+│   │   ├── SceneCleanupService.cs  # Ruta única de limpieza (GetOrCreate)
+│   │   ├── ActivityStartup.cs      # ResolveTopologyManager (sin fantasmas)
+│   │   ├── FindFaultScenarios.cs   # Catálogo de escenarios de fallas
 │   │   ├── BuildTopologyActivity.cs    # Actividad 0
 │   │   ├── FindFaultActivity.cs        # Actividad 1
 │   │   ├── RoutingTablesActivity.cs    # Actividad 2
@@ -226,13 +233,13 @@ Assets/
 │   │   └── RoutingProtocols.cs         # RoutingSimulator estático + enum
 │   │
 │   ├── UI/                   # ~15 archivos — Interfaces de usuario
-│   │   ├── UIPanelFactory.cs        # Fábrica base: navegación + info (~834L)
-│   │   ├── ActivityPanelFactory.cs  # Fábrica de paneles de actividades 0-6 (~694L)
-│   │   ├── ConfigPanelFactory.cs    # Fábrica de configuración de red (~790L)
-│   │   ├── UIComponents.cs          # Helpers y paleta de colores (~679L)
+│   │   ├── UIPanelFactory.cs        # Fábrica base: navegación + info (~830L)
+│   │   ├── ActivityPanelFactory.cs  # Fábrica de paneles de actividades 0-6 (~859L)
+│   │   ├── ConfigPanelFactory.cs    # Fábrica de configuración de red (~972L)
+│   │   ├── UIComponents.cs          # Helpers y paleta de colores (~928L)
 │   │   ├── NodeVisualizer.cs        # Visualización de nodos
 │   │   ├── PingVisualizer.cs        # Animación de ping
-│   │   ├── TopologyVisualizer.cs    # Visualización de enlaces
+│   │   ├── IDEUMConfigurator.cs     # Configuración de pantalla IDEUM
 │   │   ├── MenuNavigator.cs         # Navegación por teclado
 │   │   ├── MainMenuManager.cs       # Menú principal
 │   │   ├── LinkModeController.cs    # Modo CONEXIÓN/DESCONEXIÓN
@@ -359,8 +366,8 @@ void CleanupNullReferences() {
 | `OnTopologyChanged` | Varios | `DevicePanelController`, `NodeVisualizer` |
 | `OnDiscPlaced` | `TangibleDiscManager` | `DiscEventHandler` |
 | `OnDiscMoved` | `TangibleDiscManager` | `DiscEventHandler` |
-| `OnProtocolLog` | `DynamicRoutingProtocol` | `ActivityLoader` → Panel UI |
-| `OnConvergence` | `DynamicRoutingProtocol` | `ActivityLoader` → Panel UI |
+| `OnProtocolLog` | `DynamicRoutingProtocol` | `DynamicRoutingActivity` → Panel UI |
+| `OnConvergence` | `DynamicRoutingProtocol` | `DynamicRoutingActivity` → Panel UI |
 
 ### Patrón de Subscripción
 
@@ -437,9 +444,9 @@ public static GameObject CreateSubnettingPanel(Transform parent) {
 }
 ```
 
-#### 3. Registrar en ActivityLoader
+#### 3. Registrar en ActivityDispatcher
 
-En `ActivityLoader.SelectActivity()`, agregar el case:
+En `ActivityDispatcher.SelectActivity()`, agregar el case (se invoca vía la fachada `ActivityLoader`):
 
 ```csharp
 case 7: // Subnetting
@@ -531,7 +538,7 @@ Usar la paleta definida en `UIComponents.Colors`:
 
 ### Añadir un Botón Nuevo al TopologyInfoPanel
 
-En `ActivityLoader.StartSimulation()` o en el método de creación del HUD:
+En `ActivityHudFactory.CreateSimulationHUDPanel()` (el HUD que crea `ActivityDispatcher.StartSimulation()`):
 
 ```csharp
 var newButton = UIComponents.CreateMenuButton(panel, "MI BOTÓN", 180, 40);
@@ -568,8 +575,8 @@ Para agregar un nuevo modo de interacción:
 Mesa IDEUM → TE Service (TCP:4949)
   → TangibleEngine SDK → OnTangibleAdded(tangible)
     → TangibleBridge.HandleTangibleAdded()
-      → MapPatternToDiscType(patternId)  # pattern 1-6 → DiscType
-      → ConvertToCanvasPosition(x, y)     # 1920x1080 → 4096x2160
+      → MapPatternToDiscType(patternId)  # patrones 1-3 → Router/Switch/PC
+      → ConvertToCanvasPosition(x, y)     # touch frame → canvas, (0,0) = centro
       → TangibleDiscManager.SimulateDiscPlaced(type, pos)
         → OnDiscPlaced(uniqueId, pos)
           → DiscEventHandler.HandleDiscPlaced()
@@ -602,16 +609,26 @@ if (tangibleIdToUniqueId.TryGetValue(tangible.Id, out int uniqueId)) {
 ### Conversión de Coordenadas
 
 ```csharp
-// TE/TUIO siempre reporta en 1920x1080 (resolucion del touch frame IDEUM)
-const float TUIO_WIDTH = 1920f;
-const float TUIO_HEIGHT = 1080f;
-return new Vector2(
-    screenPosition.x * (canvasWidth / TUIO_WIDTH),
-    screenPosition.y * (canvasHeight / TUIO_HEIGHT)
-);
+// Convención CENTRO-RELATIVA: (0,0) = centro del canvas.
+private Vector2 ConvertToCanvasPosition(Vector2 screenPosition)
+{
+    Vector2 canvasSize = ResolveCanvasReferenceResolution(); // CanvasScaler.referenceResolution (fallback 4096x2160)
+    Vector2 frameSize = touchFrameSize;                      // serializado, 1920x1080 (touch frame IDEUM)
+    if (frameSize.x <= 0f || frameSize.y <= 0f)
+        frameSize = new Vector2(1920f, 1080f);               // guard anti-división-por-cero
+
+    // 1) Escalar frame → canvas (origen esquina inf-izq)
+    Vector2 cornerOrigin = new Vector2(
+        screenPosition.x * (canvasSize.x / frameSize.x),
+        screenPosition.y * (canvasSize.y / frameSize.y)
+    );
+
+    // 2) Re-centrar
+    return cornerOrigin - canvasSize * 0.5f;
+}
 ```
 
-> **Nota**: Anteriormente se usaba `Display.main.systemWidth/Height`, pero esto devolvía la resolución de pantalla (4096x2160) en lugar de la resolución TUIO (1920x1080), causando que los discos virtuales aparecieran en posiciones incorrectas al usar pantalla completa.
+> **Nota**: El denominador es `touchFrameSize` (campo serializado, 1920x1080) y la resolución destino sale del `CanvasScaler` activo (no de `Display.main.systemWidth/Height`, que en fullscreen devolvía 4096x2160). `NodeVisualizer` coloca los iconos en `node.Position` tal cual (anclajes centrados) y refresca posiciones en cada `DrawLinks`; la telemetría `[LinkDiag]` se alterna con **F9**.
 
 ### Debug sin Hardware
 
@@ -625,7 +642,7 @@ Para testing en PC:
 
 1. Abre `DebugDiscSimulator.cs`
 2. Cambia `enableSimulation = true`
-3. Usa teclas 1-6, C, P, R para simular discos
+3. Usa teclas 1-6 y C para simular discos (P y R los maneja `SimulationControls` globalmente)
 4. Al terminar, revierte a `false`
 
 ---
@@ -772,7 +789,7 @@ Debug.LogError("DiscEventHandler: No se encontró router cerca");
 | `MissingReferenceException` | GameObject destruido pero referencia viva | Agregar null checks + `CleanupNullReferences()` |
 | `NullReferenceException` en evento | Suscriptor no se desuscribió en OnDestroy | Siempre usar `-=` en OnDestroy |
 | UI borrosa | CanvasScaler mal configurado | Usar modo Expand, resolución referencia 4096x2160 |
-| Sin respuesta en botones UI | EventSystem no existe | SceneSetup.SetupEventSystem() crea EventSystem + InputSystemUIInputModule |
+| Sin respuesta en botones UI | EventSystem no existe | `SceneBootstrap.SetupSceneCore()` (vía `SceneSetup.SetupScene()`) crea EventSystem + InputSystemUIInputModule |
 | Nodos se sobreponen | Mismo uniqueId | TangibleDiscManager genera IDs únicos (100, 101...) |
 | Disco de routing no funciona | Router no encontrado en radio | Aumentar `routerProximityRadius` (default 150) |
 

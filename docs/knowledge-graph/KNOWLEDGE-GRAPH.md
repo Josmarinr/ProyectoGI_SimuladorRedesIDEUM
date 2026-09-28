@@ -15,12 +15,12 @@
 ```mermaid
 graph TB
     subgraph "Network - SimRedes.Network"
-        TM[TopologyManager<br/>~25 dependencias]
-        NN[NetworkNode<br/>~18 dependencias]
+        TM[TopologyManager<br/>~30 dependencias]
+        NN[NetworkNode<br/>~19 dependencias]
         NL[NetworkLink]
         RT[RoutingTable]
         ARP[ARPTable]
-        IPV[IPValidation<br/>~9 dependencias]
+        IPV[IPValidation<br/>~11 dependencias]
         DC[DiscConfiguration]
         VLAN[VLANManager]
         ACL[ACLManager]
@@ -36,9 +36,16 @@ graph TB
     end
 
     subgraph "Simulation - SimRedes.Simulation"
-        SS[SceneSetup<br/>~30 dependencias]
-        AL[ActivityLoader<br/>~20 dependencias]
-        SCS[SceneCleanupService<br/>~18 dependencias]
+        SS[SceneSetup<br/>Fachada 270L]
+        SB[SceneBootstrap]
+        SN[SceneNavigation]
+        AL[ActivityLoader<br/>Fachada 114L]
+        AD[ActivityDispatcher]
+        AHF[ActivityHudFactory]
+        SL[ScenarioLoader]
+        AST[ActivityStartup]
+        FFS[FindFaultScenarios]
+        SCS[SceneCleanupService<br/>GetOrCreate]
         BTA[BuildTopologyActivity]
         FFA[FindFaultActivity]
         BRA[BestRouteActivity]
@@ -56,9 +63,9 @@ graph TB
         UPF[UIPanelFactory]
         APF[ActivityPanelFactory]
         CPF[ConfigPanelFactory]
-        UIC[UIComponents<br/>~12 dependencias]
-        NV[NodeVisualizer<br/>~6 dependencias]
-        PV[PingVisualizer<br/>~6 dependencias]
+        UIC[UIComponents<br/>~21 dependencias]
+        NV[NodeVisualizer<br/>~10 dependencias]
+        PV[PingVisualizer<br/>~8 dependencias]
         LM[LinkModeController]
         PM[PingModeController]
         IPC[IPConfigController]
@@ -87,11 +94,17 @@ graph TB
     %% Cross-namespace
     SS --> TM
     SS --> AL
-    SS --> SCS
-    SS --> UPF
+    SS --> SB
+    SS --> SN
     AL --> TM
-    AL --> DRP
-    AL --> PRED
+    AL --> AD
+    AL --> AHF
+    AL --> SL
+    AD --> TM
+    AHF --> TM
+    SL --> PRED
+    SB --> TM
+    AST --> TM
     DEH --> TM
     DEH --> RBS
     RBS --> RT
@@ -132,14 +145,14 @@ graph TB
 
 | Archivo | Dependido por | Namespace |
 |---|---|---|
-| `TopologyManager.cs` | ~25 archivos | Network |
-| `NetworkNode.cs` | ~18 archivos | Network |
-| `UIComponents.cs` | ~12 archivos | UI |
-| `IPValidation.cs` | ~9 archivos | Network |
-| `RoutingTable.cs` | ~6 archivos | Network |
-| `PingVisualizer.cs` | ~6 archivos | UI |
-| `NodeVisualizer.cs` | ~6 archivos | UI |
-| `TangibleDiscManager.cs` | ~5 archivos | Tangible |
+| `TopologyManager.cs` | 30 archivos | Network |
+| `NetworkNode.cs` | 19 archivos | Network |
+| `UIComponents.cs` | 21 archivos | UI |
+| `IPValidation.cs` | 11 archivos | Network |
+| `RoutingTable.cs` | 8 archivos | Network |
+| `PingVisualizer.cs` | 8 archivos | UI |
+| `NodeVisualizer.cs` | 10 archivos | UI |
+| `TangibleDiscManager.cs` | 7 archivos | Tangible |
 
 ---
 
@@ -152,10 +165,11 @@ graph TB
 | `ACLManager.cs` | Network |
 | `NATManager.cs` | Network |
 | `TangibleDiscManager.cs` | Tangible |
-| `PointerClickHandler.cs` | SimRedes |
-| `TouchScriptDisabler.cs` | SimRedes |
+| `PointerClickHandler.cs` | SimRedes.Simulation |
+| `TouchScriptDisabler.cs` | SimRedes.Simulation |
 | `PredefinedScenarios.cs` | Simulation |
 | `ScoringSystem.cs` | Simulation |
+| `FindFaultScenarios.cs` | Simulation |
 | `IDEUMConfigurator.cs` | UI |
 | `MemoryDiagnostics.cs` | Core |
 

@@ -104,7 +104,7 @@ sequenceDiagram
 sequenceDiagram
     participant USER as Usuario
     participant MMM as MainMenuManager
-    participant AL as ActivityLoader
+    participant AL as ActivityLoader (fachada → ActivityDispatcher)
     participant SS as SceneSetup
     participant UPF as UIPanelFactory
     participant APF as ActivityPanelFactory
@@ -116,7 +116,7 @@ sequenceDiagram
     MMM->>AL: SelectActivity(n)
 
     alt Activity 0 (Build Topology)
-        AL->>UPF: CreateBuildTopologyInfoPanel()
+        AL->>APF: CreateBuildTopologyInfoPanel()
         AL->>TM: AddNode() [escenario por defecto]
     else Activity 4 (Static Routing)
         AL->>APF: CreateStaticRoutingPanel()

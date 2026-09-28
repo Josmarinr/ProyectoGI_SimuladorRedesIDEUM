@@ -34,15 +34,15 @@ classDiagram
         +DeviceType Type
         +Vector2 Position
         +RoutingTable RoutingTable
-        +ARPTable ARPTable
-        +ConfigureIP(ip, mask) void
+        +ARPTable ArpTable
+        +SetInterfaceIP(iface, ip, mask) void
     }
 
     class NetworkLink {
         +NetworkNode SourceNode
         +NetworkNode DestinationNode
         +string SourceInterface
-        +string DestInterface
+        +string DestinationInterface
         +IsFunctional() bool
     }
 
@@ -60,29 +60,33 @@ classDiagram
 classDiagram
     class RoutingTable {
         -List~RoutingEntry~ entries
-        +string RouterIP
-        +string SubnetMask
-        +AddEntry(destNet, mask, nextHop, interface, protocol) void
-        +RemoveEntry(index) void
+        +AddStaticRoute(destNetwork, mask, nextHop, iface) void
+        +AddRipRoute(destNetwork, nextHop, iface, hops) void
+        +AddOspfRoute(destNetwork, nextHop, iface, cost) void
+        +AddEigrpRoute(destNetwork, nextHop, iface, metric) void
+        +FindBestRoute(destinationIP) RoutingEntry
         +GetAllEntries() List~RoutingEntry~
-        +FindLongestPrefixMatch(ip) RoutingEntry
+        +GetTableSummary() string
         +Clear() void
+        +FormatRouteLine(entry) string$
     }
 
     class RoutingEntry {
-        +string DestNetwork
+        +string DestinationNetwork
         +string SubnetMask
         +string NextHop
         +string OutInterface
+        +int Metric
         +string Protocol
+        +GetPrefixLength() int
     }
 
     class ARPTable {
-        -Dictionary~string,string~ entries
-        +AddEntry(ip, mac) void
-        +RemoveEntry(ip) void
-        +Resolve(ip) string
-        +GetAllEntries() Dictionary
+        -List~ARPEntry~ entries
+        +AddEntry(ip, mac, iface) void
+        +FindEntry(ip) ARPEntry
+        +AgeEntries(deltaTime) void
+        +GetAllEntries() List~ARPEntry~
         +Clear() void
     }
 
@@ -93,10 +97,10 @@ classDiagram
 
     class IPValidation {
         +IsValidIP(ip) bool
-        +IsValidMask(mask) bool
+        +IsValidSubnetMask(mask) bool
         +GetNetworkAddress(ip, mask) string
         +GetBroadcastAddress(ip, mask) string
-        +IsSameSubnet(ip1, mask1, ip2, mask2) bool
+        +IsInSameNetwork(ip1, mask1, ip2) bool
     }
 
     RoutingTable --> RoutingEntry : contiene
@@ -111,55 +115,64 @@ classDiagram
 classDiagram
     class DiscConfiguration {
         +int DiscId
-        +string Type
-        +Dictionary~string,string~ Config
-        +SetConfig(key, value) void
-        +GetConfig(key) string
+        +DiscType Type
+        +string Label
+        +string Description
+        +static GetConfiguration(discId) DiscConfiguration
     }
 
     class VLANManager {
-        +int VlanId
-        +string VlanName
-        +List~int~ MemberPorts
-        +CreateVLAN(id, name) void
-        +AssignPort(vlanId, port) void
-        +RemoveVLAN(id) void
-        +GetVLANMembers(id) List~int~
+        +CreateVLAN(vlanId) int
+        +DeleteVLAN(vlanId) void
+        +AssignToVLAN(node, vlanId) void
+        +GetNodeVLAN(node) int
+        +GetNodesInVLAN(vlanId) List~NetworkNode~
+        +GetAllVLANs() List~int~
+        +CanCommunicate(src, dst) bool
+        +GetVLANSummary() string
     }
 
     class ACLManager {
-        -List~ACLRule~ rules
-        +AddRule(aclRule) void
-        +RemoveRule(index) void
-        +CheckTraffic(ip, port) bool
-        +GetAllRules() List~ACLRule~
-        +Clear() void
+        +List~ACLRule~ Rules
+        +CreateACL(name) string
+        +AddRule(aclName, rule) void
+        +RemoveRule(aclName, sequence) void
+        +CheckPacket(aclName, srcIp, dstIp, srcPort, dstPort, protocol) bool
+        +GetRules(aclName) List~ACLRule~
+        +DeleteACL(name) void
     }
 
     class ACLRule {
-        +int RuleId
-        +string Action
+        +int Sequence
+        +ACLAction Action
         +string SourceIP
         +string DestIP
-        +int Port
-        +string Protocol
+        +int? SourcePort
+        +int? DestPort
+        +ACLProtocol Protocol
     }
 
     class NATManager {
-        -List~NATEntry~ translations
-        +string InsideLocal
-        +string InsideGlobal
-        +string OutsideLocal
-        +string OutsideGlobal
-        +AddTranslation(entry) void
-        +RemoveTranslation(index) void
-        +Translate(ip, type) string
+        -List~NATEntry~ natTable
+        -string publicIP
+        -string routerIP
+        +SetPublicIP(ip) void
+        +AddStaticNAT(internalIP, externalIP) void
+        +AddDynamicNAT(internalIP) void
+        +AddPAT(internalIP, internalPort) void
+        +LookupInternal(internalIP, port) NATEntry
+        +LookupExternal(externalIP, port) NATEntry
+        +TranslatePacket(srcIP, dstIP, srcPort, dstPort) bool
+        +RemoveEntry(entry) void
+        +GetNATTable() List~NATEntry~
     }
 
     class NATEntry {
-        +string InsideLocal
-        +string InsideGlobal
-        +string Type
+        +string InternalIP
+        +string ExternalIP
+        +int? InternalPort
+        +int? ExternalPort
+        +NATType Type
     }
 
     DiscConfiguration --> VLANManager

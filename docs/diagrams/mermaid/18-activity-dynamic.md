@@ -10,7 +10,7 @@ graph TB
     C -->|RIP| D[Selecciona RIP<br/>Conteo de hops]
     C -->|OSPF| E[Selecciona OSPF<br/>Costo por enlace]
 
-    D --> F[ActivityLoader.StartDynamicProtocol]
+    D --> F[DynamicRoutingActivity.StartProtocol]
     E --> F
 
     F --> G[Verifica ≥2 routers<br/>con IPs válidas]

@@ -30,8 +30,8 @@ graph TB
     end
 
     subgraph "Capa de Actividades - Simulation"
-        SS[SceneSetup<br/>Orquestador<br/>~379L]
-        AL[ActivityLoader<br/>Dispatcher<br/>~800L]
+        SS[SceneSetup<br/>Fachada<br/>270L → SceneBootstrap/SceneNavigation]
+        AL[ActivityLoader<br/>Fachada<br/>114L → ActivityDispatcher/HudFactory/ScenarioLoader]
         SCS[SceneCleanupService<br/>Singleton DontDestroyOnLoad]
         ACT[7 Actividades<br/>Topologia/Fallos/Rutas/Estatico/Dinamico/MejorRuta/Escenarios]
         DRP[DynamicRoutingProtocol<br/>RIP/OSPF/EIGRP<br/>Coroutine convergence]
