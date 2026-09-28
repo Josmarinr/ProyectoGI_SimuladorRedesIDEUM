@@ -165,14 +165,14 @@ graph TB
 
 | Métrica | Valor |
 |---|---|
-| Scripts fuente | 46 archivos, ~15K líneas |
+| Scripts fuente | 47 archivos, ~15K líneas |
 | Tests EditMode | 328 tests, 21 suites |
 | Namespaces | 6 (SimRedes, Network, Tangible, Simulation, UI, Core) |
-| Skills | 19 |
-| Diagramas | 21 (Mermaid) + 9 (Archify) |
+| Skills | 20 |
+| Diagramas | 21 (Mermaid) + 14 (Archify) |
 | Documentos API | 9 |
 | Documentos requerimientos | 3 (stakeholders, user stories, requirements) |
-| Bugs activos | 0 |
+| Bugs activos | 1 (P2 — líneas de conexión invisibles en discos físicos; P1 y P3 cerrados) |
 | Estructura docs/ | Organizada: api/, manuals/, config/, diagrams/{mermaid,archify}/, knowledge-graph/ |
 
 ---
@@ -190,11 +190,15 @@ graph TB
 | Architecture | Componentes | [components.architecture.html](../diagrams/archify/rendered/components.architecture.html) |
 | Architecture | Clases Network | [class-network.architecture.html](../diagrams/archify/rendered/class-network.architecture.html) |
 | Architecture | Clases UI | [class-ui.architecture.html](../diagrams/archify/rendered/class-ui.architecture.html) |
+| Architecture | Arquitectura General | [simulador-redes.architecture.html](../diagrams/archify/rendered/simulador-redes.architecture.html) |
+| Architecture | Namespace Network | [network-namespace.architecture.html](../diagrams/archify/rendered/network-namespace.architecture.html) |
 
 ### Secuencia
 | Tipo | Diagrama | Archivo HTML |
 |------|----------|--------------|
 | Sequence | Routing Config | [routing-config.sequence.html](../diagrams/archify/rendered/routing-config.sequence.html) |
+| Sequence | Colocación de Disco | [disc-placement.sequence.html](../diagrams/archify/rendered/disc-placement.sequence.html) |
+| Sequence | Ping / Conectividad | [ping-connectivity.sequence.html](../diagrams/archify/rendered/ping-connectivity.sequence.html) |
 
 ### Workflow (Actividades)
 | Tipo | Diagrama | Archivo HTML |
@@ -202,6 +206,7 @@ graph TB
 | Workflow | Actividad Topología | [activity-topology.workflow.html](../diagrams/archify/rendered/activity-topology.workflow.html) |
 | Workflow | Actividad Fallos | [activity-faults.workflow.html](../diagrams/archify/rendered/activity-faults.workflow.html) |
 | Workflow | Actividad Dinámico | [activity-dynamic.workflow.html](../diagrams/archify/rendered/activity-dynamic.workflow.html) |
+| Workflow | Convergencia Dinámica | [dynamic-routing.workflow.html](../diagrams/archify/rendered/dynamic-routing.workflow.html) |
 
 ---
 

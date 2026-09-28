@@ -12,7 +12,7 @@
 | 3 | [03-entry-points.md](03-entry-points.md) | "Si quiero X, debo tocar Y" |
 | 4 | [04-tests-map.md](04-tests-map.md) | 328 tests → qué cubren |
 | 5 | [05-bugs-history.md](05-bugs-history.md) | Bugs históricos → archivos modificados |
-| 6 | [06-skills-map.md](06-skills-map.md) | 19 skills → archivos referenciados |
+| 6 | [06-skills-map.md](06-skills-map.md) | 20 skills → archivos referenciados |
 | 7 | [07-architectural-flows.md](07-architectural-flows.md) | 8 flujos de datos (Mermaid sequence) |
 
 ## Cómo Usar

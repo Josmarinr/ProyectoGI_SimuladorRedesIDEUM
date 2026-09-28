@@ -264,7 +264,7 @@ Estado: [Pendiente|En Progreso|Completada]
 **Criterios de Aceptación:**
 - [ ] Se muestra puntaje acumulado
 - [ ] Se muestran bonos por acciones correctas
-- [ ] Se muestra calificación final (0-100)
+- [ ] Se muestra la calificación final (puntaje total + nota 1-5)
 - [ ] Se muestra desglose de puntos por categoría
 
 **Prioridad:** Media
@@ -454,31 +454,33 @@ Estado: [Pendiente|En Progreso|Completada]
 
 | Historia | Archivo(s) Relevante(s) | Test(s) |
 |----------|-------------------------|---------|
-| US-01 | TangibleDiscManager.cs, TangibleBridge.cs | Test_TangibleDiscManager |
-| US-02 | TopologyManager.cs, DiscEventHandler.cs | Test_TopologyManager |
-| US-03 | LinkModeController.cs, TopologyManager.cs | Test_LinkMode |
-| US-04 | IPValidation.cs, NetworkNode.cs | Test_IPValidation |
-| US-05 | PingVisualizer.cs, ConnectivityChecker | Test_Ping |
-| US-06 | TopologyManager.cs | Test_TopologyDetection |
-| US-07 | FaultDetectionActivity.cs | Test_FaultDetection |
-| US-08 | RoutingTable.cs, RoutingEntry.cs | Test_RoutingTable |
-| US-09 | RouteBuilderState.cs | Test_StaticRouting |
-| US-10 | DynamicRoutingProtocol.cs | Test_DynamicRouting |
-| US-11 | VLANManager.cs | Test_VLAN |
-| US-12 | ACLManager.cs | Test_ACL |
-| US-13 | NATManager.cs | Test_NAT |
-| US-14 | ScoringSystem.cs | Test_Scoring |
-| US-15 | PredefinedScenarios.cs | Test_Scenarios |
-| US-16 | MenuNavigator.cs, UIPanelFactory.cs | Test_Menu |
-| US-17 | TangibleDiscManager.cs | Test_DiscSelection |
-| US-18 | TopologyManager.cs | Test_NodeRemoval |
-| US-19 | BestRouteActivity.cs | Test_BestRoute |
-| US-20 | TopologyActivity.cs | Test_TopologyActivity |
-| US-21 | FaultDetectionActivity.cs | Test_FaultActivity |
-| US-22 | BestRouteActivity.cs | Test_BestRouteActivity |
-| US-23 | StaticRoutingActivity.cs | Test_StaticActivity |
-| US-24 | DynamicRoutingActivity.cs | Test_DynamicActivity |
+| US-01 | TangibleDiscManager.cs, TangibleBridge.cs | TestTangibleBridge, TestDiscEventHandler |
+| US-02 | TopologyManager.cs, DiscEventHandler.cs | TestTopologyManager |
+| US-03 | LinkModeController.cs, TopologyManager.cs | — |
+| US-04 | IPValidation.cs, NetworkNode.cs | TestIPValidation |
+| US-05 | PingVisualizer.cs, TopologyManager.cs (CheckConnectivity) | TestTopologyManager |
+| US-06 | TopologyManager.cs | — |
+| US-07 | FindFaultActivity.cs | — |
+| US-08 | RoutingTable.cs (clase RoutingEntry) | TestRoutingTable |
+| US-09 | RouteBuilderState.cs | TestRouteBuilderState, TestDiscToRouteIntegration |
+| US-10 | DynamicRoutingProtocol.cs | TestDynamicRoutingProtocol |
+| US-11 | VLANManager.cs | TestVLANManager |
+| US-12 | ACLManager.cs | TestACLManager |
+| US-13 | NATManager.cs | TestNATManager |
+| US-14 | ScoringSystem.cs | TestScoringSystem |
+| US-15 | PredefinedScenarios.cs | TestPredefinedScenarios, TestActivityLoader |
+| US-16 | MenuNavigator.cs, UIPanelFactory.cs | TestUIPanelFactory |
+| US-17 | TangibleDiscManager.cs | — |
+| US-18 | TopologyManager.cs | TestTopologyManager |
+| US-19 | BestRouteActivity.cs | TestBestRouteActivity |
+| US-20 | BuildTopologyActivity.cs | TestActivityLoader |
+| US-21 | FindFaultActivity.cs | TestActivityLoader, TestScoringSystem |
+| US-22 | BestRouteActivity.cs | TestActivityLoader, TestBestRouteActivity |
+| US-23 | StaticRoutingActivity.cs | TestActivityLoader, TestDiscToRouteIntegration |
+| US-24 | DynamicRoutingActivity.cs | TestActivityLoader, TestDynamicRoutingProtocol |
+
+Los IDs de test citados corresponden a clases reales de `Assets/Editor/Tests/`. `—` indica que ningún test existente cubre la historia (verificación manual pendiente).
 
 ---
 
-*Documento generado automáticamente. Última actualización: 2026-09-07.*
+*Documento generado automáticamente. Última actualización: 2026-09-28.*

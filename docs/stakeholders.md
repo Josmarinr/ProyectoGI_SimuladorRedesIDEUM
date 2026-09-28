@@ -145,24 +145,29 @@
                          │
     ┌────────────────────┼────────────────────┐
     │                    │                    │
-    │  MONITOREAR        │  MANTENER          │
-    │                    │  SATISFECHOS       │
-    │  - Universidad     │  - Estudiantes     │
-    │  - Grupo Invest.   │  - Profesores      │
-    │                    │  - Desarrollador   │
+    │  GESTIONAR         │  MANTENER          │
+    │  DE CERCA          │  INFORMADOS        │
+    │                    │                    │
+    │  - Desarrollador   │  - Estudiantes     │
+    │                    │  - Profesores      │
     │                    │                    │
 ALTO├────────────────────┼────────────────────┤BAJO
 PODER│                    │                    │PODER
     │                    │                    │
-    │  INFORMAR          │  MONITOREAR        │
-    │                    │                    │
-    │  - IDEUM           │                    │
-    │                    │                    │
+    │  MANTENER          │  MONITOREAR        │
+    │  SATISFECHOS       │                    │
+    │                    │  - Grupo Invest.   │
+    │  - Universidad     │  - IDEUM           │
     │                    │                    │
     └────────────────────┼────────────────────┘
                          │
                     BAJO INTERÉS
 ```
+
+> **Nota de ubicación**: Las valoraciones de la tabla superior no se modifican.
+> En cada eje solo el valor Alto ocupa la celda Alta; los actores con valoración
+> Media (Profesores, Universidad, Grupo de Investigación e IDEUM) se ubican en la
+> celda Baja de ese eje.
 
 ---
 

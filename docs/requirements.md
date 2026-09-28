@@ -1,6 +1,8 @@
 # Requerimientos del Sistema — SimuladorRedes IDEUM
 
 > Requerimientos funcionales y no funcionales del sistema, con trazabilidad a código y tests.
+>
+> **Convención de verificación:** una casilla marcada indica un criterio cubierto por al menos un test unitario existente (ver Matriz de Trazabilidad); las casillas sin marcar están pendientes de verificación manual.
 
 ---
 
@@ -13,12 +15,12 @@
 **Prioridad:** Crítica
 **Estado:** Implementada
 **Archivo:** TangibleDiscManager.cs, TangibleBridge.cs
-**Test:** Test_TangibleDiscManager
+**Test:** TestTangibleBridge, TestDiscEventHandler
 
 **Criterios de Verificación:**
-- [ ] Detección de disco Router (ID 1)
-- [ ] Detección de disco Switch (ID 2)
-- [ ] Detección de disco PC (ID 3)
+- [x] Detección de disco Router (ID 1)
+- [x] Detección de disco Switch (ID 2)
+- [x] Detección de disco PC (ID 3)
 - [ ] Posicionamiento preciso en Canvas (4096x2160)
 - [ ] Sistema de antirrebote activo
 
@@ -31,13 +33,13 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** TopologyManager.cs, DiscEventHandler.cs
-**Test:** Test_TopologyManager
+**Test:** TestTopologyManager
 
 **Criterios de Verificación:**
 - [ ] Umbral de auto-conexión: 300px
 - [ ] Visualización de enlaces como líneas
 - [ ] Creación de enlaces bidireccionales
-- [ ] Evitar duplicación de enlaces
+- [x] Evitar duplicación de enlaces
 
 ---
 
@@ -48,7 +50,7 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** LinkModeController.cs, TopologyManager.cs
-**Test:** Test_LinkMode
+**Test:** —
 
 **Criterios de Verificación:**
 - [ ] Activación con tecla 4
@@ -65,12 +67,12 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** IPValidation.cs, NetworkNode.cs
-**Test:** Test_IPValidation
+**Test:** TestIPValidation
 
 **Criterios de Verificación:**
-- [ ] Validación de formato IPv4
-- [ ] Validación de rango (0-255 por octeto)
-- [ ] Configuración de máscara de subred
+- [x] Validación de formato IPv4
+- [x] Validación de rango (0-255 por octeto)
+- [x] Configuración de máscara de subred
 - [ ] Asignación a PCs y interfaces de router
 
 ---
@@ -82,13 +84,13 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** PingVisualizer.cs
-**Test:** Test_Ping
+**Test:** TestTopologyManager
 
 **Criterios de Verificación:**
 - [ ] Activación con tecla P
 - [ ] Selección de origen y destino
 - [ ] Animación de paquete viajando
-- [ ] Resultado: éxito/fallo
+- [x] Resultado: éxito/fallo
 - [ ] Actualización de tablas ARP
 - [ ] Tiempo de respuesta simulado
 
@@ -101,7 +103,7 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** TopologyManager.cs
-**Test:** Test_TopologyDetection
+**Test:** —
 
 **Criterios de Verificación:**
 - [ ] Detección de topología Estrella
@@ -119,8 +121,8 @@
 
 **Prioridad:** Media
 **Estado:** Implementada
-**Archivo:** FaultDetectionActivity.cs
-**Test:** Test_FaultDetection
+**Archivo:** FindFaultActivity.cs
+**Test:** —
 
 **Criterios de Verificación:**
 - [ ] Fallos: cable, IP incorrecta, máscara inválida, PC sin IP
@@ -136,14 +138,14 @@
 
 **Prioridad:** Media
 **Estado:** Implementada
-**Archivo:** RoutingTable.cs, RoutingEntry.cs
-**Test:** Test_RoutingTable
+**Archivo:** RoutingTable.cs (clase RoutingEntry)
+**Test:** TestRoutingTable
 
 **Criterios de Verificación:**
-- [ ] Mostrar: destino, máscara, next-hop, métrica, interfaz
+- [x] Mostrar: destino, máscara, next-hop, métrica, interfaz
 - [ ] Actualización en tiempo real
 - [ ] Selección de router específico
-- [ ] Mostrar rutas estáticas y dinámicas
+- [x] Mostrar rutas estáticas y dinámicas
 
 ---
 
@@ -154,13 +156,13 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** RouteBuilderState.cs
-**Test:** Test_StaticRouting
+**Test:** TestRouteBuilderState, TestDiscToRouteIntegration
 
 **Criterios de Verificación:**
 - [ ] Discos virtuales disponibles (IDs 4-18)
-- [ ] Creación de ruta al colocar disco sobre router
-- [ ] Configuración de destino, máscara y next-hop
-- [ ] Aparición en tabla de enrutamiento
+- [x] Creación de ruta al colocar disco sobre router
+- [x] Configuración de destino, máscara y next-hop
+- [x] Aparición en tabla de enrutamiento
 - [ ] Eliminación de ruta estática
 
 ---
@@ -172,14 +174,14 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** DynamicRoutingProtocol.cs
-**Test:** Test_DynamicRouting
+**Test:** TestDynamicRoutingProtocol, TestRoutingTable
 
 **Criterios de Verificación:**
-- [ ] Selección de protocolo: RIP, OSPF o EIGRP
+- [x] Selección de protocolo: RIP, OSPF o EIGRP
 - [ ] Intercambio de información de enrutamiento
 - [ ] Convergencia de rutas
 - [ ] Actualización automática de tablas
-- [ ] Métricas según protocolo (hop count, cost, bandwidth)
+- [x] Métricas según protocolo (hop count, cost, bandwidth)
 
 ---
 
@@ -190,12 +192,12 @@
 **Prioridad:** Baja
 **Estado:** Implementada
 **Archivo:** VLANManager.cs
-**Test:** Test_VLAN
+**Test:** TestVLANManager
 
 **Criterios de Verificación:**
-- [ ] Creación de VLAN con ID y nombre
-- [ ] Asignación de puerto a VLAN
-- [ ] Aislamiento entre VLANs
+- [x] Creación de VLAN con ID y nombre
+- [x] Asignación de puerto a VLAN
+- [x] Aislamiento entre VLANs
 - [ ] Visualización de VLAN asignada
 
 ---
@@ -207,13 +209,13 @@
 **Prioridad:** Baja
 **Estado:** Implementada
 **Archivo:** ACLManager.cs
-**Test:** Test_ACL
+**Test:** TestACLManager
 
 **Criterios de Verificación:**
-- [ ] Creación de reglas permit/deny
-- [ ] Definición de origen, destino y protocolo
+- [x] Creación de reglas permit/deny
+- [x] Definición de origen, destino y protocolo
 - [ ] Aplicación a interfaces de router
-- [ ] Filtrado de tráfico
+- [x] Filtrado de tráfico
 
 ---
 
@@ -224,14 +226,14 @@
 **Prioridad:** Baja
 **Estado:** Implementada
 **Archivo:** NATManager.cs
-**Test:** Test_NAT
+**Test:** TestNATManager
 
 **Criterios de Verificación:**
-- [ ] NAT estático (una a una)
-- [ ] NAT dinámico (rango de IPs)
-- [ ] PAT (overload)
-- [ ] Mostrar traducciones activas
-- [ ] Traducción correcta de tráfico
+- [x] NAT estático (una a una)
+- [x] NAT dinámico (rango de IPs)
+- [x] PAT (overload)
+- [x] Mostrar traducciones activas
+- [x] Traducción correcta de tráfico
 
 ---
 
@@ -242,13 +244,13 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** ScoringSystem.cs
-**Test:** Test_Scoring
+**Test:** TestScoringSystem
 
 **Criterios de Verificación:**
-- [ ] Puntaje acumulado en tiempo real
-- [ ] Bonos por acciones correctas
-- [ ] Calificación final (0-100)
-- [ ] Desglose por categoría
+- [x] Puntaje acumulado en tiempo real
+- [x] Bonos por acciones correctas
+- [ ] Calificación final (puntaje total + nota 1-5)
+- [x] Desglose por categoría
 
 ---
 
@@ -259,28 +261,28 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** PredefinedScenarios.cs
-**Test:** Test_Scenarios
+**Test:** TestPredefinedScenarios, TestActivityLoader
 
 **Criterios de Verificación:**
-- [ ] 5 escenarios disponibles
-- [ ] Nombre y descripción de cada uno
-- [ ] Carga automática de topología
-- [ ] Inclusión de dispositivos, enlaces y configuraciones
-- [ ] Objetivos del escenario
+- [x] 5 escenarios disponibles
+- [x] Nombre y descripción de cada uno
+- [x] Carga automática de topología
+- [x] Inclusión de dispositivos, enlaces y configuraciones
+- [x] Objetivos del escenario
 
 ---
 
 ### RF-16: Navegación de Menú
 
-**Descripción:** El sistema debe提供 una interfaz de menú navegable con teclado.
+**Descripción:** El sistema debe proveer una interfaz de menú navegable con teclado.
 
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** MenuNavigator.cs, UIPanelFactory.cs
-**Test:** Test_Menu
+**Test:** TestUIPanelFactory
 
 **Criterios de Verificación:**
-- [ ] Menú con opciones claras
+- [x] Menú con opciones claras
 - [ ] Navegación con flechas y números
 - [ ] Acceso a funcionalidades
 - [ ] Volver al menú con ESC
@@ -295,7 +297,7 @@
 **Prioridad:** Alta
 **Estado:** Implementada
 **Archivo:** TangibleDiscManager.cs
-**Test:** Test_DiscSelection
+**Test:** —
 
 **Criterios de Verificación:**
 - [ ] Tecla 1: Router
@@ -313,12 +315,12 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** TopologyManager.cs
-**Test:** Test_NodeRemoval
+**Test:** TestTopologyManager
 
 **Criterios de Verificación:**
 - [ ] Modo eliminar con tecla R
 - [ ] Eliminación al hacer clic
-- [ ] Eliminación de enlaces asociados
+- [x] Eliminación de enlaces asociados
 - [ ] Feedback de eliminación
 - [ ] Cancelación con ESC
 
@@ -331,10 +333,10 @@
 **Prioridad:** Baja
 **Estado:** Implementada
 **Archivo:** BestRouteActivity.cs
-**Test:** Test_BestRoute
+**Test:** TestBestRouteActivity
 
 **Criterios de Verificación:**
-- [ ] Escenario con múltiples rutas
+- [x] Escenario con múltiples rutas
 - [ ] Mostrar métricas de cada ruta
 - [ ] Selección de ruta óptima
 - [ ] Validación de respuesta
@@ -349,14 +351,14 @@
 **Prioridad:** Media
 **Estado:** Implementada
 **Archivo:** ActivityLoader.cs, *.cs (activities)
-**Test:** Test_ActivityLoader
+**Test:** TestActivityLoader
 
 **Criterios de Verificación:**
-- [ ] Carga de actividad de topología
-- [ ] Carga de actividad de fallos
-- [ ] Carga de actividad de mejor ruta
-- [ ] Carga de actividad de routing estático
-- [ ] Carga de actividad de routing dinámico
+- [x] Carga de actividad de topología
+- [x] Carga de actividad de fallos
+- [x] Carga de actividad de mejor ruta
+- [x] Carga de actividad de routing estático
+- [x] Carga de actividad de routing dinámico
 
 ---
 
@@ -408,7 +410,7 @@
 
 **Categoría:** Mantenibilidad
 **Métrica:** Archivos de documentación, diagramas UML
-**Objetivo:** 40+ archivos, 21 diagramas Mermaid, 9 diagramas Archify
+**Objetivo:** 40+ archivos, 21 diagramas Mermaid, 14 diagramas Archify
 
 ---
 
@@ -464,28 +466,30 @@
 
 ## Matriz de Trazabilidad: Requerimiento → Código → Test
 
-| Requerimiento | Archivo(s) | Test(s) | Estado |
-|---------------|------------|---------|--------|
-| RF-01 | TangibleDiscManager.cs, TangibleBridge.cs | Test_TangibleDiscManager | ✅ |
-| RF-02 | TopologyManager.cs, DiscEventHandler.cs | Test_TopologyManager | ✅ |
-| RF-03 | LinkModeController.cs | Test_LinkMode | ✅ |
-| RF-04 | IPValidation.cs, NetworkNode.cs | Test_IPValidation | ✅ |
-| RF-05 | PingVisualizer.cs | Test_Ping | ✅ |
-| RF-06 | TopologyManager.cs | Test_TopologyDetection | ✅ |
-| RF-07 | FaultDetectionActivity.cs | Test_FaultDetection | ✅ |
-| RF-08 | RoutingTable.cs, RoutingEntry.cs | Test_RoutingTable | ✅ |
-| RF-09 | RouteBuilderState.cs | Test_StaticRouting | ✅ |
-| RF-10 | DynamicRoutingProtocol.cs | Test_DynamicRouting | ✅ |
-| RF-11 | VLANManager.cs | Test_VLAN | ✅ |
-| RF-12 | ACLManager.cs | Test_ACL | ✅ |
-| RF-13 | NATManager.cs | Test_NAT | ✅ |
-| RF-14 | ScoringSystem.cs | Test_Scoring | ✅ |
-| RF-15 | PredefinedScenarios.cs | Test_Scenarios | ✅ |
-| RF-16 | MenuNavigator.cs, UIPanelFactory.cs | Test_Menu | ✅ |
-| RF-17 | TangibleDiscManager.cs | Test_DiscSelection | ✅ |
-| RF-18 | TopologyManager.cs | Test_NodeRemoval | ✅ |
-| RF-19 | BestRouteActivity.cs | Test_BestRoute | ✅ |
-| RF-20 | ActivityLoader.cs | Test_ActivityLoader | ✅ |
+Los IDs de test citados corresponden a clases reales de `Assets/Editor/Tests/`. `—` indica que ningún test existente cubre el requerimiento (verificación manual pendiente).
+
+| Requerimiento | Archivo(s) | Test(s) | Verificación |
+|---------------|------------|---------|--------------|
+| RF-01 | TangibleDiscManager.cs, TangibleBridge.cs | TestTangibleBridge, TestDiscEventHandler | Cobertura parcial |
+| RF-02 | TopologyManager.cs, DiscEventHandler.cs | TestTopologyManager | Cobertura parcial |
+| RF-03 | LinkModeController.cs | — | Pendiente verificación manual |
+| RF-04 | IPValidation.cs, NetworkNode.cs | TestIPValidation | Cobertura parcial |
+| RF-05 | PingVisualizer.cs | TestTopologyManager | Cobertura parcial |
+| RF-06 | TopologyManager.cs | — | Pendiente verificación manual |
+| RF-07 | FindFaultActivity.cs | — | Pendiente verificación manual |
+| RF-08 | RoutingTable.cs (clase RoutingEntry) | TestRoutingTable | Cobertura parcial |
+| RF-09 | RouteBuilderState.cs | TestRouteBuilderState, TestDiscToRouteIntegration | Cobertura parcial |
+| RF-10 | DynamicRoutingProtocol.cs | TestDynamicRoutingProtocol, TestRoutingTable | Cobertura parcial |
+| RF-11 | VLANManager.cs | TestVLANManager | Cobertura parcial |
+| RF-12 | ACLManager.cs | TestACLManager | Cobertura parcial |
+| RF-13 | NATManager.cs | TestNATManager | Cubierta por test |
+| RF-14 | ScoringSystem.cs | TestScoringSystem | Cobertura parcial |
+| RF-15 | PredefinedScenarios.cs | TestPredefinedScenarios, TestActivityLoader | Cubierta por test |
+| RF-16 | MenuNavigator.cs, UIPanelFactory.cs | TestUIPanelFactory | Cobertura parcial |
+| RF-17 | TangibleDiscManager.cs | — | Pendiente verificación manual |
+| RF-18 | TopologyManager.cs | TestTopologyManager | Cobertura parcial |
+| RF-19 | BestRouteActivity.cs | TestBestRouteActivity | Cobertura parcial |
+| RF-20 | ActivityLoader.cs | TestActivityLoader | Cubierta por test |
 
 ---
 
@@ -493,9 +497,11 @@
 
 | Tipo | Total | Crítica | Alta | Media | Baja |
 |------|-------|---------|------|-------|------|
-| Funcionales (RF) | 20 | 1 | 6 | 9 | 4 |
-| No Funcionales (RNF) | 10 | - | 3 | 4 | 3 |
-| **Total** | **30** | **1** | **9** | **13** | **7** |
+| Funcionales (RF) | 20 | 1 | 7 | 8 | 4 |
+| No Funcionales (RNF) | 10 | - | - | - | - |
+| **Total** | **30** | **1** | **7** | **8** | **4** |
+
+Los RNF no definen prioridad en este documento; las columnas de prioridad reflejan únicamente los RF (RF-01 a RF-20).
 
 ---
 
@@ -503,8 +509,8 @@
 
 - El problema activo P2 afecta los RNF-02 (compatibilidad) y RNF-04 (estabilidad)
 - El sistema actualmente soporta 18 tipos de discos (3 físicos + 15 virtuales)
-- Todos los requerimientos funcionales están implementados y probados
+- Todos los requerimientos funcionales están implementados; la verificación automatizada es parcial y los criterios sin casilla marcada están pendientes de verificación manual (ver Matriz de Trazabilidad)
 
 ---
 
-*Documento generado automáticamente. Última actualización: 2026-09-07.*
+*Documento generado automáticamente. Última actualización: 2026-09-28.*

@@ -12,7 +12,6 @@ docs/
 ├── stakeholders.md              # Análisis de stakeholders
 ├── user-stories.md              # 24 historias de usuario
 ├── requirements.md              # 20 RF + 10 RNF
-├── proposal-context.md          # Contexto propuesta académica
 │
 ├── api/                         # 9 archivos de documentación de APIs
 ├── manuals/                     # Manuales de usuario y desarrollador
@@ -23,7 +22,7 @@ docs/
 │   ├── mermaid/                 # 21 diagramas UML (fuentes)
 │   │   ├── packages/            # Subdiagramas de paquetes
 │   │   └── *.md                 # Diagramas Mermaid
-│   └── archify/                 # 9 diagramas interactivos (HTML)
+│   └── archify/                 # 14 diagramas interactivos (HTML)
 │       ├── rendered/            # HTMLs renderizados
 │       ├── architecture/        # JSONs de arquitectura
 │       ├── sequence/            # JSONs de secuencia
@@ -47,6 +46,7 @@ docs/
 ## Diagramas Archify (HTML Interactivo)
 
 > Diagramas HTML autocontenidos con zoom, búsqueda, temas dark/light y exportación.
+> Guía de uso: [`diagrams/archify/README.md`](diagrams/archify/README.md)
 
 ### Arquitectura
 | Archivo | Descripción |
@@ -56,11 +56,15 @@ docs/
 | [`diagrams/archify/rendered/components.architecture.html`](diagrams/archify/rendered/components.architecture.html) | Componentes del sistema |
 | [`diagrams/archify/rendered/class-network.architecture.html`](diagrams/archify/rendered/class-network.architecture.html) | Clases Network (Topology, Routing, IP) |
 | [`diagrams/archify/rendered/class-ui.architecture.html`](diagrams/archify/rendered/class-ui.architecture.html) | Clases UI (Factories, Menu, Components) |
+| [`diagrams/archify/rendered/simulador-redes.architecture.html`](diagrams/archify/rendered/simulador-redes.architecture.html) | Arquitectura general del sistema |
+| [`diagrams/archify/rendered/network-namespace.architecture.html`](diagrams/archify/rendered/network-namespace.architecture.html) | Namespace Network (núcleo de red) |
 
 ### Secuencia
 | Archivo | Descripción |
 |---------|-------------|
 | [`diagrams/archify/rendered/routing-config.sequence.html`](diagrams/archify/rendered/routing-config.sequence.html) | Configuración de ruta estática |
+| [`diagrams/archify/rendered/disc-placement.sequence.html`](diagrams/archify/rendered/disc-placement.sequence.html) | Colocación de disco físico → nodo en topología |
+| [`diagrams/archify/rendered/ping-connectivity.sequence.html`](diagrams/archify/rendered/ping-connectivity.sequence.html) | Prueba de conectividad (Ping) — BFS + IP |
 
 ### Workflow (Actividades)
 | Archivo | Descripción |
@@ -68,6 +72,7 @@ docs/
 | [`diagrams/archify/rendered/activity-topology.workflow.html`](diagrams/archify/rendered/activity-topology.workflow.html) | Actividad: Construye la Topología |
 | [`diagrams/archify/rendered/activity-faults.workflow.html`](diagrams/archify/rendered/activity-faults.workflow.html) | Actividad: Encuentra el Fallo |
 | [`diagrams/archify/rendered/activity-dynamic.workflow.html`](diagrams/archify/rendered/activity-dynamic.workflow.html) | Actividad: Enrutamiento Dinámico |
+| [`diagrams/archify/rendered/dynamic-routing.workflow.html`](diagrams/archify/rendered/dynamic-routing.workflow.html) | Routing dinámico — convergencia (RIP/OSPF/EIGRP) |
 
 ---
 
@@ -80,14 +85,14 @@ docs/
 |---------|--------------|
 | [`diagrams/mermaid/01-use-case.md`](diagrams/mermaid/01-use-case.md) | 01a: Gestión Simulación · 01b: Actividades · 01c: Enrutamiento · 01d: Config. Avanzada · 01e: Evaluación |
 
-### Diagramas de Clases (13 sub-diagramas)
+### Diagramas de Clases y Estructura (7 archivos, 20 sub-diagramas)
 | Archivo | Sub-diagramas |
 |---------|--------------|
 | [`diagrams/mermaid/02-class-network.md`](diagrams/mermaid/02-class-network.md) | 02a: Núcleo Red · 02b: Tablas/ARP/IP · 02c: VLAN/ACL/NAT |
 | [`diagrams/mermaid/03-class-tangible.md`](diagrams/mermaid/03-class-tangible.md) | Tangible Layer (managers, bridge, debug) |
 | [`diagrams/mermaid/04-class-simulation.md`](diagrams/mermaid/04-class-simulation.md) | 04a: Núcleo Simulación · 04b: Actividades · 04c: Protocolo Dinámico · 04d: Puntajes |
 | [`diagrams/mermaid/05-class-ui.md`](diagrams/mermaid/05-class-ui.md) | 05a: Factories · 05b: Controladores · 05c: Visualización · 05d: Navegación |
-| [`diagrams/mermaid/06-packages.md`](diagrams/mermaid/06-packages.md) | Paquetes/Namespaces |
+| [`diagrams/mermaid/06-packages.md`](diagrams/mermaid/06-packages.md) | 06a-06f: Paquetes/Namespaces (en [`packages/`](diagrams/mermaid/packages/)) |
 | [`diagrams/mermaid/07-component-architecture.md`](diagrams/mermaid/07-component-architecture.md) | Componentes y capas |
 | [`diagrams/mermaid/08-deployment.md`](diagrams/mermaid/08-deployment.md) | Despliegue IDEUM |
 
@@ -148,6 +153,7 @@ docs/
 
 | Archivo | Contenido |
 |---------|-----------|
+| [`knowledge-graph/README.md`](knowledge-graph/README.md) | Índice y guía de uso del grafo de conocimiento |
 | [`knowledge-graph/KNOWLEDGE-GRAPH.md`](knowledge-graph/KNOWLEDGE-GRAPH.md) | Grafo de conocimiento global del proyecto |
 | [`knowledge-graph/01-dependency-graph.md`](knowledge-graph/01-dependency-graph.md) | Dependencias entre archivos |
 | [`knowledge-graph/02-concept-map.md`](knowledge-graph/02-concept-map.md) | Mapa de conceptos → archivos, tests, skills |
@@ -172,16 +178,16 @@ docs/
 | Métrica | Valor |
 |---------|:-----:|
 | Archivos de documentación | ~40 |
-| Diagramas Archify | 9 (HTML interactivo) |
+| Diagramas Archify | 14 (HTML interactivo) |
 | Diagramas UML | 21 (Mermaid) |
 | Documentos de requerimientos | 3 (stakeholders, user stories, requirements) |
 | API endpoints documentados | 9 archivos |
 | Manuales | 3 (usuario + dev + hardware) |
-| Tests EditMode | **328** (18 suites: 4 Network + 4 Simulation + 2 Tangible + 8 UI) |
-| Skills (opencode) | 19 |
-| Agentes | 6 (main, architect, programmer, reviewer, tester, builder) |
-| Líneas de código fuente | ~12,500 |
-| Bugs activos | **P2** — Líneas de conexión invisibles en discos físicos |
+| Tests EditMode | **328** (21 suites: 9 Network + 6 Simulation + 3 Tangible + 3 UI) |
+| Skills (opencode) | 20 |
+| Agentes | 7 (main, architect, programmer, reviewer, tester, builder, documenter) |
+| Líneas de código fuente | ~15,000 |
+| Bugs activos | **1 (P2)** — Líneas de conexión invisibles en discos físicos |
 
 ---
 
