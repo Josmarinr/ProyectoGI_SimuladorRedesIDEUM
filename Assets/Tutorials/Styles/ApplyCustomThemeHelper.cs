@@ -3,7 +3,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
-using Unity.Tutorials.Core.Editor;
+using Unity.Tutorials.Editor;
 #endif
 
 [CreateAssetMenu(fileName = "ApplyCustomThemeHelper", menuName = "Scriptable Objects/ApplyCustomThemeHelper")]

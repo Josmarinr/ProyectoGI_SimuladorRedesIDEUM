@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.Rendering.Universal;
-using Unity.Tutorials.Core.Editor;
+using Unity.Tutorials.Editor;
 using UnityEngine.SceneManagement;
 using System.Reflection;
 

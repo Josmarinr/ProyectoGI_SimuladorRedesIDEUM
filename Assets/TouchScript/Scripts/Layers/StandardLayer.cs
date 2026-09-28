@@ -115,7 +115,7 @@ namespace TouchScript.Layers
         private static Comparison<RaycastHit> _raycastHitComparerFunc = raycastHitComparerFunc;
         private static Comparison<HitData> _hitDataComparerFunc = hitDataComparerFunc;
 
-        private static Dictionary<int, ProjectionParams> projectionParamsCache = new Dictionary<int, ProjectionParams>();
+        private static Dictionary<Canvas, ProjectionParams> projectionParamsCache = new Dictionary<Canvas, ProjectionParams>();
         private static List<BaseRaycaster> raycasters;
 
         private static List<RaycastHitUI> raycastHitUIList = new List<RaycastHitUI>(20);
@@ -227,11 +227,13 @@ namespace TouchScript.Layers
             if (canvas == null) return layerProjectionParams;
 
             ProjectionParams pp;
-            if (!projectionParamsCache.TryGetValue(canvas.GetInstanceID(), out pp))
+            // Keyed by the Canvas object instead of an instance id: works on every
+            // Unity version (GetInstanceID/GetEntityId are obsolete as errors in 6000.6+).
+            if (!projectionParamsCache.TryGetValue(canvas, out pp))
             {
                 // TODO: memory leak
                 pp = new WorldSpaceCanvasProjectionParams(canvas);
-                projectionParamsCache.Add(canvas.GetInstanceID(), pp);
+                projectionParamsCache.Add(canvas, pp);
             }
             return pp;
         }
