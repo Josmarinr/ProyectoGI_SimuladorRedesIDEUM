@@ -120,7 +120,7 @@ $UNITY -runTests -testPlatform EditMode \
 - [x] **C2** primitivas UI
 - [x] **C3** scaffolding actividades
 - [x] **C4** input unificado
-- [ ] **C5** god classes
+- [x] **C5** god classes
 - [ ] **C6** singletons/eventos
 
 ---
