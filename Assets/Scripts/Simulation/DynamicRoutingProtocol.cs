@@ -235,16 +235,12 @@ namespace SimRedes.Simulation
             if (IPValidation.IsValidIP(to.IpAddress))
                 return to.IpAddress;
 
-            var links = topology.GetAllLinks();
-            foreach (var link in links)
+            var link = topology.FindLink(from, to);
+            if (link != null)
             {
-                if ((link.SourceNode == from && link.DestinationNode == to) ||
-                    (link.SourceNode == to && link.DestinationNode == from))
+                if (IPValidation.IsValidIP(link.SourceNode == from ? link.DestinationNode.IpAddress : link.SourceNode.IpAddress))
                 {
-                    if (IPValidation.IsValidIP(link.SourceNode == from ? link.DestinationNode.IpAddress : link.SourceNode.IpAddress))
-                    {
-                        return link.SourceNode == from ? link.DestinationNode.IpAddress : link.SourceNode.IpAddress;
-                    }
+                    return link.SourceNode == from ? link.DestinationNode.IpAddress : link.SourceNode.IpAddress;
                 }
             }
 
@@ -367,7 +363,7 @@ namespace SimRedes.Simulation
             foreach (var entry in entries)
             {
                 if (count >= 5) break;
-                summary.Add($"{entry.DestinationNetwork}/{entry.GetPrefixLength()} via {entry.NextHop} ({entry.Protocol})");
+                summary.Add(RoutingTable.FormatRouteLine(entry));
                 count++;
             }
             return string.Join("\n", summary);

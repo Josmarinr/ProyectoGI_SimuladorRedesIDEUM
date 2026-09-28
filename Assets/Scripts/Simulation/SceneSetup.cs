@@ -15,7 +15,7 @@ using UIColors = SimRedes.UI.UIComponents.Colors;
 using IPValidation = SimRedes.Network.IPValidation;
 using PingVis = SimRedes.UI.PingVisualizer;
 
-namespace SimRedes
+namespace SimRedes.Simulation
 {
     /// <summary>
     /// Punto de entrada principal de la escena. Configura resolucion, camara, canvas,
@@ -376,9 +376,10 @@ namespace SimRedes
         /// <summary>
         /// Crea el menu principal limpiando paneles previos y delegando en
         /// <see cref="UIPanelFactory.CreateMainMenu"/> con sus callbacks.
+        /// Punto de entrada publico para recrear el menu desde otros componentes.
         /// </summary>
         /// <param name="ct">Transform del Canvas donde se instancia el menu.</param>
-        private void CreateMainMenu(Transform ct)
+        public void CreateMainMenu(Transform ct)
         {
             // Limpiar cualquier panel que haya quedado abierto antes de crear el menu
             DestroyPreviousPanels();
@@ -442,15 +443,6 @@ namespace SimRedes
                 MenuNavigator.Instance.ClearPanel();
 
             // NO destruir MenuNavigator — se reutiliza para animaciones del nuevo menu
-        }
-
-        /// <summary>
-        /// Punto de entrada publico para recrear el menu principal desde otros componentes.
-        /// </summary>
-        /// <param name="ct">Transform del Canvas donde se instancia el menu.</param>
-        public void CreateMainMenuPublic(Transform ct)
-        {
-            CreateMainMenu(ct);
         }
 
         /// <summary>
@@ -596,15 +588,6 @@ namespace SimRedes
         }
 
         /// <summary>
-        /// Cierra el panel de configuracion IP si esta abierto.
-        /// </summary>
-        public void CloseIPConfigPanelPublic()
-        {
-            var ip = UnityEngine.Object.FindAnyObjectByType<IPConfigController>();
-            if (ip != null) ip.CloseIPConfigPanelPublic();
-        }
-
-        /// <summary>
         /// Maneja el clic sobre un nodo, delegando en <see cref="NodeInteractionController.HandleNodeClick"/>.
         /// </summary>
         /// <param name="discId">Identificador unico del disco/nodo clickeado.</param>
@@ -621,15 +604,6 @@ namespace SimRedes
         public void ShowIPConfigPanel(NetworkNode node, int discId)
         {
             if (nodeInteraction != null) nodeInteraction.ShowIPConfigPanel(node, discId);
-        }
-
-        /// <summary>
-        /// Elimina el nodo actualmente seleccionado en el panel de dispositivos.
-        /// </summary>
-        // DevicePanel
-        public void RemoveSelectedNodePublic()
-        {
-            if (devicePanel != null) devicePanel.RemoveSelectedNodePublic();
         }
 
         /// <summary>

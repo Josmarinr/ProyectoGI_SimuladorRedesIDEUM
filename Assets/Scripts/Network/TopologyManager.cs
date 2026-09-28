@@ -127,9 +127,7 @@ namespace SimRedes.Network
         {
             if (nodes.TryGetValue(sourceDiscId, out var source) && nodes.TryGetValue(destDiscId, out var dest))
             {
-                var existingLink = links.FirstOrDefault(l =>
-                    (l.SourceNode.DiscId == sourceDiscId && l.DestinationNode.DiscId == destDiscId) ||
-                    (l.SourceNode.DiscId == destDiscId && l.DestinationNode.DiscId == sourceDiscId));
+                var existingLink = FindLink(sourceDiscId, destDiscId);
 
                 if (existingLink == null)
                 {
@@ -148,9 +146,7 @@ namespace SimRedes.Network
         /// <param name="destDiscId">Identificador del nodo destino del enlace.</param>
         public void RemoveLink(int sourceDiscId, int destDiscId)
         {
-            var link = links.FirstOrDefault(l =>
-                (l.SourceNode.DiscId == sourceDiscId && l.DestinationNode.DiscId == destDiscId) ||
-                (l.SourceNode.DiscId == destDiscId && l.DestinationNode.DiscId == sourceDiscId));
+            var link = FindLink(sourceDiscId, destDiscId);
 
             if (link != null)
             {
@@ -159,6 +155,33 @@ namespace SimRedes.Network
                 UnityEngine.Debug.Log($"[Topology] Enlace eliminado: {link.SourceNode.Name} <-> {link.DestinationNode.Name}");
                 OnTopologyChanged?.Invoke();
             }
+        }
+
+        /// <summary>
+        /// Busca el enlace que conecta dos nodos identificados por DiscId,
+        /// en cualquier direccion (coincidencia simetrica).
+        /// </summary>
+        /// <param name="sourceDiscId">DiscId del primer extremo del enlace.</param>
+        /// <param name="destDiscId">DiscId del segundo extremo del enlace.</param>
+        /// <returns>El enlace encontrado, o null si no existe.</returns>
+        public NetworkLink FindLink(int sourceDiscId, int destDiscId)
+        {
+            return links.FirstOrDefault(l =>
+                (l.SourceNode.DiscId == sourceDiscId && l.DestinationNode.DiscId == destDiscId) ||
+                (l.SourceNode.DiscId == destDiscId && l.DestinationNode.DiscId == sourceDiscId));
+        }
+
+        /// <summary>
+        /// Busca el enlace que conecta dos nodos, en cualquier direccion
+        /// (coincidencia simetrica por DiscId).
+        /// </summary>
+        /// <param name="a">Primer extremo del enlace.</param>
+        /// <param name="b">Segundo extremo del enlace.</param>
+        /// <returns>El enlace encontrado, o null si no existe o algun extremo es null.</returns>
+        public NetworkLink FindLink(NetworkNode a, NetworkNode b)
+        {
+            if (a == null || b == null) return null;
+            return FindLink(a.DiscId, b.DiscId);
         }
 
         /// <summary>
@@ -264,9 +287,7 @@ namespace SimRedes.Network
         /// <param name="destDiscId">Identificador del nodo destino del enlace.</param>
         public void SetLinkFault(int sourceDiscId, int destDiscId)
         {
-            var link = links.FirstOrDefault(l =>
-                (l.SourceNode.DiscId == sourceDiscId && l.DestinationNode.DiscId == destDiscId) ||
-                (l.SourceNode.DiscId == destDiscId && l.DestinationNode.DiscId == sourceDiscId));
+            var link = FindLink(sourceDiscId, destDiscId);
 
             if (link != null)
             {
@@ -282,9 +303,7 @@ namespace SimRedes.Network
         /// <param name="destDiscId">Identificador del nodo destino del enlace.</param>
         public void ClearLinkFault(int sourceDiscId, int destDiscId)
         {
-            var link = links.FirstOrDefault(l =>
-                (l.SourceNode.DiscId == sourceDiscId && l.DestinationNode.DiscId == destDiscId) ||
-                (l.SourceNode.DiscId == destDiscId && l.DestinationNode.DiscId == sourceDiscId));
+            var link = FindLink(sourceDiscId, destDiscId);
 
             if (link != null)
             {
@@ -539,9 +558,7 @@ namespace SimRedes.Network
                 var fromNode = path[i];
                 var toNode = path[i + 1];
 
-                var link = links.FirstOrDefault(l =>
-                    (l.SourceNode.DiscId == fromNode.DiscId && l.DestinationNode.DiscId == toNode.DiscId) ||
-                    (l.SourceNode.DiscId == toNode.DiscId && l.DestinationNode.DiscId == fromNode.DiscId));
+                var link = FindLink(fromNode, toNode);
 
                 if (link != null)
                     pathLinks.Add(link);

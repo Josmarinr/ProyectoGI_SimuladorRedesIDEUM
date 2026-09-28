@@ -541,6 +541,121 @@ namespace Tests.EditMode.Network
         }
 
         // ================================================================
+        // FIND LINK
+        // ================================================================
+
+        [Test]
+        public void FindLink_ExistingLink_ReturnsLink()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var link = topology.FindLink(topology.GetNode(1), topology.GetNode(2));
+
+            // Assert
+            Assert.IsNotNull(link);
+            Assert.AreEqual(1, link.SourceNode.DiscId);
+            Assert.AreEqual(2, link.DestinationNode.DiscId);
+        }
+
+        [Test]
+        public void FindLink_ReversedArgs_ReturnsSameLink()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var direct = topology.FindLink(topology.GetNode(1), topology.GetNode(2));
+            var reversed = topology.FindLink(topology.GetNode(2), topology.GetNode(1));
+
+            // Assert: el enlace es simetrico, ambos extremos devuelven el mismo objeto
+            Assert.AreSame(direct, reversed);
+        }
+
+        [Test]
+        public void FindLink_NoLinkBetweenNodes_ReturnsNull()
+        {
+            // Arrange: 1-2 enlazados, 3 aislado
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddNode(3, SimRedes.Network.DeviceType.PC, new Vector2(200, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var link = topology.FindLink(topology.GetNode(1), topology.GetNode(3));
+
+            // Assert
+            Assert.IsNull(link);
+        }
+
+        [Test]
+        public void FindLink_NullArguments_ReturnsNull()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act & Assert: extremos null nunca deben lanzar excepcion
+            Assert.IsNull(topology.FindLink(null, topology.GetNode(2)));
+            Assert.IsNull(topology.FindLink(topology.GetNode(1), null));
+            Assert.IsNull(topology.FindLink(null, null));
+        }
+
+        [Test]
+        public void FindLink_ByDiscId_ExistingLink_ReturnsLink()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var link = topology.FindLink(1, 2);
+
+            // Assert
+            Assert.IsNotNull(link);
+            Assert.AreEqual(1, link.SourceNode.DiscId);
+            Assert.AreEqual(2, link.DestinationNode.DiscId);
+        }
+
+        [Test]
+        public void FindLink_ByDiscId_ReversedArgs_ReturnsSameLink()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var direct = topology.FindLink(1, 2);
+            var reversed = topology.FindLink(2, 1);
+
+            // Assert
+            Assert.AreSame(direct, reversed);
+        }
+
+        [Test]
+        public void FindLink_ByDiscId_NoLink_ReturnsNull()
+        {
+            // Arrange
+            topology.AddNode(1, SimRedes.Network.DeviceType.Router, Vector2.zero);
+            topology.AddNode(2, SimRedes.Network.DeviceType.PC, new Vector2(100, 0));
+            topology.AddLink(1, 2);
+
+            // Act
+            var link = topology.FindLink(1, 3);
+
+            // Assert
+            Assert.IsNull(link);
+        }
+
+        // ================================================================
         // CLEAR TOPOLOGY
         // ================================================================
 

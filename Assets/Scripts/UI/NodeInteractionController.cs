@@ -22,7 +22,7 @@ namespace SimRedes.UI
         public bool IsPingModeActive() => pingMode != null && pingMode.IsPingModeActive();
         public bool IsIPConfigPanelOpen() => ipConfig != null && ipConfig.IsIPConfigPanelOpen();
         public int GetCurrentIPConfigNodeDiscId() => ipConfig != null ? ipConfig.GetCurrentIPConfigNodeDiscId() : -1;
-        public void CloseIPConfigPanelPublic() { if (ipConfig != null) ipConfig.CloseIPConfigPanelPublic(); }
+        public void CloseIPConfigPanelPublic() { if (ipConfig != null) ipConfig.CloseIPConfigPanel(); }
 
         public void HandleNodeClick(int discId)
         {

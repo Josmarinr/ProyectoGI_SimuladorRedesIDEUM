@@ -272,5 +272,31 @@ namespace Tests.EditMode.Network
             table.AddStaticRoute("10.0.0.0", "255.0.0.0", "10.0.0.1", "G0/0");
             Assert.AreEqual("Entradas: 1", table.GetTableSummary());
         }
+
+        [Test]
+        public void FormatRouteLine_StaticRoute_ReturnsExpectedLine()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+            table.AddStaticRoute("192.168.1.0", "255.255.255.0", "10.0.0.1", "G0/0");
+            var entry = table.GetAllEntries()[0];
+
+            var line = RoutingTable.FormatRouteLine(entry);
+
+            Assert.AreEqual("192.168.1.0/24 via 10.0.0.1 (Static)", line);
+        }
+
+        [Test]
+        public void FormatRouteLine_RipRoute_UsesPrefixAndProtocol()
+        {
+            var router = CreateTestRouter();
+            var table = router.RoutingTable;
+            table.AddRipRoute("10.0.0.0", "10.0.0.2", "G0/1", 3);
+            var entry = table.GetAllEntries()[0];
+
+            var line = RoutingTable.FormatRouteLine(entry);
+
+            Assert.AreEqual("10.0.0.0/24 via 10.0.0.2 (RIP)", line);
+        }
     }
 }

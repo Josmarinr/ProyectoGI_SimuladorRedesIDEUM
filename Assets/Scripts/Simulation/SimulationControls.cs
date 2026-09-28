@@ -40,7 +40,7 @@ namespace SimRedes.Simulation
 
                 if (ipConfig != null && ipConfig.IsIPConfigPanelOpen())
                 {
-                    ipConfig.CloseIPConfigPanelPublic();
+                    ipConfig.CloseIPConfigPanel();
                     return;
                 }
 
@@ -60,7 +60,7 @@ namespace SimRedes.Simulation
         {
             if (devicePanel != null)
             {
-                devicePanel.RemoveSelectedNodePublic();
+                devicePanel.RemoveSelectedNode();
             }
         }
 
@@ -101,7 +101,7 @@ namespace SimRedes.Simulation
                 if (canvas != null)
                 {
                     cleanup.GoBackToMainMenu(canvas.transform, () => {
-                        if (sceneSetup != null) sceneSetup.CreateMainMenuPublic(canvas.transform);
+                        if (sceneSetup != null) sceneSetup.CreateMainMenu(canvas.transform);
                     });
                 }
             }
@@ -129,7 +129,7 @@ namespace SimRedes.Simulation
 
                 var canvas = Object.FindAnyObjectByType<Canvas>();
                 if (canvas != null && sceneSetup != null)
-                    sceneSetup.CreateMainMenuPublic(canvas.transform);
+                    sceneSetup.CreateMainMenu(canvas.transform);
             }
 
             UnityEngine.Debug.Log("[SimulationControls] Volviendo al menu principal");

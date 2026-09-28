@@ -42,7 +42,7 @@ namespace SimRedes.UI
             var canvasTransform = Object.FindAnyObjectByType<Canvas>()?.transform;
             if (canvasTransform == null) return;
 
-            CloseIPConfigPanelPublic();
+            CloseIPConfigPanel();
 
             GameObject bgObj = new GameObject("IPConfigBackground");
             bgObj.transform.SetParent(canvasTransform, false);
@@ -57,7 +57,7 @@ namespace SimRedes.UI
 
             var bgBtn = bgObj.AddComponent<Button>();
             bgBtn.onClick.AddListener(() => {
-                CloseIPConfigPanelPublic();
+                CloseIPConfigPanel();
             });
 
             ipConfigBackground = bgObj;
@@ -79,7 +79,7 @@ namespace SimRedes.UI
                 },
                 onApply: () => {
                     Debug.Log($"[IPConfig] {node.Name}: IP={node.IpAddress}, Mask={node.SubnetMask}");
-                    CloseIPConfigPanelPublic();
+                    CloseIPConfigPanel();
                 },
                 onARP: showAdvanced ? (System.Action)(() => {
                     ShowARPPanel(node);
@@ -88,19 +88,17 @@ namespace SimRedes.UI
                     ShowRoutingPanel(node);
                 }) : null,
                 onCancel: () => {
-                    CloseIPConfigPanelPublic();
+                    CloseIPConfigPanel();
                 }
             );
 
             Debug.Log($"[IPConfigController] Panel IP abierto para {node.Name}");
         }
 
+        /// <summary>
+        /// Cierra y destruye el panel de configuracion IP si esta abierto.
+        /// </summary>
         public void CloseIPConfigPanel()
-        {
-            CloseIPConfigPanelPublic();
-        }
-
-        public void CloseIPConfigPanelPublic()
         {
             if (ipConfigBackground != null)
             {

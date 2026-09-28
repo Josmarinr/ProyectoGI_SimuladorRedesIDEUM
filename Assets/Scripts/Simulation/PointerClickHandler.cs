@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SimRedes
+namespace SimRedes.Simulation
 {
     public class PointerClickHandler : MonoBehaviour, IPointerClickHandler
     {

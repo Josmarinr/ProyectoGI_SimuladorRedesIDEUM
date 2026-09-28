@@ -149,11 +149,6 @@ namespace SimRedes.UI
             }
         }
 
-        private Font GetFont()
-        {
-            return UIComp.GetFont();
-        }
-
         private void ShowPingSelectionPanel()
         {
             ClosePingSelectionPanel();
@@ -161,7 +156,7 @@ namespace SimRedes.UI
             if (canvas == null) canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
-            Font arialFont = GetFont();
+            Font arialFont = UIComp.GetFont();
 
             GameObject panelObj = UIComp.CreateRoundedPanel(canvas.transform, new Vector2(280, 280), 15,
                 UIColors.surfacePanel,
@@ -197,7 +192,7 @@ namespace SimRedes.UI
             if (canvas == null) canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas == null) return;
 
-            Font arialFont = GetFont();
+            Font arialFont = UIComp.GetFont();
 
             string titleText = isOrigin ? "SELECCIONAR ORIGEN" : "SELECCIONAR DESTINO";
 

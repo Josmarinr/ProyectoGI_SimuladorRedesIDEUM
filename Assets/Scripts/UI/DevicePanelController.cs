@@ -139,7 +139,7 @@ namespace SimRedes.UI
             var ipConfigCtrl = Object.FindAnyObjectByType<IPConfigController>();
             if (ipConfigCtrl != null && ipConfigCtrl.IsIPConfigPanelOpen())
             {
-                ipConfigCtrl.CloseIPConfigPanelPublic();
+                ipConfigCtrl.CloseIPConfigPanel();
             }
 
             selectedNodeForRemoval = node.DiscId;
@@ -170,15 +170,10 @@ namespace SimRedes.UI
             var ipConfigCtrl = Object.FindAnyObjectByType<IPConfigController>();
             if (ipConfigCtrl != null && ipConfigCtrl.IsIPConfigPanelOpen())
             {
-                ipConfigCtrl.CloseIPConfigPanelPublic();
+                ipConfigCtrl.CloseIPConfigPanel();
             }
 
             selectedNodeForRemoval = -1;
-        }
-
-        public void RemoveSelectedNodePublic()
-        {
-            RemoveSelectedNode();
         }
 
         public void ClearSelectedNode()
@@ -276,7 +271,7 @@ namespace SimRedes.UI
                 return;
             }
 
-            Font arialFont = GetFont();
+            Font arialFont = UIComp.GetFont();
             var tm = TopologyManager.Instance;
             if (tm == null) return;
             
@@ -350,7 +345,7 @@ namespace SimRedes.UI
             bgImg.type = Image.Type.Sliced;
 
             var btn = itemObj.AddComponent<Button>();
-            btn.colors = GetButtonColors(UIColors.surfaceElevated);
+            btn.colors = UIComp.GetButtonColors(UIColors.surfaceElevated);
 
             var iconObj = new GameObject("Icon");
             iconObj.transform.SetParent(itemObj.transform, false);
@@ -537,16 +532,6 @@ namespace SimRedes.UI
             // La cache es duena del sprite y su textura: protegerlo del teardown de paneles
             UIComp.RegisterOwnedCachedSprite(sprite);
             return sprite;
-        }
-
-        private Font GetFont()
-        {
-            return UIComp.GetFont();
-        }
-
-        private ColorBlock GetButtonColors(Color c)
-        {
-            return UIComp.GetButtonColors(c);
         }
 
         /// <summary>

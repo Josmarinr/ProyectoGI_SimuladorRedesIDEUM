@@ -790,7 +790,7 @@ namespace SimRedes.Simulation
 
         /// <summary>
         /// Vuelve al menu principal. Utiliza SceneCleanupService si existe para limpiar la escena,
-        /// o crea el menu directamente via SceneSetup.CreateMainMenuPublic.
+        /// o crea el menu directamente via SceneSetup.CreateMainMenu.
         /// </summary>
         private void GoBackToMainMenu()
         {
@@ -800,7 +800,7 @@ namespace SimRedes.Simulation
                 var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
                 cleanup.GoBackToMainMenu(ct, () => {
                     var ss = UnityEngine.Object.FindAnyObjectByType<SceneSetup>();
-                    if (ss != null && ct != null) ss.CreateMainMenuPublic(ct);
+                    if (ss != null && ct != null) ss.CreateMainMenu(ct);
                 });
             }
             else
@@ -809,7 +809,7 @@ namespace SimRedes.Simulation
                 if (ss != null)
                 {
                     var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
-                    if (ct != null) ss.CreateMainMenuPublic(ct);
+                    if (ct != null) ss.CreateMainMenu(ct);
                 }
             }
         }

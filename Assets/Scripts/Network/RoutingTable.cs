@@ -183,5 +183,16 @@ namespace SimRedes.Network
         {
             return $"Entradas: {entries.Count}";
         }
+
+        /// <summary>
+        /// Formatea una entrada de ruta como una linea legible
+        /// ("red/prefijo via siguiente-salto (Protocolo)").
+        /// </summary>
+        /// <param name="entry">Entrada de ruta a formatear.</param>
+        /// <returns>Linea formateada de la ruta.</returns>
+        public static string FormatRouteLine(RoutingEntry entry)
+        {
+            return $"{entry.DestinationNetwork}/{entry.GetPrefixLength()} via {entry.NextHop} ({entry.Protocol})";
+        }
     }
 }

@@ -293,7 +293,7 @@ namespace SimRedes.Simulation
             {
                 int srcDiscId = linkDef.from + 1;
                 int dstDiscId = linkDef.to + 1;
-                var link = FindLink(srcDiscId, dstDiscId);
+                var link = topologyManager.FindLink(srcDiscId, dstDiscId);
                 if (link != null)
                 {
                     affectedLink = link;
@@ -348,7 +348,7 @@ namespace SimRedes.Simulation
                 case "cable":
                     // Verificar que existe un enlace entre los dos routers (discId=1 y discId=2)
                     if (topologyManager == null) return false;
-                    var link = FindLink(1, 2);
+                    var link = topologyManager.FindLink(1, 2);
                     return link != null && link.IsFunctional();
                 case "ip":
                     // Verificar que el Router tiene la IP correcta
@@ -368,28 +368,6 @@ namespace SimRedes.Simulation
                 default:
                     return true;
             }
-        }
-
-        /// <summary>
-        /// Busca un enlace entre dos discos. Metodo auxiliar porque
-        /// TopologyManager.AddLink no devuelve el NetworkLink creado.
-        /// </summary>
-        /// <param name="discIdA">DiscId del primer extremo del enlace.</param>
-        /// <param name="discIdB">DiscId del segundo extremo del enlace.</param>
-        /// <returns>El NetworkLink encontrado, o null si no existe.</returns>
-        private NetworkLink FindLink(int discIdA, int discIdB)
-        {
-            if (topologyManager == null) return null;
-            var links = topologyManager.GetAllLinks();
-            foreach (var link in links)
-            {
-                if ((link.SourceNode.DiscId == discIdA && link.DestinationNode.DiscId == discIdB) ||
-                    (link.SourceNode.DiscId == discIdB && link.DestinationNode.DiscId == discIdA))
-                {
-                    return link;
-                }
-            }
-            return null;
         }
 
         // ─── Metodos llamados desde la UI ───

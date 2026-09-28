@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TouchScript.Behaviors.Cursors;
 
-namespace SimRedes
+namespace SimRedes.Simulation
 {
     public class TouchScriptDisabler : MonoBehaviour
     {

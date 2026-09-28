@@ -110,7 +110,7 @@ namespace SimRedes.Simulation
                 var entries = r.RoutingTable.GetAllEntries();
                 info += $"{r.Name}:\n";
                 if (entries.Count == 0) info += "  Sin rutas aprendidas\n\n";
-                else { foreach (var e in entries) info += $"  {e.DestinationNetwork}/{e.GetPrefixLength()} via {e.NextHop} ({e.Protocol})\n"; info += "\n"; }
+                else { foreach (var e in entries) info += $"  {RoutingTable.FormatRouteLine(e)}\n"; info += "\n"; }
             }
             rightText.text = info;
             rightText.fontSize = 11;
