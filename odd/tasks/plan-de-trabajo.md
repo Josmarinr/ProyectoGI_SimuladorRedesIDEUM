@@ -128,7 +128,7 @@ $UNITY -runTests -testPlatform EditMode \
 ## Criterios globales de aceptación
 
 - [x] 390/390 tests verdes (o menos solo si se elimina test de código muerto en la misma tarea, documentado)
-- [ ] Cero inconsistencias de conteo en la documentación (verificado por grep)
+- [x] Cero inconsistencias de conteo en la documentación (verificado por grep)
 - [ ] Memoria plana en idle 30 min y en arrastre simulado (B1 vs B7)
-- [ ] Cada tarea cierra con un commit conventional en la rama
-- [ ] Este documento y su espejo Engram (`odd/plan-de-trabajo/tasks`) se actualizan tras cada tarea
+- [x] Cada tarea cierra con un commit conventional en la rama
+- [x] Este documento y su espejo Engram (`odd/plan-de-trabajo/tasks`) se actualizan tras cada tarea
