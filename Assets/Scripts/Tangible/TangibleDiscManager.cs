@@ -78,7 +78,8 @@ namespace SimRedes.Tangible
             {
                 activeDiscs[uniqueId] = position;
                 OnDiscMoved?.Invoke(uniqueId, position);
-                UnityEngine.Debug.Log($"[DiscManager] Disco movido: uniqueId={uniqueId}, pos={position}");
+                // B6: sin log por movimiento — OnDiscMoved se dispara a decenas de Hz
+                // mientras se arrastra un disco y el log por frame saturaba la consola.
             }
         }
 
@@ -106,12 +107,18 @@ namespace SimRedes.Tangible
         }
 
         /// <summary>
-        /// Retorna una copia del diccionario de discos activos (uniqueId -> posicion).
+        /// Retorna el diccionario interno de discos activos (uniqueId -> posicion).
         /// </summary>
-        /// <returns>Diccionario con todos los discos activos y sus posiciones.</returns>
+        /// <remarks>
+        /// B6: devuelve la referencia interna (no una copia) para evitar una
+        /// asignacion de Dictionary en cada movimiento de disco. Los llamados
+        /// actuales solo enumeran o leen .Count; NUNCA deben modificarlo ni
+        /// retener la referencia entre frames.
+        /// </remarks>
+        /// <returns>Diccionario vivo con todos los discos activos y sus posiciones.</returns>
         public Dictionary<int, Vector2> GetActiveDiscs()
         {
-            return new Dictionary<int, Vector2>(activeDiscs);
+            return activeDiscs;
         }
 
         /// <summary>

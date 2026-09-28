@@ -348,17 +348,15 @@ namespace SimRedes.UI
                 return null;
             }
 
-            UnityEngine.Debug.Log($"[PingVisual] Buscando nodo con discId={discId}");
-            UnityEngine.Debug.Log($"[PingVisual] Hijos en nodeContainer: {visualizer.nodeContainer.childCount}");
-
+            // B6: sin logs por hijo de nodeContainer — FindNodeVisual se llama una vez
+            // por nodo del camino en CADA ping y cada llamada enumeraba todos los hijos
+            // registrando uno por hijo en consola. Se conserva solo el warning de "no encontrado".
             foreach (Transform child in visualizer.nodeContainer)
             {
                 if (child != null)
                 {
-                    UnityEngine.Debug.Log($"[PingVisual] Hijo: {child.name}");
                     if (child.name.EndsWith($"_{discId}"))
                     {
-                        UnityEngine.Debug.Log($"[PingVisual] Encontrado: {child.name}");
                         return child;
                     }
                 }

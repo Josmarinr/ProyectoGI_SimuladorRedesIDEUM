@@ -27,6 +27,12 @@ namespace SimRedes.UI
         private int pingCount = 0;
         private int successCount = 0;
 
+        // B6: refresco acotado del panel (~4 veces por segundo). Sin esto,
+        // Update buscaba TopologyManager, copiaba la lista de nodos y
+        // reasignaba los textos en CADA frame generando churn de GC.
+        private const float REFRESH_INTERVAL = 0.25f;
+        private float refreshTimer = REFRESH_INTERVAL;
+
         public void Initialize(Text source, Text dest, Text result, Text icon, Button pingBtn, Text statusTxt)
         {
             sourceNodeText = source;
@@ -55,6 +61,10 @@ namespace SimRedes.UI
 
         void Update()
         {
+            refreshTimer += Time.deltaTime;
+            if (refreshTimer < REFRESH_INTERVAL) return;
+            refreshTimer = 0f;
+
             FindNodes();
             UpdateNodeDisplay();
         }

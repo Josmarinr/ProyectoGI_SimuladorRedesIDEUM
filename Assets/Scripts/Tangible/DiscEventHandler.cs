@@ -19,12 +19,17 @@ namespace SimRedes.Tangible
 
         private Dictionary<int, RouteBuilderState> routeBuilders = new Dictionary<int, RouteBuilderState>();
 
+        // B6: referencia cacheada de TangibleDiscManager para no ejecutar
+        // FindAnyObjectByType en cada CheckAndCreateLinks (una vez por movimiento de disco).
+        private TangibleDiscManager discManagerCache;
+
         /// <summary>
         /// Busca TangibleDiscManager y se suscribe a sus eventos de ciclo de vida de discos.
         /// </summary>
         private void Start()
         {
             var tangibleManager = Object.FindAnyObjectByType<TangibleDiscManager>();
+            discManagerCache = tangibleManager;
             if (tangibleManager != null)
             {
                 tangibleManager.OnDiscPlaced += HandleDiscPlaced;
@@ -374,7 +379,14 @@ namespace SimRedes.Tangible
             var topologyManager = Object.FindAnyObjectByType<TopologyManager>();
             if (topologyManager == null) return;
 
-            var activeDiscs = Object.FindAnyObjectByType<TangibleDiscManager>().GetActiveDiscs();
+            // B6: usar la referencia cacheada; fallback a Find solo si Start
+            // no llego a capturarla (p. ej. manager creado despues).
+            var discManager = discManagerCache != null
+                ? discManagerCache
+                : Object.FindAnyObjectByType<TangibleDiscManager>();
+            if (discManager == null) return;
+
+            var activeDiscs = discManager.GetActiveDiscs();
 
             foreach (var kvp in activeDiscs)
             {

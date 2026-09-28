@@ -105,7 +105,8 @@ namespace SimRedes.Simulation
         /// </summary>
         private void OnTopologyChanged()
         {
-            UnityEngine.Debug.Log("[BuildTopology] Topologia cambiada, detectando...");
+            // B6: sin log — OnTopologyChanged se dispara a decenas de Hz mientras
+            // se mueven discos o se agregan enlaces.
             if (autoDetectTopology)
             {
                 DetectTopologyType();
@@ -207,12 +208,12 @@ namespace SimRedes.Simulation
             var nodes = topologyManager.GetAllNodes();
             var links = topologyManager.GetAllLinks();
 
-            UnityEngine.Debug.Log($"[UpdateUI] Updating UI - Topology: {currentTopology}, Nodes: {nodes.Count}, Links: {links.Count}");
+            // B6: sin log — UpdateUI corre cada 0.5s desde Update y en cada evento
+            // de topologia; el interpolado se construia solo para logging.
 
             if (topologyTypeText != null)
             {
                 topologyTypeText.text = $"Topologia: {GetTopologyDisplayName(currentTopology)}";
-                UnityEngine.Debug.Log($"[UpdateUI] Updated topologyTypeText to: {topologyTypeText.text}");
             }
             else
             {
