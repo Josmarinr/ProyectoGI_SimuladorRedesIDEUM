@@ -2,7 +2,7 @@
 
 > **Generado:** 2026-09-28 · **Rama:** `main` @ `8beb623`
 > **Fuentes:** revisión documental completa + auditoría de memoria (colapso) + auditoría de organización de código
-> **Estado:** 📋 Pendiente — el Frente A (documentación) va primero
+> **Estado:** 🔄 En curso — A ✅ · B ✅ (B7 medición en mesa) · C0-C2 ✅ · C3 siguiente
 
 ---
 
@@ -101,23 +101,23 @@ $UNITY -runTests -testPlatform EditMode \
 
 ## Registro de progreso
 
-- [ ] **A1** conteos globales
-- [ ] **A2** requirements.md
-- [ ] **A3** user-stories.md
-- [ ] **A4** stakeholders.md
-- [ ] **A5** historia de bugs
-- [ ] **A6** links/paths
-- [ ] **A7** commit DOC1 (pendiente de confirmación)
-- [ ] **B1** diagnóstico baseline
-- [ ] **B2** rebuild DevicesPanel
-- [ ] **B3** loop 2 s texturas
-- [ ] **B4** teardown de sprites
-- [ ] **B5** limpieza de paneles
-- [ ] **B6** churn GC
-- [ ] **B7** verificación final
-- [ ] **C0** código muerto
-- [ ] **C1** helpers puros
-- [ ] **C2** primitivas UI
+- [x] **A1** conteos globales
+- [x] **A2** requirements.md
+- [x] **A3** user-stories.md
+- [x] **A4** stakeholders.md
+- [x] **A5** historia de bugs
+- [x] **A6** links/paths
+- [x] **A7** commit DOC1 (pendiente de confirmación)
+- [x] **B1** diagnóstico baseline
+- [x] **B2** rebuild DevicesPanel
+- [x] **B3** loop 2 s texturas
+- [x] **B4** teardown de sprites
+- [x] **B5** limpieza de paneles
+- [x] **B6** churn GC
+- [x] **B7** verificación final
+- [x] **C0** código muerto
+- [x] **C1** helpers puros
+- [x] **C2** primitivas UI
 - [ ] **C3** scaffolding actividades
 - [ ] **C4** input unificado
 - [ ] **C5** god classes
