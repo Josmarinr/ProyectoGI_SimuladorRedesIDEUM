@@ -309,6 +309,8 @@ namespace SimRedes.Simulation
             }
             foreach (var obj in toDestroy)
             {
+                // B4: liberar los Sprite de los botones antes de destruirlos
+                UIComponents.SafeDestroyPanelSprites(obj);
                 Destroy(obj);
             }
             optionButtons.Clear();

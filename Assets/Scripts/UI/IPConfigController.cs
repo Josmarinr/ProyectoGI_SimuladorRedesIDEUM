@@ -32,7 +32,12 @@ namespace SimRedes.UI
         public void ShowIPConfigPanel(NetworkNode node, int discId)
         {
             var existingPanel = GameObject.Find("IPConfigPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                // B4: liberar los Sprite del panel previo antes de destruirlo
+                UIComponents.SafeDestroyPanelSprites(existingPanel);
+                Destroy(existingPanel);
+            }
 
             var canvasTransform = Object.FindAnyObjectByType<Canvas>()?.transform;
             if (canvasTransform == null) return;
@@ -99,12 +104,15 @@ namespace SimRedes.UI
         {
             if (ipConfigBackground != null)
             {
+                // B4: liberar los Sprite del fondo/panel antes de destruirlos
+                UIComponents.SafeDestroyPanelSprites(ipConfigBackground);
                 Destroy(ipConfigBackground);
                 ipConfigBackground = null;
             }
             var panel = GameObject.Find("IPConfigPanel");
             if (panel != null)
             {
+                UIComponents.SafeDestroyPanelSprites(panel);
                 Destroy(panel);
             }
             currentIPConfigNodeDiscId = -1;
@@ -143,7 +151,12 @@ namespace SimRedes.UI
         private void ShowARPPanel(NetworkNode node)
         {
             var existingPanel = GameObject.Find("ARPPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                // B4: liberar los Sprite del panel previo antes de destruirlo
+                UIComponents.SafeDestroyPanelSprites(existingPanel);
+                Destroy(existingPanel);
+            }
 
             var t = Object.FindAnyObjectByType<Canvas>()?.transform;
             if (t == null) return;
@@ -154,7 +167,12 @@ namespace SimRedes.UI
         private void ShowRoutingPanel(NetworkNode node)
         {
             var existingPanel = GameObject.Find("RoutingPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                // B4: liberar los Sprite del panel previo antes de destruirlo
+                UIComponents.SafeDestroyPanelSprites(existingPanel);
+                Destroy(existingPanel);
+            }
 
             var canvas = Object.FindAnyObjectByType<Canvas>();
             var canvasTransform = canvas?.transform;
@@ -189,7 +207,12 @@ namespace SimRedes.UI
         private void ShowAddRoutePanel(NetworkNode node, int insertIndex)
         {
             var existingPanel = GameObject.Find("AddRoutePanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                // B4: liberar los Sprite del panel previo antes de destruirlo
+                UIComponents.SafeDestroyPanelSprites(existingPanel);
+                Destroy(existingPanel);
+            }
 
             var canvas = Object.FindAnyObjectByType<Canvas>();
             var canvasTransform = canvas?.transform;

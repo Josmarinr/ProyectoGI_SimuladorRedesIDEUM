@@ -87,11 +87,40 @@ namespace SimRedes.Simulation
                 "ConnectivityPanel", "BuildTopologyInfoPanel", "DiscLegendPanel", "FindFaultPanel", "ScenariosPanel",
                 "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel",
                 "DynamicRoutingPanel", "ActivitiesPanel", "MainMenuPanel", "InstructionsPanel",
-                "ClickOutsideBG" };
+                // Paneles de config/actividad que faltaban en la limpieza (B5)
+                "VLANPanel", "ACLPanel", "NATPanel", "ARPPanel", "RoutingPanel",
+                "AddRoutePanel", "PingSelectionPanel", "TopologyExamplePanel" };
+            // "PingPackets" NO va en esta lista a proposito: el bucle de managers
+            // de arriba destruye PingVisualizer (y su GameObject GameManager), y su
+            // OnDestroy es quien destruye el contenedor y sus Sprite/texturas.
+            // Destruirlo aqui ademas crearia una carrera en el mismo frame: si el
+            // contenedor se destruye primero, OnDestroy hace early-out por
+            // packetContainer == null y los paquetes en vuelo dejarian texturas
+            // huerfanas (B2).
             foreach (var name in panelNames)
             {
                 var obj = GameObject.Find(name);
-                if (obj != null) Object.Destroy(obj);
+                if (obj != null)
+                {
+                    UIComponents.SafeDestroyPanelSprites(obj);
+                    Object.Destroy(obj);
+                }
+            }
+
+            // Destruir TODOS los fondos ClickOutsideBG_* por prefijo. Los nombres
+            // reales son ClickOutsideBG_VLANPanel / _ACLPanel / _NATPanel / etc.;
+            // buscar el nombre exacto "ClickOutsideBG" no encontraba ninguno (B5).
+            // Cada fondo tiene SU PROPIO componente Canvas (CreateClickOutsideToClose),
+            // asi que partir de un unico Canvas podia devolver el de un fondo: la
+            // barrida solo veia ese subarbol y los demas fondos sobrevivian con
+            // raycastTarget=true y sortingOrder=50, tragandose los clics (M1).
+            // Se barren TODOS los RectTransform de la escena, incluidos inactivos.
+            var backdrops = Object.FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var rt in backdrops)
+            {
+                if (rt == null || !rt.name.StartsWith("ClickOutsideBG")) continue;
+                UIComponents.SafeDestroyPanelSprites(rt.gameObject);
+                Object.Destroy(rt.gameObject);
             }
 
             var canvas = Object.FindAnyObjectByType<Canvas>();
@@ -107,7 +136,22 @@ namespace SimRedes.Simulation
             // Limpiar cache de texturas para liberar memoria de paneles destruidos
             UIComponents.ClearTextureCache();
 
+            // B4: barrida de seguridad. Libera sprites/texturas huerfanos de paneles
+            // destruidos por rutas que no tienen teardown explicito de Sprite.
+            // Se espera al fin del frame para que los Destroy pendientes se apliquen.
+            StartCoroutine(UnloadUnusedAssetsAfterFrame());
+
             createMainMenuCallback?.Invoke();
+        }
+
+        /// <summary>
+        /// Espera al final del frame (cuando Unity aplica los Destroy pendientes)
+        /// y descarga los assets que ya nadie referencia.
+        /// </summary>
+        private System.Collections.IEnumerator UnloadUnusedAssetsAfterFrame()
+        {
+            yield return new UnityEngine.WaitForEndOfFrame();
+            Resources.UnloadUnusedAssets();
         }
 
         /// <summary>

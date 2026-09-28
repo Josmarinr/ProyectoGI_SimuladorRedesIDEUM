@@ -32,6 +32,8 @@ namespace SimRedes.Simulation
                 var infoPanel = GameObject.Find("ScenarioInfoPanel");
                 if (infoPanel != null)
                 {
+                    // B4: liberar los Sprite del panel antes de destruirlo
+                    UIComponents.SafeDestroyPanelSprites(infoPanel);
                     Destroy(infoPanel);
                     return;
                 }

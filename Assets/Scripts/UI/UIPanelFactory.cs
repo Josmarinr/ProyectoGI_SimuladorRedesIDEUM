@@ -616,6 +616,8 @@ namespace SimRedes.UI
             var existingPanel = GameObject.Find("TopologyExamplePanel");
             if (existingPanel != null)
             {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(existingPanel);
                 UnityEngine.Object.Destroy(existingPanel);
                 return;
             }
@@ -693,7 +695,12 @@ namespace SimRedes.UI
 
             var closeBtn = closeBtnObj.AddComponent<Button>();
             closeBtn.colors = UIComp.GetButtonColors(new Color(0.7f, 0.2f, 0.2f));
-            closeBtn.onClick.AddListener(() => UnityEngine.Object.Destroy(panelObj));
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                UnityEngine.Object.Destroy(panelObj);
+            });
 
             var closeTextObj = new GameObject("Text");
             closeTextObj.transform.SetParent(closeBtnObj.transform, false);
@@ -712,7 +719,12 @@ namespace SimRedes.UI
             closeText.font = font;
 
             Button backBtn = UIComp.CreateMenuButton(panelObj.transform, "BackBtn", "CERRAR", new Vector2(0, -255), new Vector2(140, 40), font);
-            backBtn.onClick.AddListener(() => UnityEngine.Object.Destroy(panelObj));
+            backBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                UnityEngine.Object.Destroy(panelObj);
+            });
         }
 
         /// <summary>

@@ -334,7 +334,11 @@ namespace SimRedes
 
         private void OnTopologyChangedCallback()
         {
-            if (devicePanel != null) devicePanel.RefreshDevicesPanel();
+            // B2: no reconstruir el panel en forma sincrona por cada evento.
+            // Mover un disco dispara OnTopologyChanged a decenas de Hz; aqui solo
+            // se marca el refresco pendiente y DevicePanelController lo consume
+            // acotado en el tiempo (solo si cambio la composicion de nodos).
+            if (devicePanel != null) devicePanel.RequestRefresh();
         }
 
         // ==================== UI ====================
@@ -346,10 +350,19 @@ namespace SimRedes
         private void DestroyMainMenu()
         {
             GameObject panel = GameObject.Find("MainMenuPanel");
-            if (panel != null) GameObject.Destroy(panel);
+            if (panel != null)
+            {
+                // B4: liberar los Sprite del menu antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panel);
+                GameObject.Destroy(panel);
+            }
 
             GameObject hudPanel = GameObject.Find("TopologyInfoPanel");
-            if (hudPanel != null) GameObject.Destroy(hudPanel);
+            if (hudPanel != null)
+            {
+                UIComp.SafeDestroyPanelSprites(hudPanel);
+                GameObject.Destroy(hudPanel);
+            }
 
             // Usar DestroyImmediate para evitar conflictos de singleton con destruccion diferida
             // al recrear el menu en el mismo frame (ej: desde el panel de Instrucciones)
@@ -387,15 +400,36 @@ namespace SimRedes
         {
             string[] panelNames = { "ActivitiesPanel", "InstructionsPanel", "ConnectivityPanel", "MainMenuPanel",
                 "TopologyInfoPanel", "BuildTopologyInfoPanel", "DiscLegendPanel", "FindFaultPanel", "ScenariosPanel",
-                "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel", "DynamicRoutingPanel" };
+                "BestRoutePanel", "RoutingTablesPanel", "StaticRoutingPanel", "DynamicRoutingPanel",
+                // Paneles de config/actividad que abrian y podian quedar huerfanos (B5)
+                "VLANPanel", "ACLPanel", "NATPanel", "ARPPanel", "RoutingPanel",
+                "AddRoutePanel", "PingSelectionPanel", "TopologyExamplePanel" };
             foreach (string name in panelNames)
             {
                 GameObject panel = GameObject.Find(name);
                 if (panel != null)
                 {
+                    UIComp.SafeDestroyPanelSprites(panel);
                     GameObject.Destroy(panel);
                     Debug.Log($"[SceneSetup] Panel '{name}' destruido");
                 }
+            }
+
+            // Destruir todos los fondos ClickOutsideBG_* por prefijo: los nombres
+            // reales son ClickOutsideBG_VLANPanel / _ACLPanel / _NATPanel / etc.,
+            // no el nombre exacto "ClickOutsideBG" (B5).
+            // Cada fondo tiene SU PROPIO componente Canvas (CreateClickOutsideToClose),
+            // asi que partir de un unico Canvas podia devolver el de un fondo: la
+            // barrida solo veia ese subarbol y los demas fondos sobrevivian con
+            // raycastTarget=true y sortingOrder=50, tragandose los clics (M1).
+            // Se barren TODOS los RectTransform de la escena, incluidos inactivos.
+            var backdrops = UnityEngine.Object.FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var rt in backdrops)
+            {
+                if (rt == null || !rt.name.StartsWith("ClickOutsideBG")) continue;
+                UIComp.SafeDestroyPanelSprites(rt.gameObject);
+                GameObject.Destroy(rt.gameObject);
+                Debug.Log($"[SceneSetup] Fondo '{rt.name}' destruido");
             }
 
             // Destruir MainMenuManager viejo (DestroyImmediate para evitar conflictos

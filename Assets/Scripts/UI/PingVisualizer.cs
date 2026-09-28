@@ -13,6 +13,7 @@ namespace SimRedes.UI
         private Canvas canvas;
         private RectTransform canvasRect;
         private GameObject packetPrefab;
+        private Sprite packetPrefabSprite;
         private GameObject packetContainer;
         private bool isAnimating = false;
 
@@ -82,8 +83,55 @@ namespace SimRedes.UI
             tex.SetPixels(pixels);
             tex.Apply();
             img.sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            packetPrefabSprite = img.sprite;
 
             packetPrefab.SetActive(false);
+        }
+
+        /// <summary>
+        /// Destruye el contenedor PingPackets y los Sprite/texturas de los paquetes
+        /// al destruirse el componente. El contenedor esta parenteado al Canvas (que
+        /// nunca se descarga), asi que sin esta limpieza sobrevivia al componente
+        /// y quedaba fuera de toda limpieza de escena (B5).
+        /// </summary>
+        private void OnDestroy()
+        {
+            // Sprite/textura del prefab: destruccion INCONDICIONAL y ANTES del
+            // guard del contenedor (B2). Si "PingPackets" se destruye primero en
+            // este mismo frame (el orden de Destroy no esta garantizado), el guard
+            // de abajo haria early-out y este sprite con su textura quedarian
+            // huerfanos. La referencia se mantiene hasta despues del bucle para
+            // que el skip de instancias compartidas siga funcionando.
+            if (packetPrefabSprite != null)
+            {
+                if (packetPrefabSprite.texture != null) Destroy(packetPrefabSprite.texture);
+                Destroy(packetPrefabSprite);
+            }
+
+            if (packetContainer != null)
+            {
+                // Sprite/texturas propias de los paquetes en vuelo. Se omite el sprite
+                // del prefab: es compartido por las instancias y ya se destruyo arriba.
+                foreach (Transform child in packetContainer.transform)
+                {
+                    if (child == null) continue;
+                    var img = child.GetComponent<Image>();
+                    if (img == null || img.sprite == null) continue;
+                    if (img.sprite == packetPrefabSprite) continue;
+                    if (img.sprite.texture != null) Destroy(img.sprite.texture);
+                    Destroy(img.sprite);
+                    img.sprite = null;
+                }
+
+                Destroy(packetContainer);
+                packetContainer = null;
+            }
+
+            // Limpiar la referencia al final: el guard de arriba la usa para
+            // identificar el sprite compartido del prefab.
+            packetPrefabSprite = null;
+
+            if (Instance == this) Instance = null;
         }
 
         public void AnimatePing(int sourceDiscId, int destDiscId, System.Action<bool> onComplete)

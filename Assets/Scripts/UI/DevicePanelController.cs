@@ -19,6 +19,15 @@ namespace SimRedes.UI
         private float scoreUpdateTimer = 0f;
         private float panelSyncTimer = 0f;
 
+        // ---- Refresco coalescido del panel (evita rebuild por cada evento de topologia) ----
+        // Los eventos de alta frecuencia (mover discos) solo marcan refreshDirty;
+        // el consumo ocurre a razon limitada una vez por REFRESH_INTERVAL.
+        private bool refreshDirty = false;
+        private float refreshTimer = 0f;
+        private const float REFRESH_INTERVAL = 0.35f;
+        // Firma de la composicion de nodos con la que se construyo el panel actual.
+        private string lastBuiltSignature = "";
+
         private void Update()
         {
             scoreUpdateTimer += Time.deltaTime;
@@ -36,6 +45,20 @@ namespace SimRedes.UI
                 if (panel != null)
                     UpdateDevicesList();
                 TopologyInfoPanelSync();
+            }
+
+            // Consumo acotado de refrescos pendientes: aunque lleguen decenas de
+            // eventos de topologia por segundo, como mucho se evalua una vez
+            // por REFRESH_INTERVAL y solo se reconstruye si cambio la composicion.
+            if (refreshDirty)
+            {
+                refreshTimer += Time.deltaTime;
+                if (refreshTimer >= REFRESH_INTERVAL)
+                {
+                    refreshTimer = 0f;
+                    refreshDirty = false;
+                    ConsumeRefreshRequest();
+                }
             }
 
             // Detectar toque/click para salir del panel (funciona con mouse y tactil)
@@ -176,12 +199,75 @@ namespace SimRedes.UI
                 scoreText.text = scoring.GetCurrentScore().ToString();
         }
 
+        /// <summary>
+        /// Marca el panel para un refresco diferido. Es el reemplazo barato del
+        /// rebuild sincrono por evento: los eventos de topologia de alta frecuencia
+        /// (mover discos) solo llaman a este metodo y el consumo real ocurre en
+        /// Update() a razon limitada (ver REFRESH_INTERVAL).
+        /// </summary>
+        public void RequestRefresh()
+        {
+            refreshDirty = true;
+        }
+
+        /// <summary>
+        /// Consume un refresco pendiente: reconstruye el panel solo si cambio la
+        /// composicion de nodos (cantidad/ids/nombres) o si el panel no existe.
+        /// Mover discos no altera el contenido del panel, asi que esos eventos
+        /// terminan sin hacer nada.
+        /// </summary>
+        private void ConsumeRefreshRequest()
+        {
+            var tm = TopologyManager.Instance;
+            if (tm == null)
+            {
+                // Topologia aun no disponible: re-marcar la solicitud, porque
+                // Update() limpio refreshDirty antes de llamar aqui y sin este
+                // reintento el refresco se perdia (L2).
+                refreshDirty = true;
+                return;
+            }
+
+            var nodes = tm.GetAllNodes();
+            string signature = BuildNodesSignature(nodes);
+            bool panelMissing = GameObject.Find("DevicesPanel") == null;
+            if (!panelMissing && signature == lastBuiltSignature)
+            {
+                // Sin cambios de composicion: no reconstruir (eso crearia sprites).
+                // Solo refrescar los contadores del HUD, que son texto y baratos.
+                TopologyInfoPanelSync();
+                return;
+            }
+
+            RefreshDevicesPanel();
+        }
+
+        /// <summary>
+        /// Construye una firma de la composicion actual de nodos (cantidad + ids + nombres)
+        /// para detectar altas/bajas de dispositivos sin reconstruir el panel.
+        /// </summary>
+        /// <param name="nodes">Lista actual de nodos de la topologia.</param>
+        /// <returns>Firma compacta comparable por igualdad de string.</returns>
+        private static string BuildNodesSignature(List<NetworkNode> nodes)
+        {
+            var sb = new System.Text.StringBuilder(nodes.Count * 16);
+            sb.Append(nodes.Count);
+            for (int i = 0; i < nodes.Count; i++)
+                sb.Append(';').Append(nodes[i].DiscId).Append(':').Append(nodes[i].Name);
+            return sb.ToString();
+        }
+
         public void RefreshDevicesPanel()
         {
             // Siempre destruir el panel existente para recrearlo con items frescos
             // Usar DestroyImmediate para evitar que GameObject.Find encuentre el panel viejo
             var existingPanel = GameObject.Find("DevicesPanel");
-            if (existingPanel != null) DestroyImmediate(existingPanel);
+            if (existingPanel != null)
+            {
+                // Liberar los Sprite del panel viejo (las texturas quedan en cache compartida)
+                UIComp.SafeDestroyPanelSprites(existingPanel);
+                DestroyImmediate(existingPanel);
+            }
 
             var foundCanvas = Object.FindAnyObjectByType<Canvas>();
             if (foundCanvas == null)
@@ -196,6 +282,10 @@ namespace SimRedes.UI
             
             var allNodes = tm.GetAllNodes();
             int nodeCount = allNodes.Count;
+
+            // Registrar con que composicion se construyo el panel y consumir el dirty
+            lastBuiltSignature = BuildNodesSignature(allNodes);
+            refreshDirty = false;
 
             GameObject panelObj = UIPanelFactory.CreateDevicesPanel(foundCanvas.transform,
                 nodeCount, OnDeviceItemClicked);
@@ -334,15 +424,13 @@ namespace SimRedes.UI
                 if (iconObj != null)
                 {
                     var img = iconObj.GetComponent<Image>();
-                    // Destruir sprite anterior para evitar fuga de Texture2D
-                    if (img.sprite != null)
-                    {
-                        Destroy(img.sprite);
-                        // NOTA: no destruimos img.sprite.texture porque puede estar compartido
-                        // via UIComponents.GetSharedWhiteTexture() o el cache de CreateRoundedRectTexture
-                    }
+                    // B3: el icono viene de circleSpriteCache, que es la duena del sprite
+                    // y su textura. Antes se hacia Destroy(img.sprite) cada 2 s, lo que
+                    // invalidaba la cache y obligaba a recrear Texture2D en un bucle
+                    // infinito (aun en idle). Ahora solo se reasigna si cambia.
                     img.color = UIColors.GetColorForDeviceType(node.Type);
-                    img.sprite = CreateCircleIcon(24, UIColors.GetColorForDeviceType(node.Type));
+                    Sprite circleIcon = CreateCircleIcon(24, UIColors.GetColorForDeviceType(node.Type));
+                    if (img.sprite != circleIcon) img.sprite = circleIcon;
                     img.gameObject.SetActive(true);
                 }
 
@@ -446,6 +534,8 @@ namespace SimRedes.UI
             tex.Apply();
             var sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
             circleSpriteCache[cacheKey] = sprite;
+            // La cache es duena del sprite y su textura: protegerlo del teardown de paneles
+            UIComp.RegisterOwnedCachedSprite(sprite);
             return sprite;
         }
 
@@ -468,6 +558,7 @@ namespace SimRedes.UI
             {
                 if (kvp.Value != null)
                 {
+                    UIComp.UnregisterOwnedCachedSprite(kvp.Value);
                     if (kvp.Value.texture != null)
                         Destroy(kvp.Value.texture);
                     Destroy(kvp.Value);

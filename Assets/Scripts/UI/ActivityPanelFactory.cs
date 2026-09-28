@@ -69,7 +69,12 @@ namespace SimRedes.UI
             tipTextComp.lineSpacing = 1.3f;
 
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseBtn", "CERRAR", new Vector2(0, -170), new Vector2(120, 40), font, 14);
-            closeBtn.onClick.AddListener(() => UnityEngine.Object.Destroy(panelObj));
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                UnityEngine.Object.Destroy(panelObj);
+            });
 
             return panelObj;
         }
@@ -836,10 +841,22 @@ namespace SimRedes.UI
             }
 
             Button startBtn = UIComp.CreateMenuButton(panelObj.transform, "StartScenarioBtn", "Iniciar", new Vector2(-140, -300), new Vector2(220, 65), font, 26);
-            startBtn.onClick.AddListener(() => { onStart?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
+            startBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                onStart?.Invoke();
+                UnityEngine.Object.Destroy(panelObj);
+            });
 
             Button cancelBtn = UIComp.CreateMenuButton(panelObj.transform, "CancelBtn", "Cancelar", new Vector2(140, -300), new Vector2(220, 65), font, 26);
-            cancelBtn.onClick.AddListener(() => { onCancel?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
+            cancelBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                onCancel?.Invoke();
+                UnityEngine.Object.Destroy(panelObj);
+            });
 
             return panelObj;
         }

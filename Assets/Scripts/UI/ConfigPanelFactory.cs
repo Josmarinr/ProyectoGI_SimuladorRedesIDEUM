@@ -313,7 +313,12 @@ namespace SimRedes.UI
             }
 
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseBtn", "CERRAR", new Vector2(0, -195), new Vector2(120, 40), font, 14);
-            closeBtn.onClick.AddListener(() => UnityEngine.Object.Destroy(panelObj));
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                UnityEngine.Object.Destroy(panelObj);
+            });
             return panelObj;
         }
 
@@ -384,7 +389,13 @@ namespace SimRedes.UI
             addNewBtn.onClick.AddListener(() => onAddRoute?.Invoke(-1));
 
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseBtn", "CERRAR", new Vector2(90, btnY), new Vector2(120, 40), font, 14);
-            closeBtn.onClick.AddListener(() => { onClose?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                onClose?.Invoke();
+                UnityEngine.Object.Destroy(panelObj);
+            });
             return panelObj;
         }
 
@@ -447,7 +458,13 @@ namespace SimRedes.UI
 
             float btnY = -185;
             Button cancelBtn = UIComp.CreateMenuButton(panelObj.transform, "CancelAddRouteBtn", "CANCELAR", new Vector2(-80, btnY), new Vector2(130, 45), font, 14);
-            cancelBtn.onClick.AddListener(() => { onCancel?.Invoke(); UnityEngine.Object.Destroy(panelObj); });
+            cancelBtn.onClick.AddListener(() =>
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panelObj);
+                onCancel?.Invoke();
+                UnityEngine.Object.Destroy(panelObj);
+            });
 
             Button addBtn = UIComp.CreateMenuButton(panelObj.transform, "ConfirmAddRouteBtn", "AGREGAR", new Vector2(80, btnY), new Vector2(130, 45), font, 14);
             addBtn.onClick.AddListener(() => {
@@ -468,8 +485,22 @@ namespace SimRedes.UI
         /// <param name="topology">Topologia activa con el gestor VLAN.</param>
         public static void CreateVLANPanel(Transform canvas, TopologyManager topology)
         {
+            // B5: destruir el FONDO previo (es el padre del panel). Antes solo se
+            // destruia "VLANPanel" y cada reapertura dejaba un ClickOutsideBG_VLANPanel
+            // huerfano con raycastTarget activo. DestroyImmediate evita que queden
+            // dos objetos con el mismo nombre en el mismo frame.
+            var existingBg = GameObject.Find("ClickOutsideBG_VLANPanel");
+            if (existingBg != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingBg);
+                UnityEngine.Object.DestroyImmediate(existingBg);
+            }
             var existingPanel = GameObject.Find("VLANPanel");
-            if (existingPanel != null) UnityEngine.Object.Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingPanel);
+                UnityEngine.Object.DestroyImmediate(existingPanel);
+            }
 
             Font font = UIPanelFactory.GetFont();
             GameObject bgObj = UIComp.CreateClickOutsideToClose(canvas, "VLANPanel");
@@ -554,11 +585,15 @@ namespace SimRedes.UI
             listRect.anchoredPosition = new Vector2(0, -50);
             listRect.sizeDelta = new Vector2(500, 200);
             UpdateVLANListDisplay(listObj.transform, topology, font);
-
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseVlanBtn", "CERRAR", new Vector2(0, -220), new Vector2(120, 45), font, 16);
-            closeBtn.onClick.AddListener(() => {
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4/B5: liberar Sprite del panel y destruir el FONDO real.
+                // El nombre viejo "VLANPanelBG" no existe nunca: el fondo se llama
+                // ClickOutsideBG_VLANPanel y quedaba huerfano tras cerrar con CERRAR.
+                UIComp.SafeDestroyPanelSprites(panelObj);
                 UnityEngine.Object.Destroy(panelObj);
-                var bg = GameObject.Find("VLANPanelBG");
+                var bg = GameObject.Find("ClickOutsideBG_VLANPanel");
                 if (bg != null) UnityEngine.Object.Destroy(bg);
             });
         }
@@ -643,8 +678,19 @@ namespace SimRedes.UI
         /// <param name="topology">Topologia activa con el gestor ACL.</param>
         public static void CreateACLPanel(Transform canvas, TopologyManager topology)
         {
+            // B5: destruir el FONDO previo (es el padre del panel); ver CreateVLANPanel.
+            var existingBg = GameObject.Find("ClickOutsideBG_ACLPanel");
+            if (existingBg != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingBg);
+                UnityEngine.Object.DestroyImmediate(existingBg);
+            }
             var existingPanel = GameObject.Find("ACLPanel");
-            if (existingPanel != null) UnityEngine.Object.Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingPanel);
+                UnityEngine.Object.DestroyImmediate(existingPanel);
+            }
 
             Font font = UIPanelFactory.GetFont();
             GameObject bgObj = UIComp.CreateClickOutsideToClose(canvas, "ACLPanel");
@@ -730,11 +776,13 @@ namespace SimRedes.UI
             aclListRect.anchoredPosition = new Vector2(0, -80);
             aclListRect.sizeDelta = new Vector2(580, 220);
             UpdateACLListDisplay(aclListObj.transform, topology, font);
-
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseACLBtn", "CERRAR", new Vector2(0, -235), new Vector2(120, 45), font, 16);
-            closeBtn.onClick.AddListener(() => {
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4/B5: ver CloseVlanBtn - el nombre viejo "ACLPanelBG" no existe.
+                UIComp.SafeDestroyPanelSprites(panelObj);
                 UnityEngine.Object.Destroy(panelObj);
-                var bg = GameObject.Find("ACLPanelBG");
+                var bg = GameObject.Find("ClickOutsideBG_ACLPanel");
                 if (bg != null) UnityEngine.Object.Destroy(bg);
             });
         }
@@ -787,8 +835,19 @@ namespace SimRedes.UI
         /// <param name="topology">Topologia activa con el gestor NAT.</param>
         public static void CreateNATPanel(Transform canvas, TopologyManager topology)
         {
+            // B5: destruir el FONDO previo (es el padre del panel); ver CreateVLANPanel.
+            var existingBg = GameObject.Find("ClickOutsideBG_NATPanel");
+            if (existingBg != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingBg);
+                UnityEngine.Object.DestroyImmediate(existingBg);
+            }
             var existingPanel = GameObject.Find("NATPanel");
-            if (existingPanel != null) UnityEngine.Object.Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingPanel);
+                UnityEngine.Object.DestroyImmediate(existingPanel);
+            }
 
             Font font = UIPanelFactory.GetFont();
             GameObject bgObj = UIComp.CreateClickOutsideToClose(canvas, "NATPanel");
@@ -912,11 +971,13 @@ namespace SimRedes.UI
             natListRect.anchoredPosition = new Vector2(0, -100);
             natListRect.sizeDelta = new Vector2(520, 220);
             UpdateNATListDisplay(natListObj.transform, topology, font);
-
             Button closeBtn = UIComp.CreateMenuButton(panelObj.transform, "CloseNATBtn", "CERRAR", new Vector2(0, -245), new Vector2(120, 45), font, 16);
-            closeBtn.onClick.AddListener(() => {
+            closeBtn.onClick.AddListener(() =>
+            {
+                // B4/B5: ver CloseVlanBtn - el nombre viejo "NATPanelBG" no existe.
+                UIComp.SafeDestroyPanelSprites(panelObj);
                 UnityEngine.Object.Destroy(panelObj);
-                var bg = GameObject.Find("NATPanelBG");
+                var bg = GameObject.Find("ClickOutsideBG_NATPanel");
                 if (bg != null) UnityEngine.Object.Destroy(bg);
             });
         }

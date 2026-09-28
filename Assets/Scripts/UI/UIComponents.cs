@@ -113,8 +113,10 @@ namespace SimRedes.UI
         }
 
         /// <summary>
-        /// Limpia el cache de texturas redondeadas. Llamar en SceneCleanupService
-        /// al limpiar la escena para liberar memoria de texturas no utilizadas.
+        /// Limpia el cache de texturas redondeadas y el cache de iconos de dispositivo.
+        /// Llamar en SceneCleanupService al limpiar la escena para liberar memoria
+        /// de texturas y sprites no utilizados. Los iconos se reconstruyen bajo
+        /// demanda la proxima vez que CreateDeviceIcon sea llamado.
         /// </summary>
         public static void ClearTextureCache()
         {
@@ -123,6 +125,85 @@ namespace SimRedes.UI
                 if (tex != null) UnityEngine.Object.Destroy(tex);
             }
             roundedTextureCache.Clear();
+
+            // Iconos de dispositivo: la cache es duena del sprite y de su textura.
+            // Se destruyen juntos y se quitan del registro de sprites protegidos.
+            foreach (var kvp in deviceIconCache)
+            {
+                if (kvp.Value == null) continue;
+                if (kvp.Value.texture != null) UnityEngine.Object.Destroy(kvp.Value.texture);
+                UnregisterOwnedCachedSprite(kvp.Value);
+                UnityEngine.Object.Destroy(kvp.Value);
+            }
+            deviceIconCache.Clear();
+        }
+
+        // Sprites con dueno (caches internas): nunca se destruyen al limpiar paneles,
+        // porque la cache que los creo es responsable de destruirlos.
+        private static readonly HashSet<Sprite> ownedCachedSprites = new HashSet<Sprite>();
+
+        /// <summary>
+        /// Registra un Sprite perteneciente a una cache interna (p. ej. deviceIconCache).
+        /// Los sprites registrados se omiten en <see cref="SafeDestroyPanelSprites"/>
+        /// porque su destruccion le corresponde a la cache que los creo.
+        /// </summary>
+        /// <param name="sprite">Sprite registrado como propiedad de una cache.</param>
+        public static void RegisterOwnedCachedSprite(Sprite sprite)
+        {
+            if (sprite != null) ownedCachedSprites.Add(sprite);
+        }
+
+        /// <summary>
+        /// Quita un Sprite del registro de sprites con dueno. Llamar justo antes
+        /// de destruirlo desde la cache que lo creo.
+        /// </summary>
+        /// <param name="sprite">Sprite a dejar sin registrar.</param>
+        public static void UnregisterOwnedCachedSprite(Sprite sprite)
+        {
+            if (sprite != null) ownedCachedSprites.Remove(sprite);
+        }
+
+        /// <summary>
+        /// Destruye un Sprite creado en tiempo de ejecucion sin tocar su textura.
+        /// Usa esto en el teardown de paneles: las texturas vienen de caches
+        /// compartidas (roundedTextureCache, sharedWhiteTexture) y solo
+        /// <see cref="ClearTextureCache"/> puede destruirlas. Si la textura es
+        /// propiedad exclusiva del sprite, destruirla en el sitio que la creo.
+        /// </summary>
+        /// <param name="sprite">Sprite a destruir (acepta null).</param>
+        public static void SafeDestroySprite(Sprite sprite)
+        {
+            if (sprite == null) return;
+            UnityEngine.Object.Destroy(sprite);
+        }
+
+        /// <summary>
+        /// Destruye los Sprite (nunca las texturas) de todos los Image de un panel
+        /// que va a ser destruido. Los sprites con dueno (registrados via
+        /// RegisterOwnedCachedSprite) se omiten sin blanquear la referencia del
+        /// Image, porque su cache sigue usandolos en otros paneles. Llamar SIEMPRE
+        /// antes de Destroy/DestroyImmediate del panel para que los sprites no
+        /// queden huerfanos.
+        /// </summary>
+        /// <param name="root">Panel o GameObject raiz a despedir.</param>
+        public static void SafeDestroyPanelSprites(GameObject root)
+        {
+            if (root == null) return;
+            var images = root.GetComponentsInChildren<Image>(true);
+            var processed = new HashSet<Sprite>();
+            foreach (var img in images)
+            {
+                if (img == null) continue;
+                Sprite sprite = img.sprite;
+                if (sprite == null) continue;
+                // Los sprites con dueno no se tocan: la cache que los creo es la
+                // responsable de destruirlos. Solo los que se van a destruir se
+                // blanquean del Image (L3).
+                if (ownedCachedSprites.Contains(sprite)) continue;
+                img.sprite = null;
+                if (!processed.Add(sprite)) continue; // mismo sprite en varios Image
+                SafeDestroySprite(sprite);
+            }
         }
 
         /// <summary>
@@ -499,7 +580,13 @@ namespace SimRedes.UI
             bgBtn.onClick.AddListener(() =>
             {
                 GameObject panel = GameObject.Find(panelName);
-                if (panel != null) GameObject.Destroy(panel);
+                if (panel != null)
+                {
+                    // Liberar los Sprite del panel y del fondo antes de destruirlos
+                    SafeDestroyPanelSprites(panel);
+                    GameObject.Destroy(panel);
+                }
+                SafeDestroyPanelSprites(bgObj);
                 GameObject.Destroy(bgObj);
             });
 
@@ -828,6 +915,8 @@ namespace SimRedes.UI
             tex.Apply();
             var sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
             deviceIconCache[cacheKey] = sprite;
+            // La cache es duena del sprite y su textura: protegerlo del teardown de paneles
+            RegisterOwnedCachedSprite(sprite);
             return sprite;
         }
 

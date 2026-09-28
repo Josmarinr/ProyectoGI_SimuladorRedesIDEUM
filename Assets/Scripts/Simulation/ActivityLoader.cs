@@ -115,7 +115,12 @@ namespace SimRedes.Simulation
             UnityEngine.Debug.Log("[ActivityLoader] Actividad seleccionada: " + activityIndex);
 
             var activitiesPanel = GameObject.Find("ActivitiesPanel");
-            if (activitiesPanel != null) Destroy(activitiesPanel);
+            if (activitiesPanel != null)
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(activitiesPanel);
+                Destroy(activitiesPanel);
+            }
 
             var gameManagerObj = GameObject.Find("GameManager");
             if (gameManagerObj == null)
@@ -275,7 +280,12 @@ namespace SimRedes.Simulation
                 gameManagerObj.AddComponent<SimulationControls>();
 
             var existingStatus = GameObject.Find("StatusPanel");
-            if (existingStatus != null) Destroy(existingStatus);
+            if (existingStatus != null)
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(existingStatus);
+                Destroy(existingStatus);
+            }
 
             UnityEngine.Debug.Log("[ActivityLoader] Simulacion iniciada");
         }
@@ -320,6 +330,8 @@ namespace SimRedes.Simulation
             if (existingPanel != null)
             {
                 existingPanel.SetActive(false);
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(existingPanel);
                 Destroy(existingPanel);
             }
 
@@ -327,6 +339,7 @@ namespace SimRedes.Simulation
             if (existingInfo != null)
             {
                 existingInfo.SetActive(false);
+                UIComp.SafeDestroyPanelSprites(existingInfo);
                 Destroy(existingInfo);
             }
 
@@ -509,7 +522,12 @@ namespace SimRedes.Simulation
         private void CreateScenariosPanel(Transform canvasTransform)
         {
             var existingPanel = GameObject.Find("ScenariosPanel");
-            if (existingPanel != null) Destroy(existingPanel);
+            if (existingPanel != null)
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(existingPanel);
+                Destroy(existingPanel);
+            }
 
             var gameManager = GameObject.Find("GameManager");
             if (gameManager == null)
@@ -567,10 +585,19 @@ namespace SimRedes.Simulation
         private void LoadScenario(int scenarioIndex)
         {
             var scenariosPanel = GameObject.Find("ScenariosPanel");
-            if (scenariosPanel != null) Destroy(scenariosPanel);
+            if (scenariosPanel != null)
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(scenariosPanel);
+                Destroy(scenariosPanel);
+            }
 
             var existingInfoPanel = GameObject.Find("ScenarioInfoPanel");
-            if (existingInfoPanel != null) Destroy(existingInfoPanel);
+            if (existingInfoPanel != null)
+            {
+                UIComp.SafeDestroyPanelSprites(existingInfoPanel);
+                Destroy(existingInfoPanel);
+            }
 
             var gameManagerObj = GameObject.Find("GameManager");
             if (gameManagerObj == null)

@@ -238,7 +238,12 @@ namespace SimRedes.UI
         private void ClosePingSelectionPanel()
         {
             var panel = GameObject.Find("PingSelectionPanel");
-            if (panel != null) Destroy(panel);
+            if (panel != null)
+            {
+                // B4: liberar los Sprite del panel antes de destruirlo
+                UIComp.SafeDestroyPanelSprites(panel);
+                Destroy(panel);
+            }
         }
 
         private void SelectPingSource(int nodeIndex)
