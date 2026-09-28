@@ -89,12 +89,5 @@ namespace SimRedes.Simulation
             Assert.DoesNotThrow(() => cleanupService.ClearSimulation(null, null, discSim));
             Object.DestroyImmediate(discSim.gameObject);
         }
-
-        [Test]
-        public void ExitApplication_DoesNotThrow()
-        {
-            // Act & Assert - ExitApplication should not throw when called
-            Assert.DoesNotThrow(() => cleanupService.ExitApplication());
-        }
     }
 }

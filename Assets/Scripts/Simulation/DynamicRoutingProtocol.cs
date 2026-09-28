@@ -19,7 +19,6 @@ namespace SimRedes.Simulation
         public bool autoStart = false;
 
         private TopologyManager topology;
-        private PingVisualizer pingVis;
         private bool isRunning = false;
         private bool isConverged = false;
         private int advertisementCount = 0;
@@ -47,7 +46,6 @@ namespace SimRedes.Simulation
         private void Awake()
         {
             topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
-            pingVis = UnityEngine.Object.FindAnyObjectByType<PingVisualizer>();
         }
 
         private void Start()
@@ -295,21 +293,6 @@ namespace SimRedes.Simulation
             float delayComponent = totalDelay * 256f;
             float metric = (k1 * bwComponent) + (k3 * delayComponent);
             return Mathf.Max(1, Mathf.RoundToInt(metric));
-        }
-
-        private NetworkLink FindLink(NetworkNode from, NetworkNode to)
-        {
-            if (topology == null) return null;
-            var links = topology.GetAllLinks();
-            foreach (var link in links)
-            {
-                if ((link.SourceNode == from && link.DestinationNode == to) ||
-                    (link.SourceNode == to && link.DestinationNode == from))
-                {
-                    return link;
-                }
-            }
-            return null;
         }
 
         public void SimulateConvergence(System.Action onComplete)

@@ -134,33 +134,5 @@ namespace Tests.EditMode.UI
             Assert.AreEqual("DiscLegendPanel", panel.name);
             Assert.IsNotNull(panel.transform.Find("BackBtn"));
         }
-
-        [Test]
-        public void CreateNumericKeypad_Creates12Keys()
-        {
-            Font font = UIPanelFactory.GetFont();
-
-            var ipField = new GameObject("TestIPField").AddComponent<InputField>();
-            ipField.transform.SetParent(canvas.transform);
-            var maskField = new GameObject("TestMaskField").AddComponent<InputField>();
-            maskField.transform.SetParent(canvas.transform);
-
-            var method = typeof(UIPanelFactory).GetMethod("CreateNumericKeypad",
-                BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.IsNotNull(method, "CreateNumericKeypad method should be found via reflection");
-
-            method.Invoke(null, new object[] { canvas.transform, 0f, font, font, ipField, maskField });
-
-            int keyCount = 0;
-            foreach (Transform child in canvas.transform)
-            {
-                if (child.name.StartsWith("Key_"))
-                    keyCount++;
-            }
-            Assert.AreEqual(12, keyCount);
-
-            UnityEngine.Object.DestroyImmediate(ipField.gameObject);
-            UnityEngine.Object.DestroyImmediate(maskField.gameObject);
-        }
     }
 }

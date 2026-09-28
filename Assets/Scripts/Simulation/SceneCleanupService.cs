@@ -153,17 +153,5 @@ namespace SimRedes.Simulation
             yield return new UnityEngine.WaitForEndOfFrame();
             Resources.UnloadUnusedAssets();
         }
-
-        /// <summary>
-        /// Cierra la aplicacion. En el Editor de Unity detiene el modo Play.
-        /// </summary>
-        public void ExitApplication()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
     }
 }

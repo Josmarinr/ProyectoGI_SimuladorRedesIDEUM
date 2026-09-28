@@ -19,10 +19,6 @@ namespace SimRedes.Simulation
     public class ActivityLoader : MonoBehaviour
     {
         internal string selectedProtocol = null;
-        private DynamicRoutingProtocol dynProtocol = null;
-        // Handlers almacenados para poder desuscribir eventos correctamente
-        private System.Action<string> onProtocolLogHandler;
-        private System.Action onConvergenceHandler;
         private TopologyManager topology;
         private Canvas canvas;
         private Font font;
@@ -41,18 +37,6 @@ namespace SimRedes.Simulation
         {
             topology = UnityEngine.Object.FindAnyObjectByType<TopologyManager>();
             canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
-        }
-
-        /// <summary>
-        /// Limpia las suscripciones a eventos del protocolo dinamico al destruirse.
-        /// </summary>
-        private void OnDestroy()
-        {
-            if (dynProtocol != null)
-            {
-                if (onProtocolLogHandler != null) dynProtocol.OnProtocolLog -= onProtocolLogHandler;
-                if (onConvergenceHandler != null) dynProtocol.OnConvergence -= onConvergenceHandler;
-            }
         }
 
         /// <summary>
@@ -827,169 +811,6 @@ namespace SimRedes.Simulation
                     var ct = canvas != null ? canvas.transform : UnityEngine.Object.FindAnyObjectByType<Canvas>()?.transform;
                     if (ct != null) ss.CreateMainMenuPublic(ct);
                 }
-            }
-        }
-
-        // ==================== DYNAMIC ROUTING ====================
-
-        /// <summary>
-        /// Inicia el protocolo de enrutamiento dinamico seleccionado (RIP/OSPF/EIGRP).
-        /// Valida que existan al menos 2 routers y que se haya seleccionado un protocolo.
-        /// Configura los callbacks de log y convergencia, y arranca DynamicRoutingProtocol.
-        /// </summary>
-        /// <param name="panel">Panel de la actividad de enrutamiento dinamico (contiene RightPanel con Text de estado).</param>
-        public void StartDynamicProtocol(GameObject panel)
-        {
-            EnsureTopology();
-            if (topology == null) return;
-
-            var allNodes = topology.GetAllNodes();
-            var routers = new System.Collections.Generic.List<NetworkNode>();
-            foreach (var n in allNodes)
-            {
-                if (n.Type == Network.DeviceType.Router) routers.Add(n);
-            }
-            if (routers.Count < 2)
-            {
-                var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-                if (statusText != null)
-                    statusText.text = "ERROR: Se necesitan\nal menos 2 routers";
-                return;
-            }
-
-            if (selectedProtocol == null)
-            {
-                var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-                if (statusText != null)
-                    statusText.text = "ERROR: Selecciona\nun protocolo primero";
-                return;
-            }
-
-            var gameManager = GameObject.Find("GameManager");
-            if (gameManager == null) gameManager = new GameObject("GameManager");
-
-            // Desuscribir handlers viejos ANTES de destruir el protocolo anterior
-            if (dynProtocol != null)
-            {
-                dynProtocol.StopProtocol();
-                if (onProtocolLogHandler != null) dynProtocol.OnProtocolLog -= onProtocolLogHandler;
-                if (onConvergenceHandler != null) dynProtocol.OnConvergence -= onConvergenceHandler;
-                Destroy(dynProtocol);
-            }
-
-            dynProtocol = gameManager.AddComponent<DynamicRoutingProtocol>();
-            if (selectedProtocol == "RIP")
-                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.RIP;
-            else if (selectedProtocol == "EIGRP")
-                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.EIGRP;
-            else
-                dynProtocol.protocol = DynamicRoutingProtocol.ProtocolType.OSPF;
-
-            // Almacenar handlers como campos para poder desuscribirlos después
-            onProtocolLogHandler = (msg) => {
-                UnityEngine.Debug.Log($"[{selectedProtocol}] {msg}");
-                var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-                if (statusText != null)
-                    statusText.text = $"[{selectedProtocol}] {msg}\n\nStatus: Ejecutando...";
-            };
-
-            onConvergenceHandler = () => {
-                var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-                if (statusText != null)
-                {
-                    statusText.text = $"[{selectedProtocol}] CONVERGENCIA\n\n" +
-                        $"Todas las rutas han\nsido intercambiadas.\n\n" +
-                        $"Verifica las tablas de\nenrutamiento.";
-                    statusText.color = new Color(0.2f, 0.8f, 0.2f);
-                }
-            };
-
-            dynProtocol.OnProtocolLog += onProtocolLogHandler;
-            dynProtocol.OnConvergence += onConvergenceHandler;
-
-            dynProtocol.StartProtocol();
-
-            var statusTextStart = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-            if (statusTextStart != null)
-            {
-                statusTextStart.text = $"[{selectedProtocol}] Iniciando...\n\n" +
-                    $"Routers: {routers.Count}\nAdvertisements en progreso...";
-            }
-        }
-
-        /// <summary>
-        /// Detiene el protocolo de enrutamiento dinamico activo. Actualiza el texto de estado
-        /// del panel indicando que el protocolo esta pausado.
-        /// </summary>
-        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de estado).</param>
-        public void StopDynamicProtocol(GameObject panel)
-        {
-            if (dynProtocol != null)
-            {
-                dynProtocol.StopProtocol();
-                var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-                if (statusText != null)
-                {
-                    statusText.text = $"[{selectedProtocol}] Detenido\n\n" +
-                        "Protocolo pausado.\nPresiona START para\ncontinuar.";
-                    statusText.color = UIColors.textSecondary;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Limpia todas las rutas dinamicas del protocolo activo y vacia las tablas de
-        /// enrutamiento de todos los routers en la topologia.
-        /// </summary>
-        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de estado).</param>
-        public void ClearDynamicRoutes(GameObject panel)
-        {
-            if (dynProtocol != null) dynProtocol.ClearAllRoutes();
-            EnsureTopology();
-            if (topology != null)
-            {
-                var routers = topology.GetAllNodes().Where(n => n.Type == Network.DeviceType.Router).ToList();
-                foreach (var router in routers) router.RoutingTable.Clear();
-            }
-            var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-            if (statusText != null)
-            {
-                statusText.text = "RUTAS LIMPIADAS\n\nTodas las tablas de\nenrutamiento han sido\nborradas.";
-                statusText.color = Color.red;
-            }
-        }
-
-        /// <summary>
-        /// Muestra las tablas de enrutamiento de todos los routers en un panel de texto.
-        /// Trunca el contenido a 400 caracteres si es necesario.
-        /// </summary>
-        /// <param name="panel">Panel de la actividad (contiene RightPanel con Text de salida).</param>
-        public void ShowAllRouterRoutes(GameObject panel)
-        {
-            EnsureTopology();
-            if (topology == null) return;
-
-            var routers = topology.GetAllNodes().Where(n => n.Type == Network.DeviceType.Router).ToList();
-            string routeInfo = "TABLAS DE RUTAS:\n\n";
-            foreach (var router in routers)
-            {
-                var entries = router.RoutingTable.GetAllEntries();
-                routeInfo += $"{router.Name}:\n";
-                if (entries.Count == 0)
-                    routeInfo += "  Sin rutas aprendidas\n\n";
-                else
-                {
-                    foreach (var entry in entries)
-                        routeInfo += $"  {entry.DestinationNetwork}/{entry.GetPrefixLength()}\n    via {entry.NextHop} ({entry.Protocol})\n";
-                    routeInfo += "\n";
-                }
-            }
-
-            var statusText = panel.transform.Find("RightPanel")?.GetComponent<Text>();
-            if (statusText != null)
-            {
-                statusText.text = routeInfo.Length > 400 ? routeInfo.Substring(0, 400) + "..." : routeInfo;
-                statusText.fontSize = 11;
             }
         }
     }
