@@ -390,7 +390,7 @@
 
 **Categoría:** Calidad
 **Métrica:** Número de pruebas y cobertura de código
-**Objetivo:** 390+ pruebas, todas pasando
+**Objetivo:** 399+ pruebas, todas pasando
 
 ---
 

@@ -16,7 +16,7 @@ Assets/
     Simulation/   Actividades y escenas: SceneSetup, ActivityLoader, 7 actividades, ScoringSystem
     UI/           Interfaz de usuario: 3 factories, 5 controladores, visualizadores
     Core/         Diagnostico: MemoryDiagnostics (conteo de memoria, tecla F10)
-  Editor/Tests/   390 tests EditMode, 29 suites
+  Editor/Tests/   399 tests EditMode, 30 suites
   Main.unity      Escena principal del simulador
 docs/
   api/            Documentacion de 9 APIs del sistema
@@ -110,7 +110,7 @@ TopologyManager expone eventos que el resto del sistema consume:
 
 ## Datos Clave
 
-### Tests (390 EditMode, 29 suites)
+### Tests (399 EditMode, 30 suites)
 
 | Suite | Tests | Suite | Tests |
 |-------|:-----:|-------|:-----:|
@@ -128,7 +128,7 @@ TopologyManager expone eventos que el resto del sistema consume:
 | TestSceneCleanupRoutes | 4 | TestSceneCleanupService | 3 |
 | TestSceneSetupSplit | 5 | TestScoringSystem | 19 |
 | TestActivityPanelFactory | 12 | TestConfigPanelFactory | 10 |
-| TestUIPanelFactory | 7 | | |
+| TestUIPanelFactory | 7 | TestNodeVisualizerLinks | 9 |
 
 ### Comandos Debug (Keyboard)
 

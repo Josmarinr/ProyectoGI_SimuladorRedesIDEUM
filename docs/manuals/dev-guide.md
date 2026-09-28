@@ -634,7 +634,7 @@ Para testing en PC:
 
 ### Estructura
 
-Los tests están en `Assets/Editor/Tests/` y son **390 tests EditMode** (29 suites):
+Los tests están en `Assets/Editor/Tests/` y son **399 tests EditMode** (30 suites):
 
 | Suite | Tests | Suite | Tests |
 |-------|:-----:|-------|:-----:|
@@ -652,7 +652,7 @@ Los tests están en `Assets/Editor/Tests/` y son **390 tests EditMode** (29 suit
 | TestSceneCleanupRoutes | 4 | TestSceneCleanupService | 3 |
 | TestSceneSetupSplit | 5 | TestScoringSystem | 19 |
 | TestActivityPanelFactory | 12 | TestConfigPanelFactory | 10 |
-| TestUIPanelFactory | 7 | | |
+| TestUIPanelFactory | 7 | TestNodeVisualizerLinks | 9 |
 
 ### Cómo Ejecutar
 
@@ -699,13 +699,13 @@ namespace Tests.EditMode.Network {
 }
 ```
 
-### Cobertura Actual (390 tests, 29 suites)
+### Cobertura Actual (399 tests, 30 suites)
 
-Todas las suites principales tienen cobertura completa. Las 29 suites cubren:
+Todas las suites principales tienen cobertura completa. Las 30 suites cubren:
 - **Network**: IPValidation, RoutingTable, RoutePersistence, DiscToRouteIntegration, TopologyManager, ARPTable, VLANManager, ACLManager, NATManager
 - **Tangible**: RouteBuilderState, DiscEventHandler, TangibleBridge
 - **Simulation**: ScoringSystem, BestRouteActivity, SceneCleanupService, SceneCleanupRoutes, PredefinedScenarios, DynamicRoutingProtocol, ActivityLoader, ActivityLoaderSplit, ActivityStartup, BuildTopologyActivity, FindFaultScenarios, InputUnification, ScenarioLoaderGuards, SceneSetupSplit
-- **UI**: UIPanelFactory, ActivityPanelFactory, ConfigPanelFactory
+- **UI**: UIPanelFactory, ActivityPanelFactory, ConfigPanelFactory, NodeVisualizerLinks
 ---
 
 ## 11. Build y Despliegue

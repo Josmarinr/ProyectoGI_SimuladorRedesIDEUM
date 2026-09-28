@@ -11,8 +11,8 @@
 | Network | 9 | 175 | Alta |
 | Tangible | 3 | 48 | Alta |
 | Simulation | 14 | 138 | Media |
-| UI | 3 | 29 | Baja |
-| **Total** | **29** | **390** | — |
+| UI | 4 | 38 | Baja |
+| **Total** | **30** | **399** | — |
 
 ---
 
@@ -325,7 +325,7 @@
 
 ---
 
-## UI/ — 3 suites, 29 tests
+## UI/ — 4 suites, 38 tests
 
 ### TestUIPanelFactory.cs → `UIPanelFactory` (7 tests)
 
@@ -366,6 +366,20 @@
 | `CreateNATPanel()` | 1 |
 | Estructura de inputs | 3 (AddRoute config fields, VLAN input, ACL name input) |
 
+### TestNodeVisualizerLinks.cs → `NodeVisualizer`, `TangibleBridge`, `SceneBootstrap` (9 tests)
+
+| Método testado | Tests |
+|---|---|
+| `CreateVisualizer()` crea contenedores con RectTransform centrados | 1 |
+| Pipeline: disco al centro → icono en el centro del canvas | 1 |
+| Pipeline: posiciones conocidas → midpoint del enlace en coordenada esperada | 1 |
+| `DrawLinks()` tras mover nodo → iconos y línea siguen las posiciones | 1 |
+| `DrawLinks()` con topología recreada → resuelve lazy y resuscribe | 1 |
+| `ClearSimulation()` limpia contenedores y resetea la caché visual | 1 |
+| `ForceClearAll()` sin topología activa → resetea la caché visual | 1 |
+| `CreateLinkLine()` deshabilita `raycastTarget` | 1 |
+| `DrawLinks()` con diagnóstico activo → emite línea de diagnóstico | 1 |
+
 ---
 
 ## Clases SIN Test Dedicado
@@ -373,7 +387,7 @@
 | Clase | Archivo | Notas |
 |---|---|---|
 | `SceneSetup` | Simulation/ | Probado por TestSceneSetupSplit (fachada, bootstrap, navegación) |
-| `NodeVisualizer` | UI/ | Probado indirectamente por TopologyManager tests |
+| `NodeVisualizer` | UI/ | Probado por TestNodeVisualizerLinks |
 | `PingVisualizer` | UI/ | Probado indirectamente por connectivity tests |
 | `LinkModeController` | UI/ | Sin tests directos |
 | `PingModeController` | UI/ | Sin tests directos |

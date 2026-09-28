@@ -32,7 +32,7 @@ $UNITY -runTests -testPlatform EditMode \
 # Sin -quit si Unity 6000 mata los tests. Filtro: -testFilter TestFoo
 ```
 
-- [x] **390/390 tests en verde** (baseline: ninguna tarea puede bajar este número salvo que elimine tests de código muerto junto con su código — documentarlo)
+- [x] **399/399 tests en verde** (baseline: ninguna tarea puede bajar este número salvo que elimine tests de código muerto junto con su código — documentarlo)
 - [ ] Compilación sin errores ni warnings nuevos en Editor
 - [ ] Frente B: conteo de `Sprite`/`Texture2D` en `Resources.FindObjectsOfTypeAll` **no crece** tras 30 min de idle + 5 min de arrastre simulado
 - [ ] Frente A: todos los conteos citados verificados contra disco (grep)
@@ -77,13 +77,13 @@ $UNITY -runTests -testPlatform EditMode \
 | **B4** | Fix fuga #3: helper único `SafeDestroySprite(Sprite)` y aplicarlo a los 12 sitios de creación; limpiar `deviceIconCache` en `ClearTextureCache` | `UIComponents.cs` + factories | M | Todo sprite creado tiene su teardown |
 | **B5** | Fix fuga #4: corregir nombre `ClickOutsideBG_*`, sumar los 9 paneles faltantes a la limpieza, parentear `PingPackets` a su componente | `SceneCleanupService.cs:85-90`, `ConfigPanelFactory.cs`, `PingVisualizer.cs:35` | S | Volver al menú 20× sin huérfanos |
 | **B6** | Fix churn: throttling de `ConnectivityTestPanel.Update`, `DrawLinks` solo cuando cambia la topología (no la posición), gate de `Debug.Log` en builds | `ConnectivityTestPanel.cs:56-102`, `NodeVisualizer.cs:130-170`, múltiples | M | GC Alloc estable en Profiler |
-| **B7** | Verificación final: re-correr B1 y comparar contra baseline + 390 tests | — | S | Gráfica antes/después + suite verde |
+| **B7** | Verificación final: re-correr B1 y comparar contra baseline + 399 tests | — | S | Gráfica antes/después + suite verde |
 
 ---
 
 ## Frente C — Limpieza de código (fases por riesgo)
 
-> Objetivo: "código mucho más limpio y organizado" sin romper los 390 tests. Cada fase es un work-unit commit separado.
+> Objetivo: "código mucho más limpio y organizado" sin romper los 399 tests. Cada fase es un work-unit commit separado.
 
 | ID | Fase | Alcance | Riesgo | Esfuerzo |
 |----|------|---------|:------:|:--------:|
@@ -127,7 +127,7 @@ $UNITY -runTests -testPlatform EditMode \
 
 ## Criterios globales de aceptación
 
-- [x] 390/390 tests verdes (o menos solo si se elimina test de código muerto en la misma tarea, documentado)
+- [x] 399/399 tests verdes (o menos solo si se elimina test de código muerto en la misma tarea, documentado)
 - [x] Cero inconsistencias de conteo en la documentación (verificado por grep)
 - [ ] Memoria plana en idle 30 min y en arrastre simulado (B1 vs B7)
 - [x] Cada tarea cierra con un commit conventional en la rama

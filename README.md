@@ -593,7 +593,7 @@ Los agentes los usan automáticamente como referencia durante implementación, r
 - **ActivityLoader** centraliza la lógica de carga de 7 actividades + 5 escenarios (~800L)
 - **SceneCleanupService** es un singleton que maneja la destrucción ordenada al salir
 - **Input System**: Activo en modo Both (`activeInputHandler = 2`). El código legacy con `Input.GetKeyDown()` funciona junto con el nuevo Input System Package. Para código nuevo, usar `UnityEngine.InputSystem`.
-- **Tests**: 390 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.
+- **Tests**: 399 EditMode tests en `Assets/Editor/Tests/`. Ejecutar desde Test Runner → EditMode → Run All.
 - **Código eliminado**: `ActivityPanel.cs` (sin callers), `GameManager.routingSimulator` y `GetRoutingSimulator()` (sin callers).
 
 ---

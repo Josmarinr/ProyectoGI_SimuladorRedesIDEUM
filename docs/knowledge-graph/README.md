@@ -10,7 +10,7 @@
 | 1 | [01-dependency-graph.md](01-dependency-graph.md) | Imports reales entre archivos (Mermaid) |
 | 2 | [02-concept-map.md](02-concept-map.md) | Conceptos del dominio → código, tests, skills |
 | 3 | [03-entry-points.md](03-entry-points.md) | "Si quiero X, debo tocar Y" |
-| 4 | [04-tests-map.md](04-tests-map.md) | 390 tests → qué cubren |
+| 4 | [04-tests-map.md](04-tests-map.md) | 399 tests → qué cubren |
 | 5 | [05-bugs-history.md](05-bugs-history.md) | Bugs históricos → archivos modificados |
 | 6 | [06-skills-map.md](06-skills-map.md) | 20 skills → archivos referenciados |
 | 7 | [07-architectural-flows.md](07-architectural-flows.md) | 8 flujos de datos (Mermaid sequence) |

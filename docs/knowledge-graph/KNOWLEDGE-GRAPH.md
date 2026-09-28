@@ -166,7 +166,7 @@ graph TB
 | Métrica | Valor |
 |---|---|
 | Scripts fuente | 54 archivos, ~15K líneas |
-| Tests EditMode | 390 tests, 29 suites |
+| Tests EditMode | 399 tests, 30 suites |
 | Namespaces | 6 (SimRedes, Network, Tangible, Simulation, UI, Core) |
 | Skills | 20 |
 | Diagramas | 21 (Mermaid) + 14 (Archify) |

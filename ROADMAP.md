@@ -8,7 +8,7 @@
 
 ## Estado Actual
 
-**390 tests** | **26 sesiones** | **1 bug activo (P2)** | Actividad reciente: DOC1 (Sept 2026)
+**399 tests** | **26 sesiones** | **1 bug activo (P2)** | Actividad reciente: DOC1 (Sept 2026)
 
 ---
 
